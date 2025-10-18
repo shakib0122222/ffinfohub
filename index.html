@@ -447,7 +447,7 @@
 
         <div class="form-group">
             <label for="playerUid">Player UID</label>
-            <input type="text" id="playerUid" placeholder="Enter player UID e.g., 8035061359">
+            <input type="text" id="playerUid" placeholder="Enter player UID e.g., 754786952">
         </div>
 
         <div class="form-group">
@@ -591,7 +591,7 @@
 
         const tabButtons = document.querySelectorAll('.tab-btn');
 
-        const BASE_URL = "https://free-fire-info-zeta.vercel.app/";
+        const BASE_URL = "https://ff-info-gajarbotol.vercel.app/";
 
         function getNested(obj, keys, defaultValue = 'N/A') {
             return keys.reduce((acc, key) => (acc && typeof acc === 'object' && acc[key] !== undefined) ? acc[key] : undefined, obj) || defaultValue;
@@ -620,16 +620,16 @@
             targetDiv.appendChild(createStatItem('Kills', getNested(data, ['kills'], 0)));
             targetDiv.appendChild(createStatItem('Deaths', getNested(data, ['deaths'], 0)));
 
-            const kills = getNested(data, ['kills'], 0);
-            const deaths = getNested(data, ['deaths'], 0);
-            const headshots = getNested(data, ['headshots'], 0);
+            const kills = parseInt(getNested(data, ['kills'], 0));
+            const deaths = parseInt(getNested(data, ['deaths'], 0));
+            const headshots = parseInt(getNested(data, ['headshots'], 0));
 
-            const kdRatio = (deaths > 0) ? (kills / deaths).toFixed(2) : (kills > 0 ? kills.toFixed(2) : '0.00');
+            const kdRatio = deaths > 0 ? (kills / deaths).toFixed(2) : (kills > 0 ? kills.toFixed(2) : '0.00');
             targetDiv.appendChild(createStatItem('K/D Ratio', kdRatio));
 
             targetDiv.appendChild(createStatItem('Headshot Kills', headshots));
 
-            const hsRate = (kills > 0) ? ((headshots / kills) * 100).toFixed(2) + '%' : '0.00%';
+            const hsRate = kills > 0 ? ((headshots / kills) * 100).toFixed(2) + '%' : '0.00%';
             targetDiv.appendChild(createStatItem('Headshot Rate', hsRate));
 
             targetDiv.appendChild(createStatItem('Damage', getNested(data, ['damage'], 0)));
@@ -718,7 +718,7 @@
 
                 try {
                     personalInfo = await personalInfoResponse.json();
-                    console.log('Personal Info API Response:', personalInfo);
+                    console.log('Personal Info API Response:', JSON.stringify(personalInfo, null, 2));
                 } catch (e) {
                     throw new Error('Invalid response format from Personal Info API.');
                 }
@@ -772,7 +772,7 @@
 
                 try {
                     brStats = await brStatsResponse.json();
-                    console.log('BR Stats API Response:', brStats);
+                    console.log('BR Stats API Response:', JSON.stringify(brStats, null, 2));
                 } catch (e) {
                     throw new Error('Invalid response format from BR Stats API.');
                 }
@@ -789,7 +789,7 @@
 
                 try {
                     csStats = await csStatsResponse.json();
-                    console.log('CS Stats API Response:', csStats);
+                    console.log('CS Stats API Response:', JSON.stringify(csStats, null, 2));
                 } catch (e) {
                     throw new Error('Invalid response format from CS Stats API.');
                 }
@@ -834,7 +834,7 @@
                 tabButtons[0].click();
 
             } catch (error) {
-                console.error('General Error fetching player data:', error);
+                console.error('Error fetching player data:', error);
                 errorMessage.textContent = `Failed to fetch player data: ${error.message}. Please check the UID, server, or try again later.`;
                 errorMessage.style.display = 'block';
             } finally {
