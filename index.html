@@ -137,7 +137,7 @@
         }
 
         .footer a {
-            color: #e0e0e0;
+            color: var(--accent-color);
             text-decoration: none;
             font-weight: 600;
         }
@@ -568,7 +568,7 @@
         </div>
 
         <div class="footer">
-            Developed with <span>❤️</span> by <a href="#" target="_blank">@DEMO</a>
+            Developed with <span>❤️</span> by <a href="#" target="_blank">@GAJARBOTOL</a>
         </div>
     </div>
 
@@ -607,11 +607,47 @@
 
         const BASE_URL = "https://ff-info-gajarbotol.vercel.app/"; // আপনার API Base URL
 
+        const emojiMap = {
+            'Matches Played': '🎮',
+            'Wins': '🏆',
+            'Kills': '💀',
+            'Deaths': '💔',
+            'K/D Ratio': '📈',
+            'Headshot Kills': '🎯',
+            'Headshot Rate': '💥',
+            'Damage': '🔥',
+            'Revives': '❤️',
+            'Headshots': '🎯',
+            'Highest Kills': '🏅',
+            'Knockdowns': '👊',
+            'Pick Ups': '🛒',
+            'Survival Time': '⏱️',
+            'Top N Times': '🔝',
+            'Road Kills': '🚗',
+            'Distance Travelled': '🏃'
+        };
+
+        // Helper function to create human-readable label
+        function makeLabel(key) {
+            let label = key.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^./, str => str.toUpperCase());
+            if (key === 'topntimes') label = 'Top N Times';
+            if (key === 'highestkills') label = 'Highest Kills';
+            if (key === 'knockdown') label = 'Knockdowns';
+            if (key === 'pickups') label = 'Pick Ups';
+            if (key === 'roadkills') label = 'Road Kills';
+            if (key === 'distancetravelled') label = 'Distance Travelled';
+            if (key === 'headshotkills') label = 'Headshot Kills';
+            if (key === 'survivaltime') label = 'Survival Time';
+            if (key === 'gamesplayed') label = 'Matches Played';
+            return label;
+        }
+
         // Helper function to create a stat item
         function createStatItem(label, value) {
+            const emoji = emojiMap[label] || '';
             const itemDiv = document.createElement('div');
             itemDiv.classList.add('info-item');
-            itemDiv.innerHTML = `<span>${label}:</span> <span>${value}</span>`;
+            itemDiv.innerHTML = `<span>${emoji} ${label}</span> <span>${value}</span>`;
             return itemDiv;
         }
 
@@ -619,28 +655,36 @@
         function renderStats(targetDiv, data, gamemode) {
             targetDiv.innerHTML = ''; // Clear previous stats
 
-            if (!data || Object.keys(data).length === 0) {
-                targetDiv.innerHTML = `<h3 class="no-data">No ${gamemode} data found for this mode.</h3>`;
+            if (!data || Object.keys(data).length === 0 || !data.gamesplayed || data.gamesplayed === 0) {
+                targetDiv.innerHTML = `<h3 class="no-data">No ranked matches played in this mode.</h3>`;
                 return;
             }
 
-            for (let key in data) {
-                let value = data[key];
+            let stats = { ...data };
+            delete stats.detailedstats;
+            delete stats.accountid;
+            if (data.detailedstats) {
+                stats = { ...stats, ...data.detailedstats };
+            }
+
+            for (let key in stats) {
+                const label = makeLabel(key);
+                let value = stats[key];
                 if (typeof value === 'object' && value !== null) {
                     value = JSON.stringify(value);
                 }
-                targetDiv.appendChild(createStatItem(key, value));
+                targetDiv.appendChild(createStatItem(label, value));
             }
 
-            // Calculate K/D Ratio if possible
-            if (data.kills !== undefined && data.deaths !== undefined) {
-                const kdRatio = (data.deaths > 0) ? (data.kills / data.deaths).toFixed(2) : (data.kills > 0 ? data.kills : 0);
+            // Add calculated K/D Ratio
+            if (stats.kills !== undefined && stats.deaths !== undefined) {
+                const kdRatio = (stats.deaths > 0) ? (stats.kills / stats.deaths).toFixed(2) : (stats.kills > 0 ? stats.kills : 0);
                 targetDiv.appendChild(createStatItem('K/D Ratio', kdRatio));
             }
 
-            // Calculate Headshot Rate if possible
-            if (data.headshots !== undefined && data.kills !== undefined) {
-                const hsRate = (data.kills > 0) ? ((data.headshots / data.kills) * 100).toFixed(2) + '%' : '0.00%';
+            // Add calculated Headshot Rate
+            if (stats.headshotkills !== undefined && stats.kills !== undefined) {
+                const hsRate = (stats.kills > 0) ? ((stats.headshotkills / stats.kills) * 100).toFixed(2) + '%' : '0.00%';
                 targetDiv.appendChild(createStatItem('Headshot Rate', hsRate));
             }
         }
@@ -668,7 +712,7 @@
 
             resultsDiv.style.display = 'none'; // Hide previous results
             errorMessage.style.display = 'none'; // Hide previous error
-
+            
             if (!playerUid) {
                 errorMessage.textContent = 'Please enter a Player UID.';
                 errorMessage.style.display = 'block';
@@ -685,14 +729,14 @@
                 if ((personalInfo.status === true || personalInfo.status === 'success') && personalInfo.data) {
                     const data = personalInfo.data;
 
-                    // Set main profile fields (assuming nested structure; adjust keys as per actual API)
+                    // Set main profile fields (adjust keys based on nested structure)
                     profileAvatarChar.textContent = (data.basicinfo && data.basicinfo.nickname) ? data.basicinfo.nickname.charAt(0).toUpperCase() : '?';
                     profileLevel.textContent = `Lv. ${(data.basicinfo && data.basicinfo.level) || '??'}`;
                     profileNickname.textContent = (data.basicinfo && data.basicinfo.nickname) || 'N/A';
                     profileUidDisplay.textContent = `UID: ${(data.basicinfo && data.basicinfo.account_id) || 'N/A'}`;
                     profileClan.textContent = `Clan: ${(data.clanbasicinfo && data.clanbasicinfo.clan_name) || 'N/A'}`;
                     profileLikes.textContent = (data.socialinfo && data.socialinfo.likes) || '0';
-                    profileBadges.textContent = (data.profileinfo && data.profileinfo.badge) || '0';
+                    profileBadges.textContent = (data.profileinfo && data.profileinfo.badge) || '0'; 
                     profileRegion.textContent = (data.basicinfo && data.basicinfo.region) || 'N/A';
                     profileLastLogin.textContent = (data.profileinfo && data.profileinfo.last_login) ? new Date(data.profileinfo.last_login * 1000).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
                     profileSignature.textContent = (data.profileinfo && data.profileinfo.signature) || '"No signature set."';
@@ -702,14 +746,15 @@
                     let detailedHtml = '';
                     for (const section in data) {
                         detailedHtml += `<div class="mode-section">
-                            <h3>${section.charAt(0).toUpperCase() + section.slice(1)}</h3>
+                            <h3>${makeLabel(section)}</h3>
                             <div class="stats-list">`;
                         for (let key in data[section]) {
                             let value = data[section][key];
                             if (typeof value === 'object' && value !== null) {
                                 value = JSON.stringify(value);
                             }
-                            detailedHtml += `<div class="info-item"><span>${key}:</span> <span>${value}</span></div>`;
+                            const label = makeLabel(key);
+                            detailedHtml += createStatItem(label, value).outerHTML;
                         }
                         detailedHtml += '</div></div>';
                     }
@@ -735,7 +780,7 @@
                     detailedPersonal.innerHTML = '';
                 }
 
-                // --- API Call for BR Stats ---
+                // --- API Call for BR Ranked Stats ---
                 const brResponse = await fetch(`${BASE_URL}get_player_stats?server=${server}&uid=${playerUid}&matchmode=RANKED&gamemode=br`);
                 const brStats = await brResponse.json();
 
@@ -747,7 +792,7 @@
                     errorMessage.style.display = 'block';
                 }
 
-                // --- API Call for CS Stats ---
+                // --- API Call for CS Ranked Stats ---
                 const csResponse = await fetch(`${BASE_URL}get_player_stats?server=${server}&uid=${playerUid}&matchmode=RANKED&gamemode=cs`);
                 const csStats = await csResponse.json();
 
@@ -759,7 +804,7 @@
                     errorMessage.style.display = 'block';
                 }
 
-                // Update ranks
+                // Update BR/CS Ranks on profile card
                 profileBRRank.textContent = brRankedData.current_rank ? brRankedData.current_rank.rank_name || 'N/A' : 'N/A';
                 profileCSRank.textContent = csRankedData.current_rank ? csRankedData.current_rank.rank_name || 'N/A' : 'N/A';
 
@@ -768,7 +813,7 @@
                 renderStats(brDuoStatsDiv, brRankedData.duostats || {}, 'BR Duo');
                 renderStats(brSquadStatsDiv, brRankedData.quadstats || {}, 'BR Squad');
 
-                // Render CS stats
+                // Render CS stats (assuming direct data for CS ranked)
                 renderStats(csRankedStatsDiv, csRankedData || {}, 'CS Ranked');
 
                 resultsDiv.style.display = 'block'; // Show results section
