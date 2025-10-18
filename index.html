@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FF Info Hub - Free Fire Player Stats</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=JetBrains+Mono&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'ff-bg': '#0b0f1a',
+                        'ff-card-glass': 'rgba(255,255,255,0.04)',
+                        'ff-accent-cyan': '#00E5FF',
+                        'ff-accent-pink': '#FF47B4',
+                        'ff-success': '#00E676',
+                        'ff-danger': '#FF5C5C',
+                        'ff-light': '#F5F6FA',
+                    },
+                    fontFamily: {
+                        headline: ['Poppins', 'Inter', 'sans-serif'],
+                        body: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    borderRadius: {
+                        'xl': '16px',
+                        '2xl': '24px',
+                    },
+                    keyframes: {
+                        slideIn: {
+                            '0%': { transform: 'translateY(-20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        slideOut: {
+                            '0%': { transform: 'translateY(0)', opacity: '1' },
+                            '100%': { transform: 'translateY(-20px)', opacity: '0' },
+                        },
+                        pulse: {
+                            '0%, 100%': { transform: 'scale(1)', opacity: '0.8' },
+                            '50%': { transform: 'scale(1.1)', opacity: '1' },
+                        },
+                    },
+                    animation: {
+                        'slide-in': 'slideIn 0.3s ease-out forwards',
+                        'slide-out': 'slideOut 0.3s ease-in forwards',
+                        'pulse': 'pulse 2s ease-in-out infinite',
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            @apply bg-ff-bg text-gray-200 font-body min-h-screen flex flex-col items-center py-8 px-4 md:px-8 transition-colors duration-300;
+        }
+
+        body.light-theme {
+            @apply bg-ff-light text-gray-800;
+        }
+
+        body.light-theme .glassmorphism {
+            @apply bg-white bg-opacity-20 border-gray-300;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-theme .btn-neon {
+            @apply text-gray-800;
+        }
+
+        /* Animated Particle Background */
+        .particle-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #0b0f1a, #1a2333, #0b0f1a);
+            background-size: 200% 200%;
+            animation: gradientShift 15s ease infinite;
+            z-index: -2;
+        }
+
+        .particle-bg::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0, 229, 255, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.3;
+            animation: particleMove 20s linear infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes particleMove {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-100px); }
+        }
+
+        .glassmorphism {
+            @apply bg-ff-card-glass backdrop-blur-md border border-gray-800 rounded-xl shadow-lg transition-transform duration-300 transform hover:scale-105;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .neon-border-glow {
+            position: relative;
+            z-index: 1;
+        }
+
+        .neon-border-glow::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 18px;
+            background: linear-gradient(45deg, var(--tw-colors-ff-accent-cyan), var(--tw-colors-ff-accent-pink));
+            padding: 2px;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            z-index: -1;
+            animation: glow-pulse 1.5s infinite alternate;
+        }
+
+        @keyframes glow-pulse {
+            0% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        .btn-neon {
+            @apply bg-gradient-to-r from-ff-accent-cyan to-ff-accent-pink text-ff-bg font-bold rounded-xl py-3 px-6 transition-all duration-300 relative overflow-hidden;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.5), 0 0 15px rgba(255, 71, 180, 0.5);
+        }
+
+        .btn-neon:hover {
+            @apply scale-105 animate-pulse;
+            box-shadow: 0 0 25px rgba(0, 229, 255, 0.7), 0 0 25px rgba(255, 71, 180, 0.7);
+        }
+
+        .btn-neon:active {
+            @apply scale-95;
+            box-shadow: none;
+        }
+
+        .btn-neon::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            opacity: 0;
+            transform: translate(-50%, -50%);
+            transition: all 0.5s ease;
+        }
+
+        .btn-neon:not(:active)::after {
+            animation: ripple-out 0.6s forwards;
+        }
+
+        @keyframes ripple-out {
+            0% { width: 5px; height: 5px; opacity: 0.6; }
+            100% { width: 200px; height: 200px; opacity: 0; }
+        }
+
+        .skeleton {
+            @apply bg-gray-700 bg-opacity-30 relative overflow-hidden rounded;
+        }
+
+        .skeleton::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            transform: translateX(-100%);
+            background-image: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0) 0,
+                rgba(255, 255, 255, 0.2) 20%,
+                rgba(255, 255, 255, 0.5) 60%,
+                rgba(255, 255, 255, 0)
+            );
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            100% { transform: translateX(100%); }
+        }
+
+        .tooltip {
+            @apply relative;
+        }
+
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            @apply absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-900 text-white text-xs rounded-lg opacity-0 transition-opacity duration-200;
+            opacity: 1;
+            z-index: 10;
+        }
+
+        .suggestions-dropdown {
+            @apply absolute w-full bg-ff-card-glass backdrop-blur-md border border-gray-800 rounded-xl mt-1 max-h-60 overflow-y-auto z-20 animate-slide-in;
+        }
+
+        .search-icon-pulse {
+            @apply animate-pulse;
+        }
+
+        footer {
+            @apply mt-8 text-gray-400 text-sm text-center;
+        }
+    </style>
+    <!-- React CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel CDN -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-ff-bg text-gray-200 min-h-screen flex flex-col items-center py-8 px-4 md:px-8">
+    <div class="particle-bg"></div>
+    <div id="root" class="w-full max-w-5xl relative z-10 flex-1"></div>
+    <footer>Developed By SAKIB HOSSAIN</footer>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const SERVER_OPTIONS = ['IND','SG','RU','ID','TW','US','VN','TH','ME','PK','CIS','BR','BD'];
+
+        const CSSTransition = ({ children, show, enter, enterFrom, enterTo, leave, leaveFrom, leaveTo }) => {
+            const [shouldRender, setShouldRender] = useState(show);
+            const ref = useRef(null);
+
+            useEffect(() => {
+                if (show) {
+                    setShouldRender(true);
+                    requestAnimationFrame(() => {
+                        if (ref.current) {
+                            ref.current.className = `${enter} ${enterTo}`;
+                        }
+                    });
+                } else {
+                    if (ref.current) {
+                        ref.current.className = `${leave} ${leaveTo}`;
+                        const handleTransitionEnd = () => {
+                            setShouldRender(false);
+                            ref.current.removeEventListener('transitionend', handleTransitionEnd);
+                        };
+                        ref.current.addEventListener('transitionend', handleTransitionEnd);
+                    } else {
+                        setShouldRender(false);
+                    }
+                }
+            }, [show, enter, enterFrom, enterTo, leave, leaveFrom, leaveTo]);
+
+            if (!shouldRender) return null;
+
+            return React.cloneElement(children, {
+                ref,
+                className: show ? `${enter} ${enterFrom}` : `${leave} ${leaveFrom}`
+            });
+        };
+
+        const Header = ({ toggleTheme, isDarkTheme }) => (
+            <header className="w-full flex justify-between items-center py-4 mb-8 animate-slide-in">
+                <h1 className="text-3xl md:text-4xl font-headline font-bold text-ff-accent-cyan drop-shadow-lg">FF Info Hub</h1>
+                <button
+                    onClick={toggleTheme}
+                    className="p-2 rounded-full glassmorphism hover:bg-gray-700 transition-colors"
+                    aria-label="Toggle Theme"
+                >
+                    {isDarkTheme ? (
+                        <svg className="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 11-2 0 1 1 0 012 0zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 11-2 0 1 1 0 012 0zm-1-1zm7 7zm7-7zm-7-7z"></path>
+                        </svg>
+                    ) : (
+                        <svg className="w-6 h-6 text-gray-800" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                        </svg>
+                    )}
+                </button>
+            </header>
+        );
+
+        const SearchBar = ({ uid, setUid, server, setServer, onSearch, isLoading, recentSearches }) => {
+            const [showSuggestions, setShowSuggestions] = useState(false);
+            const inputRef = useRef(null);
+
+            useEffect(() => {
+                const handleClickOutside = (event) => {
+                    if (inputRef.current && !inputRef.current.contains(event.target)) {
+                        setShowSuggestions(false);
+                    }
+                };
+                document.addEventListener('mousedown', handleClickOutside);
+                return () => document.removeEventListener('mousedown', handleClickOutside);
+            }, []);
+
+            return (
+                <div className="glassmorphism p-6 md:p-8 mb-8 w-full neon-border-glow animate-slide-in" ref={inputRef}>
+                    <div className="mb-6 relative">
+                        <label htmlFor="uid-input" className="block text-gray-300 text-sm font-bold mb-2">
+                            Free Fire UID
+                        </label>
+                        <input
+                            id="uid-input"
+                            type="text"
+                            className="w-full p-3 rounded-lg bg-ff-bg border border-ff-accent-cyan focus:outline-none focus:ring-2 focus:ring-ff-accent-pink font-mono text-lg animate-pulse"
+                            placeholder="Enter UID — e.g., 8035061359"
+                            value={uid}
+                            onChange={(e) => {
+                                setUid(e.target.value);
+                                setShowSuggestions(e.target.value.length > 0);
+                            }}
+                            onFocus={() => setShowSuggestions(uid.length > 0 || recentSearches.length > 0)}
+                            aria-label="Enter Free Fire UID"
+                            disabled={isLoading}
+                        />
+                        {showSuggestions && recentSearches.length > 0 && (
+                            <div className="suggestions-dropdown">
+                                {recentSearches
+                                    .filter(search => search.uid.includes(uid) || uid === '')
+                                    .map((search, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => {
+                                                setUid(search.uid);
+                                                setServer(search.server);
+                                                setShowSuggestions(false);
+                                                onSearch();
+                                            }}
+                                            className="w-full text-left px-4 py-2 hover:bg-gray-700 text-gray-200 flex items-center space-x-2"
+                                        >
+                                            <img src={search.avatar || 'https://via.placeholder.com/40/333333/FFFFFF?text=AV'} alt="Avatar" className="w-6 h-6 rounded-full" />
+                                            <span>{search.nickname} ({search.uid}) - {search.server}</span>
+                                        </button>
+                                    ))}
+                            </div>
+                        )}
+                    </div>
+                    <div className="mb-6">
+                        <label htmlFor="server-select" className="block text-gray-300 text-sm font-bold mb-2">
+                            Server
+                        </label>
+                        <div className="relative">
+                            <select
+                                id="server-select"
+                                className="block appearance-none w-full bg-ff-bg border border-ff-accent-cyan text-gray-200 py-3 px-4 pr-8 rounded-lg leading-tight focus:outline-none focus:ring-2 focus:ring-ff-accent-pink"
+                                value={server}
+                                onChange={(e) => setServer(e.target.value)}
+                                aria-label="Select Free Fire Server"
+                                disabled={isLoading}
+                            >
+                                {SERVER_OPTIONS.map((option) => (
+                                    <option key={option} value={option}>{option}</option>
+                                ))}
+                            </select>
+                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-200">
+                                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <button
+                        onClick={onSearch}
+                        className="btn-neon w-full flex items-center justify-center"
+                        disabled={isLoading}
+                        aria-label="Get Player Info"
+                    >
+                        {isLoading ? (
+                            <svg className="animate-spin h-5 w-5 text-ff-bg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        ) : (
+                            'Get Player Info'
+                        )}
+                    </button>
+                </div>
+            );
+        };
+
+        const PlayerCard = ({ playerInfo }) => {
+            if (!playerInfo) return null;
+
+            return (
+                <div className="glassmorphism p-6 md:p-8 mb-8 text-center neon-border-glow animate-slide-in">
+                    <img
+                        src={playerInfo.avatar || 'https://via.placeholder.com/100/333333/FFFFFF?text=AV'}
+                        alt={`${playerInfo.nickname}'s avatar`}
+                        className="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-ff-accent-pink shadow-lg transform hover:scale-110 transition-transform duration-300"
+                    />
+                    <h2 className="text-2xl md:text-3xl font-headline font-bold text-white mb-1">{playerInfo.nickname}</h2>
+                    <p className="text-lg text-gray-300 mb-4">Level: {playerInfo.level}</p>
+                    <div className="flex items-center justify-center space-x-2">
+                        <img src={playerInfo.rankBadge || 'https://via.placeholder.com/40/00E5FF/0b0f1a?text=R'} alt="Rank Badge" className="w-10 h-10 transform hover:scale-125 transition-transform duration-300" />
+                        <span className="text-xl font-bold text-ff-accent-cyan">{playerInfo.rank || 'N/A'}</span>
+                    </div>
+                </div>
+            );
+        };
+
+        const StatsGrid = ({ playerStats }) => {
+            if (!playerStats) return null;
+
+            const stats = [
+                { label: "Matches", value: playerStats.matches, tooltip: "Total matches played", icon: (
+                    <svg className="w-6 h-6 text-ff-accent-pink" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 4a2 2 0 10-4 0v12a4 4 0 108 0V4a2 2 0 10-4 0v12a1 1 0 11-2 0V4z"></path></svg>
+                ) },
+                { label: "Wins", value: playerStats.wins, tooltip: "Total victories", icon: (
+                    <svg className="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0 0v3m0-3h3m-3 0h-3m-3 0V9m0 0V6m0 0V3m0 3h-3m3 0h3m-3 0h-3M6 9v3m0 0v3m0 0v3m0-3h-3m3 0h3"></path></svg>
+                ) },
+                { label: "Kills", value: playerStats.kills, tooltip: "Total eliminations", icon: (
+                    <svg className="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                ) },
+                { label: "KD Ratio", value: playerStats.kdRatio, tooltip: "Kills per death ratio", icon: (
+                    <svg className="w-6 h-6 text-ff-accent-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4-4m-4 4l-4-4m4 4h4M8 12h.01M12 12h.01M16 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                ) },
+                { label: "Win Rate", value: playerStats.winRate, tooltip: "Percentage of matches won", icon: (
+                    <svg className="w-6 h-6 text-ff-success" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                ) },
+                { label: "Headshots", value: playerStats.headshots || 'N/A', tooltip: "Total headshot kills", icon: (
+                    <svg className="w-6 h-6 text-ff-accent-pink" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                ) },
+            ];
+
+            return (
+                <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-3 mb-8 animate-slide-in">
+                    {stats.map((stat, index) => (
+                        <div
+                            key={index}
+                            className="glassmorphism p-4 text-center neon-border-glow tooltip"
+                            data-tooltip={stat.tooltip}
+                        >
+                            <div className="flex items-center justify-center mb-2">{stat.icon}</div>
+                            <p className="text-sm text-gray-400 uppercase tracking-wide">{stat.label}</p>
+                            <p className="text-2xl font-bold text-white">{stat.value}</p>
+                        </div>
+                    ))}
+                </div>
+            );
+        };
+
+        const LoadingSkeleton = () => (
+            <div className="w-full animate-slide-in">
+                <div className="glassmorphism p-6 md:p-8 mb-8 text-center">
+                    <div className="w-24 h-24 rounded-full mx-auto mb-4 skeleton"></div>
+                    <div className="h-6 w-3/4 mx-auto mb-2 skeleton rounded"></div>
+                    <div className="h-4 w-1/2 mx-auto mb-4 skeleton rounded"></div>
+                    <div className="h-10 w-20 mx-auto skeleton rounded"></div>
+                </div>
+                <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+                    {[...Array(6)].map((_, i) => (
+                        <div key={i} className="glassmorphism p-4 text-center">
+                            <div className="h-6 w-6 mx-auto mb-2 skeleton rounded-full"></div>
+                            <div className="h-4 w-2/3 mx-auto skeleton rounded"></div>
+                            <div className="h-8 w-1/2 mx-auto skeleton rounded mt-2"></div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+
+        const Toast = ({ message, type, show, onClose }) => {
+            useEffect(() => {
+                if (show) {
+                    const timer = setTimeout(() => onClose(), 3000);
+                    return () => clearTimeout(timer);
+                }
+            }, [show]);
+
+            const bgColor = type === 'success' ? 'bg-ff-success' : 'bg-ff-danger';
+            const icon = type === 'success' ? (
+                <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            ) : (
+                <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            );
+
+            return (
+                <CSSTransition
+                    show={show}
+                    enter="animate-slide-in"
+                    enterFrom="opacity-0 translate-y-[-20px]"
+                    enterTo="opacity-100 translate-y-0"
+                    leave="animate-slide-out"
+                    leaveFrom="opacity-100 translate-y-0"
+                    leaveTo="opacity-0 translate-y-[-20px]"
+                >
+                    <div className={`fixed top-4 left-1/2 -translate-x-1/2 ${bgColor} text-ff-bg px-6 py-3 rounded-full shadow-xl flex items-center z-50`}>
+                        {icon}
+                        <span>{message}</span>
+                        <button onClick={onClose} className="ml-4 text-sm font-bold opacity-70 hover:opacity-100 transition-opacity">
+                            &times;
+                        </button>
+                    </div>
+                </CSSTransition>
+            );
+        };
+
+        const ErrorEmptyState = ({ message, onRetry }) => (
+            <div className="glassmorphism p-8 md:p-12 text-center neon-border-glow animate-slide-in">
+                <img src="https://assets.website-files.com/5f9d9e60a3b6b1070e3b6d0c/607e4d8f8d6f6e5c8e7e1e4a_no-data.svg" alt="No data found" className="w-32 h-32 mx-auto mb-6 transform hover:rotate-6 transition-transform duration-300" />
+                <h3 className="text-2xl font-headline font-bold text-ff-danger mb-4">ডেটা পাওয়া যায় নি — UID বা Server চেক করুন</h3>
+                <p className="text-gray-400 mb-6">{message || "দয়া করে সঠিক UID এবং সার্ভার দিয়ে আবার চেষ্টা করুন।"}</p>
+                {onRetry && (
+                    <button onClick={onRetry} className="btn-neon">
+                        আবার চেষ্টা করুন
+                    </button>
+                )}
+            </div>
+        );
+
+        const EmptyState = ({ recentSearches, handleRecentSearchClick }) => (
+            <div className="glassmorphism p-6 md:p-8 text-center neon-border-glow animate-slide-in">
+                <div className="flex flex-col items-center mb-6">
+                    <svg className="w-16 h-16 text-ff-accent-cyan search-icon-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <h3 className="text-xl font-headline font-bold text-ff-accent-cyan mt-4">Search a Free Fire UID to Begin</h3>
+                </div>
+                {recentSearches.length > 0 && (
+                    <div className="mt-8 animate-slide-in">
+                        <h4 className="text-lg font-bold mb-4 text-gray-300">সাম্প্রতিক সার্চ:</h4>
+                        <div className="flex flex-col space-y-4">
+                            {recentSearches.map((search, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => handleRecentSearchClick(search.uid, search.server)}
+                                    className="flex items-center justify-between glassmorphism p-4 rounded-xl hover:bg-ff-card-glass hover:shadow-xl transition-all duration-200 neon-border-glow"
+                                >
+                                    <div className="flex items-center space-x-4">
+                                        <img src={search.avatar || 'https://via.placeholder.com/40/333333/FFFFFF?text=AV'} alt="Avatar" className="w-10 h-10 rounded-full border-ff-accent-pink border transform hover:scale-110 transition-transform duration-300" />
+                                        <div>
+                                            <p className="text-lg font-bold text-white">{search.nickname}</p>
+                                            <p className="text-sm text-gray-400">Level: {search.level} - {search.server}</p>
+                                        </div>
+                                    </div>
+                                    <svg className="w-6 h-6 text-ff-accent-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </div>
+        );
+
+        const FreeFireInfo = () => {
+            const [uid, setUid] = useState('');
+            const [server, setServer] = useState(SERVER_OPTIONS[0]);
+            const [playerInfo, setPlayerInfo] = useState(null);
+            const [playerStats, setPlayerStats] = useState(null);
+            const [isLoading, setIsLoading] = useState(false);
+            const [error, setError] = useState(null);
+            const [toast, setToast] = useState({ show: false, message: '', type: '' });
+            const [recentSearches, setRecentSearches] = useState([]);
+            const [isDarkTheme, setIsDarkTheme] = useState(true);
+
+            useEffect(() => {
+                try {
+                    const storedSearches = localStorage.getItem('ff_recent_searches');
+                    if (storedSearches) {
+                        setRecentSearches(JSON.parse(storedSearches));
+                    }
+                    const savedTheme = localStorage.getItem('theme') || 'dark';
+                    setIsDarkTheme(savedTheme === 'dark');
+                    document.body.classList.toggle('light-theme', savedTheme === 'light');
+                } catch (e) {
+                    console.error("Failed to load data:", e);
+                }
+            }, []);
+
+            const toggleTheme = () => {
+                const newTheme = isDarkTheme ? 'light' : 'dark';
+                setIsDarkTheme(!isDarkTheme);
+                document.body.classList.toggle('light-theme', newTheme === 'light');
+                localStorage.setItem('theme', newTheme);
+            };
+
+            const addRecentSearch = (player) => {
+                const newSearch = {
+                    uid: player.uid,
+                    nickname: player.nickname,
+                    avatar: player.avatar,
+                    level: player.level,
+                    server: server
+                };
+                const updatedSearches = [newSearch, ...recentSearches.filter(s => s.uid !== player.uid)].slice(0, 5);
+                setRecentSearches(updatedSearches);
+                localStorage.setItem('ff_recent_searches', JSON.stringify(updatedSearches));
+            };
+
+            const fetchPlayerInfo = async () => {
+                setError(null);
+                setPlayerInfo(null);
+                setPlayerStats(null);
+                setIsLoading(true);
+                setToast({ show: false, message: '', type: '' });
+
+                if (!uid || !server) {
+                    setError("দয়া করে UID এবং Server উভয়ই পূরণ করুন।");
+                    setIsLoading(false);
+                    return;
+                }
+
+                try {
+                    const personalInfoUrl = `https://ff-info-gajarbotol.vercel.app/get_player_personal_show?server=${server}&uid=${uid}`;
+                    const personalInfoRes = await fetch(personalInfoUrl);
+                    const personalInfoData = await personalInfoRes.json();
+
+                    if (!personalInfoRes.ok || personalInfoData.status === false) {
+                        throw new Error(personalInfoData.msg || "প্লেয়ারের তথ্য পাওয়া যায়নি।");
+                    }
+
+                    const fetchedPlayerInfo = {
+                        uid: personalInfoData.uid,
+                        nickname: personalInfoData.nickname,
+                        level: personalInfoData.level,
+                        avatar: personalInfoData.avatar_url,
+                        rankBadge: personalInfoData.rank_badge_url,
+                    };
+                    setPlayerInfo(fetchedPlayerInfo);
+
+                    const playerStatsUrl = `https://ff-info-gajarbotol.vercel.app/get_player_stats?server=${server}&uid=${uid}&matchmode=RANKED&gamemode=br`;
+                    const playerStatsRes = await fetch(playerStatsUrl);
+                    const playerStatsData = await playerStatsRes.json();
+
+                    if (!playerStatsRes.ok || playerStatsData.status === false) {
+                        throw new Error(playerStatsData.msg || "প্লেয়ারের স্ট্যাটস পাওয়া যায়নি।");
+                    }
+
+                    const brRankedStats = playerStatsData.br_ranked_stats || {};
+                    const fetchedPlayerStats = {
+                        matches: brRankedStats.matches_played || 0,
+                        wins: brRankedStats.wins || 0,
+                        kills: brRankedStats.kills || 0,
+                        kdRatio: brRankedStats.kd_ratio ? brRankedStats.kd_ratio.toFixed(2) : '0.00',
+                        winRate: brRankedStats.win_rate ? `${brRankedStats.win_rate.toFixed(1)}%` : '0%',
+                        headshots: brRankedStats.headshots || 0,
+                    };
+                    setPlayerStats(fetchedPlayerStats);
+
+                    addRecentSearch(fetchedPlayerInfo);
+                    setToast({ show: true, message: `প্রোফাইল লোড হল — নাম: ${fetchedPlayerInfo.nickname}`, type: 'success' });
+
+                } catch (err) {
+                    console.error("Error fetching data:", err);
+                    setError(err.message || "ডেটা লোড করার সময় একটি সমস্যা হয়েছে।");
+                    setToast({ show: true, message: `এরর: ${err.message}`, type: 'danger' });
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+
+            const handleRecentSearchClick = (searchUid, searchServer) => {
+                setUid(searchUid);
+                setServer(searchServer);
+                setTimeout(fetchPlayerInfo, 100);
+            };
+
+            const closeToast = () => setToast({ ...toast, show: false });
+
+            return (
+                <div className="w-full max-w-5xl flex flex-col">
+                    <Header toggleTheme={toggleTheme} isDarkTheme={isDarkTheme} />
+                    <Toast
+                        show={toast.show}
+                        message={toast.message}
+                        type={toast.type}
+                        onClose={closeToast}
+                    />
+                    <div className="grid grid-cols-1 gap-8">
+                        <SearchBar
+                            uid={uid}
+                            setUid={setUid}
+                            server={server}
+                            setServer={setServer}
+                            onSearch={fetchPlayerInfo}
+                            isLoading={isLoading}
+                            recentSearches={recentSearches}
+                        />
+                        {isLoading ? (
+                            <LoadingSkeleton />
+                        ) : error ? (
+                            <ErrorEmptyState message={error} onRetry={fetchPlayerInfo} />
+                        ) : playerInfo && playerStats ? (
+                            <React.Fragment>
+                                <PlayerCard playerInfo={playerInfo} />
+                                <StatsGrid playerStats={playerStats} />
+                                <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-8">
+                                    <button
+                                        onClick={() => {
+                                            if (navigator.share) {
+                                                navigator.share({
+                                                    title: `${playerInfo.nickname}'s FF Stats`,
+                                                    text: `Check out ${playerInfo.nickname}'s Free Fire stats on FF Info Hub!`,
+                                                    url: window.location.href,
+                                                }).catch((error) => console.error('Error sharing:', error));
+                                            } else {
+                                                alert("Share feature is not supported in this browser.");
+                                            }
+                                        }}
+                                        className="btn-neon w-full sm:w-auto px-8 py-3 text-sm flex items-center justify-center"
+                                    >
+                                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684zm0 0a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                                        প্রোফাইল শেয়ার করুন
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(playerInfo.uid);
+                                            setToast({ show: true, message: `UID (${playerInfo.uid}) কপি করা হয়েছে!`, type: 'success' });
+                                        }}
+                                        className="btn-neon w-full sm:w-auto px-8 py-3 text-sm flex items-center justify-center"
+                                    >
+                                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m-4 3v1h-2M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"></path></svg>
+                                        UID কপি করুন ({playerInfo.uid})
+                                    </button>
+                                </div>
+                            </React.Fragment>
+                        ) : (
+                            <EmptyState recentSearches={recentSearches} handleRecentSearchClick={handleRecentSearchClick} />
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<FreeFireInfo />, document.getElementById('root'));
+    </script>
+</body>
+</html>
