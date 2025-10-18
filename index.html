@@ -1,214 +1,634 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Free Fire Player Profile</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
-  body{
-    margin:0;
-    font-family:'Poppins',sans-serif;
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    background:linear-gradient(135deg,#1f1c2c,#928dab);
-    color:#fff;
-    padding:20px;
-  }
-  header{
-    font-size:2.5rem;
-    font-weight:700;
-    margin-bottom:30px;
-    text-shadow:0 0 10px #ff4f81;
-    text-align:center;
-  }
-  .form-container{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    max-width:500px;
-    width:100%;
-    margin-bottom:20px;
-    backdrop-filter:blur(10px);
-    background:rgba(255,255,255,0.05);
-    padding:20px;
-    border-radius:20px;
-  }
-  input, select{
-    flex:1;
-    padding:12px;
-    border-radius:10px;
-    border:none;
-    outline:none;
-    background:rgba(255,255,255,0.1);
-    color:#fff;
-    font-size:1rem;
-  }
-  button{
-    padding:12px 20px;
-    border:none;
-    border-radius:10px;
-    background:linear-gradient(135deg,#ff4f81,#ff9068);
-    color:#fff;
-    font-weight:600;
-    cursor:pointer;
-    transition:transform 0.3s;
-  }
-  button:hover{transform:scale(1.05);}
-  .loader{
-    display:none;
-    border:5px solid rgba(255,255,255,0.2);
-    border-top:5px solid #ff4f81;
-    border-radius:50%;
-    width:40px;
-    height:40px;
-    animation:spin 1s linear infinite;
-    margin:20px auto;
-  }
-  @keyframes spin{
-    0%{transform:rotate(0deg);}
-    100%{transform:rotate(360deg);}
-  }
-  .player-card{
-    display:none;
-    flex-direction:column;
-    align-items:center;
-    gap:15px;
-    max-width:500px;
-    width:100%;
-    backdrop-filter:blur(15px);
-    background:rgba(255,255,255,0.05);
-    border-radius:20px;
-    padding:25px;
-    margin-top:20px;
-  }
-  .player-card img{
-    width:120px;
-    height:120px;
-    border-radius:50%;
-    border:3px solid #ff4f81;
-    object-fit:cover;
-  }
-  .player-card h2{
-    font-size:1.8rem;
-    font-weight:700;
-    color:#ff4f81;
-  }
-  .stats-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:15px;
-    width:100%;
-  }
-  .stat-box{
-    background:rgba(255,255,255,0.1);
-    padding:15px;
-    border-radius:12px;
-    text-align:center;
-  }
-  .stat-box h3{
-    font-size:1.2rem;
-    margin-bottom:5px;
-    color:#ff4f81;
-  }
-  .stat-box p{
-    font-size:1rem;
-    font-weight:600;
-  }
-  footer{
-    margin-top:auto;
-    text-align:center;
-    color:#ccc;
-    padding:10px;
-  }
-  @media(max-width:600px){
-    .stats-grid{grid-template-columns:1fr;}
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Fire Stats Finder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #1e1e2d; /* Dark background */
+            color: #e0e0e0; /* Light text */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        .container {
+            width: 90%;
+            max-width: 450px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #2a2a3e; /* Card background */
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            color: #ff914d; /* Orange flame color */
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header h1 span {
+            margin-left: 10px;
+            color: #e0e0e0;
+        }
+        .header p {
+            font-size: 1em;
+            color: #b0b0b0;
+            margin-top: 0;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #c0c0c0;
+        }
+        .input-group input,
+        .input-group select {
+            width: calc(100% - 20px);
+            padding: 12px 10px;
+            border: 1px solid #444;
+            border-radius: 8px;
+            background-color: #3a3a50;
+            color: #e0e0e0;
+            font-size: 1em;
+            outline: none;
+            box-sizing: border-box;
+            -webkit-appearance: none; /* Remove default browser styling for select */
+            -moz-appearance: none;
+            appearance: none;
+        }
+        .input-group select {
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%23e0e0e0" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 30px; /* Make space for the arrow */
+        }
+        .input-group input:focus,
+        .input-group select:focus {
+            border-color: #ff914d;
+            box-shadow: 0 0 0 2px rgba(255, 145, 77, 0.3);
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #ff7f2a; /* Orange button */
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #e67024;
+        }
+        .footer {
+            margin-top: auto; /* Push footer to the bottom */
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: #888;
+        }
+        .footer a {
+            color: #ff914d;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .footer .heart {
+            color: #e74c3c; /* Red heart */
+            margin: 0 5px;
+        }
+
+        /* Player Profile Section (Initially Hidden) */
+        #player-profile {
+            display: none; /* Hidden by default */
+            width: 90%;
+            max-width: 450px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #2a2a3e;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        #player-profile .profile-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        #player-profile .avatar-container {
+            width: 100px;
+            height: 100px;
+            background-color: #3a3a50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            color: #ff914d;
+            border: 3px solid #ff914d;
+            margin-bottom: 10px;
+        }
+        #player-profile .player-name {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        #player-profile .player-uid-clan {
+            font-size: 0.9em;
+            color: #b0b0b0;
+            margin-bottom: 10px;
+        }
+        #player-profile .level-badge {
+            background-color: #ff914d;
+            color: #ffffff;
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-top: -15px; /* Adjust to overlap avatar slightly */
+            margin-bottom: 15px;
+        }
+
+        #player-profile .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        #player-profile .info-card {
+            background-color: #3a3a50;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        #player-profile .info-card .value {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #ff914d;
+        }
+        #player-profile .info-card .label {
+            font-size: 0.8em;
+            color: #b0b0b0;
+        }
+        #player-profile .additional-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        #player-profile .additional-info div {
+            font-size: 0.9em;
+        }
+        #player-profile .additional-info span {
+            font-weight: 600;
+            color: #c0c0c0;
+        }
+        #player-profile .player-quote {
+            font-style: italic;
+            color: #b0b0b0;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+        }
+
+        #player-profile .mode-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        #player-profile .mode-tab {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        #player-profile .mode-tab.active {
+            background-color: #ff7f2a;
+            color: #ffffff;
+        }
+        #player-profile .mode-tab:not(.active) {
+            background-color: #3a3a50;
+            color: #c0c0c0;
+        }
+        #player-profile .mode-tab:not(.active):hover {
+            background-color: #4a4a60;
+        }
+
+        #player-profile .stats-section {
+            display: none; /* Hidden by default, activated by tabs */
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        #player-profile .stats-section.active {
+            display: block;
+        }
+        #player-profile .stats-section h3 {
+            font-size: 1.4em;
+            color: #ff914d;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #3a3a50;
+            padding-bottom: 5px;
+        }
+        #player-profile .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px dashed #3a3a50;
+        }
+        #player-profile .stat-item:last-child {
+            border-bottom: none;
+        }
+        #player-profile .stat-item .label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #c0c0c0;
+        }
+        #player-profile .stat-item .value {
+            font-weight: 600;
+            color: #e0e0e0;
+        }
+
+        /* Basic Icons - You might want to replace these with actual SVG or font icons */
+        .icon-fire:before { content: '🔥'; margin-right: 5px; }
+        .icon-question:before { content: '❓'; }
+        .icon-like:before { content: '👍'; }
+        .icon-badge:before { content: '🏅'; }
+        .icon-region:before { content: '📍'; }
+        .icon-brrank:before { content: '👑'; }
+        .icon-csrank:before { content: '⚔️'; }
+        .icon-login:before { content: '⏰'; }
+        .icon-matches:before { content: '🎮'; }
+        .icon-wins:before { content: '🏆'; }
+        .icon-kills:before { content: '💀'; }
+        .icon-deaths:before { content: '💔'; }
+        .icon-kd:before { content: '📊'; }
+        .icon-headshot-kills:before { content: '🎯'; }
+        .icon-headshot-rate:before { content: '💥'; }
+        .icon-damage:before { content: '🔥'; }
+        .icon-revives:before { content: '❤️'; }
+        /* Loading spinner */
+        .loading-spinner {
+            border: 4px solid #f3f3f3; /* Light grey */
+            border-top: 4px solid #ff7f2a; /* Blue */
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            display: none; /* Hidden by default */
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
-<header>🔥 Free Fire Player Profile 🔥</header>
 
-<div class="form-container">
-  <input type="text" id="uid" placeholder="Enter Player UID">
-  <select id="server">
-    <option value="bd">BD</option>
-    <option value="ind">IND</option>
-    <option value="sg">SG</option>
-    <option value="ru">RU</option>
-    <option value="id">ID</option>
-    <option value="tw">TW</option>
-    <option value="us">US</option>
-    <option value="vn">VN</option>
-    <option value="th">TH</option>
-    <option value="me">ME</option>
-    <option value="pk">PK</option>
-    <option value="cis">CIS</option>
-    <option value="br">BR</option>
-  </select>
-  <button onclick="fetchProfile()">Search</button>
-</div>
+    <!-- Search Player Section -->
+    <div id="search-section" class="container">
+        <div class="header">
+            <h1><span class="icon-fire"></span>Free Fire Stats <span>Finder</span></h1>
+            <p>Get real-time player stats and personal info for BR & CS!</p>
+        </div>
 
-<div class="loader" id="loader"></div>
+        <div class="input-group">
+            <label for="player-uid">Player UID</label>
+            <input type="text" id="player-uid" placeholder="Enter Player UID (e.g., 2250633050)">
+        </div>
 
-<div class="player-card" id="playerCard">
-  <img id="avatar" src="" alt="Player Avatar">
-  <h2 id="name">Player Name</h2>
-  <div class="stats-grid">
-    <div class="stat-box">
-      <h3>Level</h3>
-      <p id="level">0</p>
+        <div class="input-group">
+            <label for="server-select">Server</label>
+            <select id="server-select">
+                <option value="BD">BD</option>
+                <option value="IND">IND</option>
+                <option value="SG">SG</option>
+                <option value="RU">RU</option>
+                <option value="ID">ID</option>
+                <option value="TW">TW</option>
+                <option value="US">US</option>
+                <option value="VN">VN</option>
+                <option value="TH">TH</option>
+                <option value="ME">ME</option>
+                <option value="PK">PK</option>
+                <option value="CIS">CIS</option>
+                <option value="BR">BR</option>
+            </select>
+        </div>
+
+        <button id="search-button">Search Player</button>
+        <div class="loading-spinner" id="loading-spinner"></div>
     </div>
-    <div class="stat-box">
-      <h3>Rank</h3>
-      <p id="rank">-</p>
+
+    <!-- Player Profile Section (Initially Hidden) -->
+    <div id="player-profile" class="container">
+        <button id="back-to-search" style="background-color: #3a3a50; margin-bottom: 20px;">← Back to Search</button>
+
+        <div class="profile-header">
+            <div class="avatar-container">
+                <span class="icon-question"></span>
+            </div>
+            <div id="player-level" class="level-badge">Lv. 0</div>
+            <div id="player-name" class="player-name">Player Name</div>
+            <div id="player-uid-clan" class="player-uid-clan">UID: 0 | Clan: NONE</div>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-card">
+                <div id="player-likes" class="value">0</div>
+                <div class="label"><span class="icon-like"></span>Likes</div>
+            </div>
+            <div class="info-card">
+                <div id="player-badges" class="value">0</div>
+                <div class="label"><span class="icon-badge"></span>Badges</div>
+            </div>
+        </div>
+
+        <div class="additional-info">
+            <div><span class="icon-region"></span>Region: <span id="info-region">BD</span></div>
+            <div><span class="icon-brrank"></span>BR Rank: <span id="info-br-rank">Unknown</span></div>
+            <div><span class="icon-csrank"></span>CS Rank: <span id="info-cs-rank">Unknown</span></div>
+            <div><span class="icon-login"></span>Last Login: <span id="info-last-login">N/A</span></div>
+        </div>
+
+        <p id="player-quote" class="player-quote">"Your motto goes here"</p>
+
+        <div class="mode-tabs">
+            <div id="br-tab" class="mode-tab active">Battle Royale</div>
+            <div id="cs-tab" class="mode-tab">Clash Squad</div>
+        </div>
+
+        <!-- Battle Royale Stats -->
+        <div id="br-stats-section" class="stats-section active">
+            <h3>Solo</h3>
+            <div class="stat-item"><span class="label"><span class="icon-matches"></span>Matches Played</span><span id="br-solo-matches" class="value">0</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-wins"></span>Wins</span><span id="br-solo-wins" class="value">0</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-kills"></span>Kills</span><span id="br-solo-kills" class="value">0</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-deaths"></span>Deaths</span><span id="br-solo-deaths" class="value">0</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-kd"></span>K/D Ratio</span><span id="br-solo-kd" class="value">0.00</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-headshot-kills"></span>Headshot Kills</span><span id="br-solo-headshot-kills" class="value">0</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-headshot-rate"></span>Headshot Rate</span><span id="br-solo-headshot-rate" class="value">0.00%</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-damage"></span>Damage</span><span id="br-solo-damage" class="value">0</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-revives"></span>Revives</span><span id="br-solo-revives" class="value">0</span></div>
+
+            <h3>Duo</h3>
+            <div class="stat-item"><span class="label"><span class="icon-matches"></span>Matches Played</span><span id="br-duo-matches" class="value">0</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-wins"></span>Wins</span><span id="br-duo-wins" class="value">0</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-kills"></span>Kills</span><span id="br-duo-kills" class="value">0</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-deaths"></span>Deaths</span><span id="br-duo-deaths" class="value">0</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-kd"></span>K/D Ratio</span><span id="br-duo-kd" class="value">0.00</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-headshot-kills"></span>Headshot Kills</span><span id="br-duo-headshot-kills" class="value">0</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-headshot-rate"></span>Headshot Rate</span><span id="br-duo-headshot-rate" class="value">0.00%</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-damage"></span>Damage</span><span id="br-duo-damage" class="value">0</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-revives"></span>Revives</span><span id="br-duo-revives" class="value">0</span></div>
+
+            <h3>Squad</h3>
+            <div class="stat-item"><span class="label"><span class="icon-matches"></span>Matches Played</span><span id="br-squad-matches" class="value">0</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-wins"></span>Wins</span><span id="br-squad-wins" class="value">0</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-kills"></span>Kills</span><span id="br-squad-kills" class="value">0</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-deaths"></span>Deaths</span><span id="br-squad-deaths" class="value">0</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-kd"></span>K/D Ratio</span><span id="br-squad-kd" class="value">0.00</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-headshot-kills"></span>Headshot Kills</span><span id="br-squad-headshot-kills" class="value">0</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-headshot-rate"></span>Headshot Rate</span><span id="br-squad-headshot-rate" class="value">0.00%</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-damage"></span>Damage</span><span id="br-squad-damage" class="value">0</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-revives"></span>Revives</span><span id="br-squad-revives" class="value">0</span></div>
+        </div>
+
+        <!-- Clash Squad Stats (Initially Hidden) -->
+        <div id="cs-stats-section" class="stats-section">
+            <h3>Clash Squad Stats</h3>
+            <div class="stat-item"><span class="label"><span class="icon-matches"></span>Matches Played</span><span id="cs-matches" class="value">0</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-wins"></span>Wins</span><span id="cs-wins" class="value">0</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-kills"></span>Kills</span><span id="cs-kills" class="value">0</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-deaths"></span>Deaths</span><span id="cs-deaths" class="value">0</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-kd"></span>K/D Ratio</span><span id="cs-kd" class="value">0.00</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-headshot-kills"></span>Headshot Kills</span><span id="cs-headshot-kills" class="value">0</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-headshot-rate"></span>Headshot Rate</span><span id="cs-headshot-rate" class="value">0.00%</span></div>
+            <div class="stat-item"><span class="label"><span class="icon-damage"></span>Damage</span><span id="cs-damage" class="value">0</span></div>
+        </div>
     </div>
-    <div class="stat-box">
-      <h3>UID</h3>
-      <p id="playerUID">0</p>
+
+    <div class="footer">
+        Developed with <span class="heart">❤️</span> by <a href="https://github.com/GAJARBOTOL" target="_blank">@GAJARBOTOL</a>
     </div>
-    <div class="stat-box">
-      <h3>Guild</h3>
-      <p id="guild">-</p>
-    </div>
-  </div>
-</div>
 
-<footer>Made by Shakib Hossain | GitHub Pages Demo</footer>
+    <script>
+        // --- DOM Elements ---
+        const searchSection = document.getElementById('search-section');
+        const playerProfileSection = document.getElementById('player-profile');
+        const searchButton = document.getElementById('search-button');
+        const backToSearchButton = document.getElementById('back-to-search');
+        const playerUidInput = document.getElementById('player-uid');
+        const serverSelect = document.getElementById('server-select');
+        const loadingSpinner = document.getElementById('loading-spinner');
 
-<script>
-async function fetchProfile(){
-  const uid = document.getElementById('uid').value.trim();
-  const server = document.getElementById('server').value;
-  const loader = document.getElementById('loader');
-  const card = document.getElementById('playerCard');
+        // Player Info Elements
+        const playerNameElem = document.getElementById('player-name');
+        const playerLevelElem = document.getElementById('player-level');
+        const playerUidClanElem = document.getElementById('player-uid-clan');
+        const playerLikesElem = document.getElementById('player-likes');
+        const playerBadgesElem = document.getElementById('player-badges');
+        const infoRegionElem = document.getElementById('info-region');
+        const infoBrRankElem = document.getElementById('info-br-rank');
+        const infoCsRankElem = document.getElementById('info-cs-rank');
+        const infoLastLoginElem = document.getElementById('info-last-login');
+        const playerQuoteElem = document.getElementById('player-quote');
 
-  if(!uid){ alert("Please enter UID"); return; }
+        // Mode Tabs
+        const brTab = document.getElementById('br-tab');
+        const csTab = document.getElementById('cs-tab');
+        const brStatsSection = document.getElementById('br-stats-section');
+        const csStatsSection = document.getElementById('cs-stats-section');
 
-  loader.style.display="block";
-  card.style.display="none";
+        // API Base URL
+        const API_BASE_URL = 'https://ff-info-gajarbotol.vercel.app/';
 
-  try{
-    const res = await fetch(`https://ff-info-gajarbotol.vercel.app/get_player_personal_show?server=${server}&uid=${uid}`);
-    const data = await res.json();
+        // --- Event Listeners ---
+        searchButton.addEventListener('click', fetchPlayerInfo);
+        backToSearchButton.addEventListener('click', () => {
+            playerProfileSection.style.display = 'none';
+            searchSection.style.display = 'flex';
+        });
 
-    document.getElementById('avatar').src = data.avatar || 'https://via.placeholder.com/120';
-    document.getElementById('name').textContent = data.name || '-';
-    document.getElementById('level').textContent = data.level || 0;
-    document.getElementById('rank').textContent = data.rank || '-';
-    document.getElementById('playerUID').textContent = data.uid || uid;
-    document.getElementById('guild').textContent = data.guild || '-';
+        brTab.addEventListener('click', () => switchTab('br'));
+        csTab.addEventListener('click', () => switchTab('cs'));
 
-    card.style.display="flex";
-  }catch(e){
-    alert("Failed to fetch profile. Make sure UID & server are correct.");
-    console.error(e);
-  }finally{
-    loader.style.display="none";
-  }
-}
-</script>
+        // --- Functions ---
+
+        async function fetchPlayerInfo() {
+            const uid = playerUidInput.value.trim();
+            const server = serverSelect.value;
+
+            if (!uid) {
+                alert('Please enter a Player UID.');
+                return;
+            }
+
+            loadingSpinner.style.display = 'block'; // Show spinner
+            searchButton.disabled = true; // Disable button
+
+            try {
+                // Fetch Personal Info
+                const personalInfoUrl = `${API_BASE_URL}get_player_personal_show?server=${server}&uid=${uid}`;
+                const personalInfoResponse = await fetch(personalInfoUrl);
+                const personalInfoData = await personalInfoResponse.json();
+
+                // Fetch BR Stats (for Battle Royale tab default)
+                const brStatsUrl = `${API_BASE_URL}get_player_stats?server=${server}&uid=${uid}&matchmode=RANKED&gamemode=br`;
+                const brStatsResponse = await fetch(brStatsUrl);
+                const brStatsData = await brStatsResponse.json();
+
+                // Fetch CS Stats
+                const csStatsUrl = `${API_BASE_URL}get_player_stats?server=${server}&uid=${uid}&matchmode=RANKED&gamemode=cs`;
+                const csStatsResponse = await fetch(csStatsUrl);
+                const csStatsData = await csStatsResponse.json();
+
+                if (personalInfoData.status === 'success' && brStatsData.status === 'success' && csStatsData.status === 'success') {
+                    displayPlayerProfile(personalInfoData.result, brStatsData.result, csStatsData.result);
+                    searchSection.style.display = 'none';
+                    playerProfileSection.style.display = 'flex';
+                } else {
+                    alert('Could not find player or fetch all stats. Please check UID and server.');
+                    console.error('API Error:', personalInfoData.message, brStatsData.message, csStatsData.message);
+                }
+
+            } catch (error) {
+                console.error('Error fetching player data:', error);
+                alert('An error occurred while fetching player data. Please try again.');
+            } finally {
+                loadingSpinner.style.display = 'none'; // Hide spinner
+                searchButton.disabled = false; // Re-enable button
+            }
+        }
+
+        function displayPlayerProfile(personalInfo, brStats, csStats) {
+            // Update Personal Info
+            playerNameElem.textContent = personalInfo.nickname || 'N/A';
+            playerLevelElem.textContent = `Lv. ${personalInfo.level || 0}`;
+            playerUidClanElem.textContent = `UID: ${personalInfo.uid || 'N/A'} | Clan: ${personalInfo.clanName || 'NONE'}`;
+            playerLikesElem.textContent = personalInfo.likes || 0;
+            playerBadgesElem.textContent = personalInfo.badges || 0;
+            infoRegionElem.textContent = personalInfo.region || 'N/A';
+            infoBrRankElem.textContent = personalInfo.brRank || 'Unknown';
+            infoCsRankElem.textContent = personalInfo.csRank || 'Unknown';
+            infoLastLoginElem.textContent = personalInfo.lastLoginDate || 'N/A';
+            playerQuoteElem.textContent = personalInfo.statusText || '"No motto set"';
+
+            // Update BR Stats
+            updateBRStats(brStats);
+
+            // Update CS Stats
+            updateCSStats(csStats);
+
+            // Ensure BR tab is active by default
+            switchTab('br');
+        }
+
+        function updateBRStats(brStats) {
+            if (!brStats || !brStats.lifetime) return;
+
+            const lifetime = brStats.lifetime;
+
+            // Solo
+            document.getElementById('br-solo-matches').textContent = lifetime.solo.matchesPlayed || 0;
+            document.getElementById('br-solo-wins').textContent = lifetime.solo.wins || 0;
+            document.getElementById('br-solo-kills').textContent = lifetime.solo.kills || 0;
+            document.getElementById('br-solo-deaths').textContent = lifetime.solo.deaths || 0;
+            document.getElementById('br-solo-kd').textContent = (lifetime.solo.k_d_ratio || 0).toFixed(2);
+            document.getElementById('br-solo-headshot-kills').textContent = lifetime.solo.headshotKills || 0;
+            document.getElementById('br-solo-headshot-rate').textContent = (lifetime.solo.headshotRate || 0).toFixed(2) + '%';
+            document.getElementById('br-solo-damage').textContent = lifetime.solo.damage || 0;
+            document.getElementById('br-solo-revives').textContent = lifetime.solo.revives || 0;
+
+            // Duo
+            document.getElementById('br-duo-matches').textContent = lifetime.duo.matchesPlayed || 0;
+            document.getElementById('br-duo-wins').textContent = lifetime.duo.wins || 0;
+            document.getElementById('br-duo-kills').textContent = lifetime.duo.kills || 0;
+            document.getElementById('br-duo-deaths').textContent = lifetime.duo.deaths || 0;
+            document.getElementById('br-duo-kd').textContent = (lifetime.duo.k_d_ratio || 0).toFixed(2);
+            document.getElementById('br-duo-headshot-kills').textContent = lifetime.duo.headshotKills || 0;
+            document.getElementById('br-duo-headshot-rate').textContent = (lifetime.duo.headshotRate || 0).toFixed(2) + '%';
+            document.getElementById('br-duo-damage').textContent = lifetime.duo.damage || 0;
+            document.getElementById('br-duo-revives').textContent = lifetime.duo.revives || 0;
+
+            // Squad
+            document.getElementById('br-squad-matches').textContent = lifetime.squad.matchesPlayed || 0;
+            document.getElementById('br-squad-wins').textContent = lifetime.squad.wins || 0;
+            document.getElementById('br-squad-kills').textContent = lifetime.squad.kills || 0;
+            document.getElementById('br-squad-deaths').textContent = lifetime.squad.deaths || 0;
+            document.getElementById('br-squad-kd').textContent = (lifetime.squad.k_d_ratio || 0).toFixed(2);
+            document.getElementById('br-squad-headshot-kills').textContent = lifetime.squad.headshotKills || 0;
+            document.getElementById('br-squad-headshot-rate').textContent = (lifetime.squad.headshotRate || 0).toFixed(2) + '%';
+            document.getElementById('br-squad-damage').textContent = lifetime.squad.damage || 0;
+            document.getElementById('br-squad-revives').textContent = lifetime.squad.revives || 0;
+        }
+
+        function updateCSStats(csStats) {
+            if (!csStats || !csStats.lifetime) return;
+
+            const lifetime = csStats.lifetime;
+
+            document.getElementById('cs-matches').textContent = lifetime.cs_matchesPlayed || 0;
+            document.getElementById('cs-wins').textContent = lifetime.cs_wins || 0;
+            document.getElementById('cs-kills').textContent = lifetime.cs_kills || 0;
+            document.getElementById('cs-deaths').textContent = lifetime.cs_deaths || 0;
+            document.getElementById('cs-kd').textContent = (lifetime.cs_k_d_ratio || 0).toFixed(2);
+            document.getElementById('cs-headshot-kills').textContent = lifetime.cs_headshotKills || 0;
+            document.getElementById('cs-headshot-rate').textContent = (lifetime.cs_headshotRate || 0).toFixed(2) + '%';
+            document.getElementById('cs-damage').textContent = lifetime.cs_damage || 0;
+        }
+
+
+        function switchTab(mode) {
+            if (mode === 'br') {
+                brTab.classList.add('active');
+                csTab.classList.remove('active');
+                brStatsSection.classList.add('active');
+                csStatsSection.classList.remove('active');
+            } else if (mode === 'cs') {
+                csTab.classList.add('active');
+                brTab.classList.remove('active');
+                csStatsSection.classList.add('active');
+                brStatsSection.classList.remove('active');
+            }
+        }
+
+        // Initial check for a UID in URL (if you want direct linking)
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const uid = urlParams.get('uid');
+            const server = urlParams.get('server');
+            if (uid && server) {
+                playerUidInput.value = uid;
+                serverSelect.value = server;
+                fetchPlayerInfo();
+            }
+        });
+
+    </script>
 </body>
 </html>
