@@ -3,427 +3,287 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Fire Stats Finder</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Free Fire Player Info</title>
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #121212;
-            color: #ffffff;
-            font-family: sans-serif;
-            margin: 0;
-            padding: 0;
+            background-color: #f8f9fa;
+            padding: 20px;
         }
         .container {
-            max-width: 400px;
-            margin: 0 auto;
-            padding: 20px;
-            text-align: center;
+            max-width: 800px;
         }
-        .header {
-            margin-bottom: 30px;
-        }
-        .title {
-            font-size: 32px;
-            color: #ff5722;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .title span {
-            margin-right: 10px;
-            font-size: 40px;
-        }
-        .subtitle {
-            color: #aaaaaa;
-            font-size: 16px;
-        }
-        .form-control, .form-select {
-            background-color: #2e2e2e;
-            color: #ffffff;
-            border: none;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            padding: 10px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .btn-primary {
-            background-color: #ff5722;
-            border: none;
-            border-radius: 10px;
-            font-weight: bold;
-            padding: 10px;
-            width: 100%;
-        }
-        .footer {
-            position: fixed;
-            bottom: 20px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            color: #aaaaaa;
-            font-size: 14px;
-        }
-        .footer a {
-            color: #ff5722;
-            text-decoration: none;
-        }
-        .profile-section {
-            background-color: #1e1e1e;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
+        .card {
             margin-bottom: 20px;
         }
-        .profile-avatar {
-            width: 80px;
-            height: 80px;
-            background-color: #2e2e2e;
-            border: 2px solid #ff5722;
-            border-radius: 50%;
-            margin: 0 auto 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-        .profile-avatar::before {
-            content: '-';
-            color: #ffffff;
-            font-size: 40px;
-        }
-        .profile-level {
-            position: absolute;
-            bottom: -10px;
-            background-color: #ff5722;
-            border-radius: 20px;
-            padding: 2px 10px;
-            font-size: 12px;
-        }
-        .profile-name {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 5px 0;
-        }
-        .profile-uid {
-            color: #aaaaaa;
-            margin-bottom: 10px;
-        }
-        .profile-clan {
-            color: #00bcd4;
-            margin: 5px 0;
-        }
-        .profile-stats {
-            display: flex;
-            justify-content: space-around;
-            margin: 10px 0;
-        }
-        .profile-stat {
-            text-align: center;
-        }
-        .profile-stat-value {
-            font-size: 20px;
-            color: #00bcd4;
-        }
-        .profile-info {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin: 10px 0;
-            text-align: left;
-            font-size: 14px;
-        }
-        .profile-info div {
-            padding: 5px;
-            color: #ffffff;
-        }
-        .profile-info .highlight {
-            color: #ff5722;
-        }
-        .profile-signature {
-            color: #aaaaaa;
-            font-style: italic;
-            margin-top: 10px;
-            font-size: 12px;
-        }
-        .nav-tabs {
-            border: none;
-            justify-content: center;
-            margin-bottom: 0;
-        }
-        .nav-tabs .nav-link {
-            color: #ffffff;
-            background-color: #2e2e2e;
-            border: none;
-            border-radius: 10px 10px 0 0;
-            margin-right: 5px;
-            padding: 10px 20px;
-        }
-        .nav-tabs .nav-link.active {
-            background-color: #ff5722;
-            color: #ffffff;
-        }
-        .tab-content {
-            background-color: #1e1e1e;
-            border-radius: 0 0 10px 10px;
-            padding: 20px;
-        }
-        .mode-section {
-            background-color: #2e2e2e;
-            border-radius: 10px;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-        .mode-title {
-            font-size: 18px;
-            color: #ff5722;
-            margin-bottom: 10px;
-        }
-        .stat-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 5px 0;
-            font-size: 14px;
-        }
-        .stat-label {
-            display: flex;
-            align-items: center;
-        }
-        .stat-label span {
-            margin-right: 10px;
-            font-size: 16px;
+        #results {
+            display: none;
         }
         .loader {
             display: none;
             text-align: center;
-            margin-top: 20px;
-        }
-        #results {
-            margin-top: 20px;
-        }
-        .hidden {
-            display: none;
+            margin: 20px 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <div class="title"><span>🔥</span>Free Fire Stats Finder</div>
-            <div class="subtitle">Get real-time player stats and personal info for BR & CS!</div>
+        <h1 class="text-center mb-4">Free Fire Player Info</h1>
+        
+        <div class="card">
+            <div class="card-body">
+                <form id="searchForm">
+                    <div class="mb-3">
+                        <label for="server" class="form-label">Server</label>
+                        <select class="form-select" id="server" required>
+                            <option value="">Select Server</option>
+                            <option value="IND">IND</option>
+                            <option value="SG">SG</option>
+                            <option value="RU">RU</option>
+                            <option value="ID">ID</option>
+                            <option value="TW">TW</option>
+                            <option value="US">US</option>
+                            <option value="VN">VN</option>
+                            <option value="TH">TH</option>
+                            <option value="ME">ME</option>
+                            <option value="PK">PK</option>
+                            <option value="CIS">CIS</option>
+                            <option value="BR">BR</option>
+                            <option value="BD">BD</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="uid" class="form-label">UID</label>
+                        <input type="text" class="form-control" id="uid" placeholder="Enter UID" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Search</button>
+                </form>
+            </div>
         </div>
-        <form id="playerForm" class="search-form">
-            <label for="uid" class="form-label">Player UID</label>
-            <input type="text" id="uid" class="form-control" required placeholder="Enter player UID e.g., 8035061359">
-
-            <label for="server" class="form-label">Server</label>
-            <select id="server" class="form-select" required>
-                <option value="BD">BD</option>
-                <option value="IND">IND</option>
-                <option value="SG">SG</option>
-                <option value="RU">RU</option>
-                <option value="ID">ID</option>
-                <option value="TW">TW</option>
-                <option value="US">US</option>
-                <option value="VN">VN</option>
-                <option value="TH">TH</option>
-                <option value="ME">ME</option>
-                <option value="PK">PK</option>
-                <option value="CIS">CIS</option>
-                <option value="BR">BR</option>
-            </select>
-
-            <button type="submit" class="btn btn-primary">Search Player</button>
-        </form>
-
-        <div class="loader">
-            <div class="spinner-border text-primary" role="status"></div>
-            <p>Loading...</p>
+        
+        <div class="loader" id="loader">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p>Loading player info...</p>
         </div>
-
-        <div id="results" class="hidden"></div>
+        
+        <div id="results">
+            <div class="alert alert-danger" id="error" style="display: none;"></div>
+            
+            <!-- Personal Info -->
+            <div class="card" id="personalCard">
+                <div class="card-header">
+                    <h5>Personal Info</h5>
+                </div>
+                <div class="card-body">
+                    <div id="personalInfo"></div>
+                </div>
+            </div>
+            
+            <!-- Stats Info -->
+            <div class="card" id="statsCard">
+                <div class="card-header">
+                    <h5>Player Stats (RANKED - BR)</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="nav nav-tabs" id="statsTabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#soloStats">Solo</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#duoStats">Duo</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#squadStats">Squad</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content mt-3">
+                        <div id="soloStats" class="tab-pane active"></div>
+                        <div id="duoStats" class="tab-pane"></div>
+                        <div id="squadStats" class="tab-pane"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="footer">Developed with ❤️ by <a href="#">@GAJARBOTOL</a></div>
-
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const baseUrl = 'https://ff-info-gajarbotol.vercel.app/';
-        const playerForm = document.getElementById('playerForm');
+        const form = document.getElementById('searchForm');
+        const loader = document.getElementById('loader');
         const results = document.getElementById('results');
-        const loader = document.querySelector('.loader');
+        const errorDiv = document.getElementById('error');
+        const personalInfo = document.getElementById('personalInfo');
+        const soloStats = document.getElementById('soloStats');
+        const duoStats = document.getElementById('duoStats');
+        const squadStats = document.getElementById('squadStats');
 
-        playerForm.addEventListener('submit', async (e) => {
+        // Tab functionality (simple vanilla JS)
+        const tabs = document.querySelectorAll('#statsTabs .nav-link');
+        const panes = document.querySelectorAll('.tab-content .tab-pane');
+        tabs.forEach((tab, index) => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                tabs.forEach(t => t.classList.remove('active'));
+                panes.forEach(p => p.classList.remove('active'));
+                tab.classList.add('active');
+                panes[index].classList.add('active');
+            });
+        });
+
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const server = document.getElementById('server').value;
             const uid = document.getElementById('uid').value.trim();
-            const matchmode = 'RANKED'; // Default to RANKED
 
             if (!server || !uid) {
-                alert('Please select server and enter UID.');
+                showError('Please select server and enter UID.');
                 return;
             }
 
-            loader.style.display = 'block';
-            playerForm.classList.add('hidden');
-            results.classList.add('hidden');
-            results.innerHTML = '';
+            showLoader();
+            clearResults();
+            errorDiv.style.display = 'none';
 
             try {
                 // Fetch Personal Info
-                const personalRes = await fetch(`${baseUrl}get_player_personal_show?server=${server}&uid=${uid}`);
+                const personalUrl = `https://ff-info-gajarbotol.vercel.app/get_player_personal_show?server=${server}&uid=${uid}`;
+                const personalRes = await fetch(personalUrl);
                 if (!personalRes.ok) throw new Error('Failed to fetch personal info');
                 const personalData = await personalRes.json();
 
-                // Fetch BR Stats
-                const brRes = await fetch(`${baseUrl}get_player_stats?server=${server}&uid=${uid}&matchmode=${matchmode}&gamemode=br`);
-                if (!brRes.ok) throw new Error('Failed to fetch BR stats');
-                const brData = await brRes.json();
+                // Fetch Stats
+                const statsUrl = `https://ff-info-gajarbotol.vercel.app/get_player_stats?server=${server}&uid=${uid}&matchmode=RANKED&gamemode=br`;
+                const statsRes = await fetch(statsUrl);
+                if (!statsRes.ok) throw new Error('Failed to fetch stats');
+                const statsData = await statsRes.json();
 
-                // Fetch CS Stats
-                const csRes = await fetch(`${baseUrl}get_player_stats?server=${server}&uid=${uid}&matchmode=${matchmode}&gamemode=cs`);
-                if (!csRes.ok) throw new Error('Failed to fetch CS stats');
-                const csData = await csRes.json();
+                if (!personalData.status === 'success' || !statsData.success) {
+                    throw new Error('API response unsuccessful');
+                }
 
-                // Display Profile
-                const profileDiv = createProfileSection(personalData);
-                results.appendChild(profileDiv);
-
-                // Display Tabs
-                const tabsDiv = createTabs(brData, csData);
-                results.appendChild(tabsDiv);
-
-                results.classList.remove('hidden');
-            } catch (error) {
-                console.error(error);
-                results.innerHTML = '<div class="profile-section text-center"><h5>Error</h5><p>Failed to fetch data. Please check UID, server, and try again. Ensure the API is accessible.</p></div>';
-                results.classList.remove('hidden');
+                displayPersonalInfo(personalData.data);
+                displayStats(statsData.data);
+                results.style.display = 'block';
+            } catch (err) {
+                showError(err.message);
             } finally {
-                loader.style.display = 'none';
+                hideLoader();
             }
         });
 
-        function createProfileSection(data) {
-            const div = document.createElement('div');
-            div.className = 'profile-section';
-
-            if (data.status === 'error' || !data.success) {
-                div.innerHTML = `<h5>Error</h5><p>${data.message || data.error || 'No data available'}</p>`;
-                return div;
-            }
-
-            div.innerHTML = `
-                <div class="profile-avatar">
-                    <div class="profile-level">Lv. ${data.level || '??'}</div>
-                </div>
-                <div class="profile-name">${data.name || 'Unknown'} !!</div>
-                <div class="profile-uid">UID: ${data.uid}</div>
-                <div class="profile-clan">Clan: ${data.clan || 'None'} <span style="color: #4caf50">${data.clan_tag || 'SPORTS'}</span></div>
-                <div class="profile-stats">
-                    <div class="profile-stat">
-                        <div class="profile-stat-value">${data.likes?.toLocaleString() || 0}</div>
-                        <div>Likes</div>
-                    </div>
-                    <div class="profile-stat">
-                        <div class="profile-stat-value">${data.badges || 0}</div>
-                        <div>Badges</div>
-                    </div>
-                </div>
-                <div class="profile-info">
-                    <div>Region<br>${data.region || 'BD'}</div>
-                    <div><span class="highlight">Heroic</span><br>BR Rank</div>
-                    <div><span class="highlight">Diamond</span><br>CS Rank</div>
-                    <div>Last Login<br>${data.last_login || 'Unknown'}</div>
-                </div>
-                <div class="profile-signature">"${data.signature || ''}"</div>
-                <ul class="nav nav-tabs mt-3" id="gameTabs" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="br-tab" data-bs-toggle="tab" data-bs-target="#br" type="button" role="tab">Battle Royale</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="cs-tab" data-bs-toggle="tab" data-bs-target="#cs" type="button" role="tab">Clash Squad</button>
-                    </li>
-                </ul>
-            `;
-            return div;
+        function showLoader() {
+            loader.style.display = 'block';
+            results.style.display = 'none';
         }
 
-        function createTabs(brData, csData) {
-            const div = document.createElement('div');
-            div.innerHTML = `
-                <div class="tab-content" id="gameTabsContent">
-                    <div class="tab-pane fade show active" id="br" role="tabpanel"></div>
-                    <div class="tab-pane fade" id="cs" role="tabpanel"></div>
-                </div>
-            `;
-
-            const brPane = div.querySelector('#br');
-            const csPane = div.querySelector('#cs');
-
-            if (brData.success) {
-                brPane.appendChild(createModeSection('Solo', brData.solo || {message: 'No ranked matches played in this mode.'}));
-                brPane.appendChild(createModeSection('Duo', brData.duo || {}));
-                brPane.appendChild(createModeSection('Squad', brData.squad || {}));
-            } else {
-                brPane.innerHTML = `<p>${brData.message || 'No data available'}</p>`;
-            }
-
-            if (csData.success) {
-                csPane.appendChild(createOverallSection(csData.overall || {}));
-                csPane.appendChild(createModeSection('Squad', csData.squad || {}));
-            } else {
-                csPane.innerHTML = `<p>${csData.message || 'No data available'}</p>`;
-            }
-
-            return div;
+        function hideLoader() {
+            loader.style.display = 'none';
         }
 
-        function createOverallSection(data) {
-            const section = document.createElement('div');
-            section.className = 'mode-section';
-
-            if (data.message) {
-                section.innerHTML = `<p>${data.message}</p>`;
-                return section;
-            }
-
-            section.innerHTML = `
-                <div class="stat-item"><span class="stat-label"><span>🎯</span>Headshot Kills</span><span>${data.headshot_kills || 0}</span></div>
-                <div class="stat-item"><span class="stat-label"><span>💥</span>Headshot Rate</span><span>${data.headshot_rate || '0.00%'}</span></div>
-                <div class="stat-item"><span class="stat-label"><span>🔥</span>Damage</span><span>${data.damage || 0}</span></div>
-                <div class="stat-item"><span class="stat-label"><span>❤️</span>Revives</span><span>${data.revives || 0}</span></div>
-            `;
-            return section;
+        function showError(msg) {
+            errorDiv.textContent = msg;
+            errorDiv.style.display = 'block';
+            results.style.display = 'block';
         }
 
-        function createModeSection(title, data) {
-            const section = document.createElement('div');
-            section.className = 'mode-section';
-            const titleEl = document.createElement('div');
-            titleEl.className = 'mode-title';
-            titleEl.textContent = title;
-            section.appendChild(titleEl);
+        function clearResults() {
+            personalInfo.innerHTML = '';
+            soloStats.innerHTML = '';
+            duoStats.innerHTML = '';
+            squadStats.innerHTML = '';
+        }
 
-            if (data.message) {
-                const p = document.createElement('p');
-                p.textContent = data.message;
-                section.appendChild(p);
-                return section;
+        function displayPersonalInfo(data) {
+            let html = '<h6>Basic Info</h6><ul class="list-group mb-3">';
+            for (let key in data.basicinfo) {
+                html += `<li class="list-group-item"><strong>${key}:</strong> ${JSON.stringify(data.basicinfo[key])}</li>`;
             }
+            html += '</ul>';
 
-            section.innerHTML += `
-                <div class="stat-item"><span class="stat-label"><span>🎮</span>Matches Played</span><span>${data.matches_played || 0}</span></div>
-                <div class="stat-item"><span class="stat-label"><span>🏆</span>Wins</span><span>${data.wins || 0}</span></div>
-                <div class="stat-item"><span class="stat-label"><span>💀</span>Kills</span><span>${data.kills || 0}</span></div>
-                <div class="stat-item"><span class="stat-label"><span>💔</span>Deaths</span><span>${data.deaths || 0}</span></div>
-                <div class="stat-item"><span class="stat-label"><span>📈</span>K/D Ratio</span><span>${data.kd_ratio || '0.00'}</span></div>
-                <div class="stat-item"><span class="stat-label"><span>🎯</span>Headshot Kills</span><span>${data.headshot_kills || 0}</span></div>
-                <div class="stat-item"><span class="stat-label"><span>💥</span>Headshot Rate</span><span>${data.headshot_rate || '0.00%'}</span></div>
-                <div class="stat-item"><span class="stat-label"><span>🔥</span>Damage</span><span>${data.damage || 0}</span></div>
-                <div class="stat-item"><span class="stat-label"><span>❤️</span>Revives</span><span>${data.revives || 0}</span></div>
-            `;
-            return section;
+            html += '<h6>Profile Info</h6><ul class="list-group mb-3">';
+            for (let key in data.profileinfo) {
+                html += `<li class="list-group-item"><strong>${key}:</strong> ${JSON.stringify(data.profileinfo[key])}</li>`;
+            }
+            html += '</ul>';
+
+            html += '<h6>Clan Basic Info</h6><ul class="list-group mb-3">';
+            for (let key in data.clanbasicinfo) {
+                html += `<li class="list-group-item"><strong>${key}:</strong> ${JSON.stringify(data.clanbasicinfo[key])}</li>`;
+            }
+            html += '</ul>';
+
+            html += '<h6>Captain Basic Info</h6><ul class="list-group mb-3">';
+            for (let key in data.captainbasicinfo) {
+                html += `<li class="list-group-item"><strong>${key}:</strong> ${JSON.stringify(data.captainbasicinfo[key])}</li>`;
+            }
+            html += '</ul>';
+
+            html += '<h6>Pet Info</h6><ul class="list-group mb-3">';
+            for (let key in data.petinfo) {
+                html += `<li class="list-group-item"><strong>${key}:</strong> ${JSON.stringify(data.petinfo[key])}</li>`;
+            }
+            html += '</ul>';
+
+            html += '<h6>Social Info</h6><ul class="list-group mb-3">';
+            for (let key in data.socialinfo) {
+                html += `<li class="list-group-item"><strong>${key}:</strong> ${JSON.stringify(data.socialinfo[key])}</li>`;
+            }
+            html += '</ul>';
+
+            html += '<h6>Diamond Cost</h6><ul class="list-group mb-3">';
+            for (let key in data.diamondcostres) {
+                html += `<li class="list-group-item"><strong>${key}:</strong> ${JSON.stringify(data.diamondcostres[key])}</li>`;
+            }
+            html += '</ul>';
+
+            html += '<h6>Credit Score Info</h6><ul class="list-group">';
+            for (let key in data.creditscoreinfo) {
+                html += `<li class="list-group-item"><strong>${key}:</strong> ${JSON.stringify(data.creditscoreinfo[key])}</li>`;
+            }
+            html += '</ul>';
+
+            personalInfo.innerHTML = html;
+        }
+
+        function displayStats(data) {
+            // Solo
+            let soloHtml = '<ul class="list-group">';
+            soloHtml += `<li class="list-group-item"><strong>Games Played:</strong> ${data.solostats.gamesplayed || 'N/A'}</li>`;
+            soloHtml += `<li class="list-group-item"><strong>Kills:</strong> ${data.solostats.kills || 'N/A'}</li>`;
+            for (let key in data.solostats.detailedstats) {
+                soloHtml += `<li class="list-group-item"><strong>${key}:</strong> ${data.solostats.detailedstats[key]}</li>`;
+            }
+            soloHtml += '</ul>';
+            soloStats.innerHTML = soloHtml;
+
+            // Duo
+            let duoHtml = '<ul class="list-group">';
+            duoHtml += `<li class="list-group-item"><strong>Games Played:</strong> ${data.duostats.gamesplayed}</li>`;
+            duoHtml += `<li class="list-group-item"><strong>Kills:</strong> ${data.duostats.kills}</li>`;
+            if (data.duostats.wins !== undefined) {
+                duoHtml += `<li class="list-group-item"><strong>Wins:</strong> ${data.duostats.wins}</li>`;
+            }
+            for (let key in data.duostats.detailedstats) {
+                duoHtml += `<li class="list-group-item"><strong>${key}:</strong> ${data.duostats.detailedstats[key]}</li>`;
+            }
+            duoHtml += '</ul>';
+            duoStats.innerHTML = duoHtml;
+
+            // Squad (quad)
+            let squadHtml = '<ul class="list-group">';
+            squadHtml += `<li class="list-group-item"><strong>Games Played:</strong> ${data.quadstats.gamesplayed}</li>`;
+            squadHtml += `<li class="list-group-item"><strong>Kills:</strong> ${data.quadstats.kills}</li>`;
+            squadHtml += `<li class="list-group-item"><strong>Wins:</strong> ${data.quadstats.wins}</li>`;
+            for (let key in data.quadstats.detailedstats) {
+                squadHtml += `<li class="list-group-item"><strong>${key}:</strong> ${data.quadstats.detailedstats[key]}</li>`;
+            }
+            squadHtml += '</ul>';
+            squadStats.innerHTML = squadHtml;
         }
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
