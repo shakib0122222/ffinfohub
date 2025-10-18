@@ -1,578 +1,200 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FF Info Hub - Free Fire Stats</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'game-bg': '#1a1b26',
-                        'game-card': 'rgba(30, 35, 50, 0.8)',
-                        'game-blue': '#00b4ff',
-                        'game-orange': '#ff6b00',
-                        'game-success': '#00ff99',
-                        'game-error': '#ff4d6d',
-                        'game-light': '#f0f4f8',
-                    },
-                    fontFamily: {
-                        headline: ['Montserrat', 'sans-serif'],
-                        mono: ['Space Mono', 'monospace'],
-                    },
-                    keyframes: {
-                        spark: {
-                            '0%': { transform: 'translateY(0) scale(1)', opacity: '0.7' },
-                            '100%': { transform: 'translateY(-100px) scale(0.5)', opacity: '0' },
-                        },
-                        glow: {
-                            '0%, 100%': { boxShadow: '0 0 10px rgba(0, 180, 255, 0.5)' },
-                            '50%': { boxShadow: '0 0 20px rgba(0, 180, 255, 0.8)' },
-                        },
-                        slideIn: {
-                            '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        },
-                        pulse: {
-                            '0%, 100%': { transform: 'scale(1)' },
-                            '50%': { transform: 'scale(1.05)' },
-                        },
-                    },
-                    animation: {
-                        'spark': 'spark 5s linear infinite',
-                        'glow': 'glow 2s ease-in-out infinite',
-                        'slide-in': 'slideIn 0.5s ease-out forwards',
-                        'pulse': 'pulse 1.5s ease-in-out infinite',
-                    },
-                }
-            }
-        }
-    </script>
+<html lang="bn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FF Info Hub — Free Fire UID Lookup</title>
+    <meta name="description" content="Free Fire player stats lookup by UID — Level, Rank, KD, Wins and more! Supports all servers.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+
     <style>
-        body {
-            @apply bg-game-bg text-white font-mono min-h-screen flex flex-col relative overflow-hidden;
-        }
+      :root {
+        --bg: #0b0f1a;
+        --glass: rgba(255, 255, 255, 0.05);
+        --cyan: #00e5ff;
+        --pink: #ff47b4;
+      }
 
-        body.light {
-            @apply bg-game-light text-gray-900;
-        }
+      body {
+        margin: 0;
+        padding: 0;
+        background: radial-gradient(circle at top left, rgba(0,229,255,0.07), transparent),
+                    radial-gradient(circle at bottom right, rgba(255,71,180,0.05), transparent),
+                    var(--bg);
+        font-family: "Inter", sans-serif;
+        color: white;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
 
-        .game-bg {
-            position: fixed;
-            inset: 0;
-            background: linear-gradient(135deg, #1a1b26, #2a2b3f);
-            z-index: -1;
-        }
+      h1 {
+        margin-top: 40px;
+        font-size: 2rem;
+        color: var(--cyan);
+        text-shadow: 0 0 10px var(--cyan);
+      }
 
-        .sparkles {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-        }
+      .card {
+        margin-top: 20px;
+        background: var(--glass);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 16px;
+        padding: 20px;
+        width: 90%;
+        max-width: 420px;
+        box-shadow: 0 0 20px rgba(0, 229, 255, 0.05);
+      }
 
-        .spark {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: rgba(0, 180, 255, 0.7);
-            border-radius: 50%;
-            animation: spark 3s linear infinite;
-        }
+      input, select, button {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: none;
+        margin-top: 10px;
+        font-size: 15px;
+      }
 
-        .spark:nth-child(1) { left: 10%; animation-delay: 0s; }
-        .spark:nth-child(2) { left: 30%; animation-delay: 1s; }
-        .spark:nth-child(3) { left: 50%; animation-delay: 2s; }
-        .spark:nth-child(4) { left: 70%; animation-delay: 1.5s; }
-        .spark:nth-child(5) { left: 90%; animation-delay: 0.5s; }
+      input, select {
+        background: rgba(255, 255, 255, 0.08);
+        color: white;
+      }
 
-        .game-card {
-            @apply bg-game-card backdrop-blur-md border border-game-blue/30 rounded-xl p-6 transition-all duration-300;
-        }
+      input::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+      }
 
-        .game-card:hover {
-            @apply border-game-orange/50 transform translate-y-[-5px] shadow-xl shadow-game-blue/20;
-        }
+      button {
+        cursor: pointer;
+        background: linear-gradient(to right, var(--cyan), var(--pink));
+        color: white;
+        font-weight: 600;
+        border: none;
+        transition: 0.3s;
+      }
 
-        .btn-game {
-            @apply relative bg-gradient-to-r from-game-blue to-game-orange text-white font-bold rounded-lg px-6 py-3 uppercase tracking-wide overflow-hidden;
-            animation: glow 2s ease-in-out infinite;
-        }
+      button:hover {
+        opacity: 0.9;
+        transform: scale(1.02);
+      }
 
-        .btn-game::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: all 0.5s;
-        }
+      .error {
+        margin-top: 10px;
+        color: #ff5c5c;
+        font-size: 14px;
+      }
 
-        .btn-game:hover::before {
-            width: 300px;
-            height: 300px;
-        }
+      .result {
+        margin-top: 20px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 12px;
+        padding: 15px;
+        text-align: left;
+      }
 
-        .btn-game:hover {
-            @apply scale-105;
-        }
+      .result h2 {
+        color: var(--cyan);
+        margin-bottom: 10px;
+      }
 
-        .input-game {
-            @apply w-full p-4 bg-game-card border-2 border-game-blue/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-game-orange/80;
-            transition: all 0.3s ease;
-        }
+      footer {
+        margin-top: auto;
+        padding: 30px 0;
+        font-size: 14px;
+        color: #aaa;
+      }
 
-        .input-game:focus {
-            @apply animate-glow;
-        }
-
-        .select-game {
-            @apply input-game appearance-none pr-12;
-        }
-
-        .stat-card {
-            @apply game-card p-4 text-center transition-all duration-300;
-        }
-
-        .stat-card:hover {
-            @apply animate-pulse;
-        }
-
-        .avatar-glow {
-            @apply relative;
-        }
-
-        .avatar-glow::before {
-            content: '';
-            position: absolute;
-            inset: -3px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #00b4ff, #ff6b00);
-            opacity: 0.4;
-            animation: glow 2s ease-in-out infinite;
-        }
-
-        .skeleton-game {
-            @apply bg-gradient-to-r from-gray-700 via-game-card to-gray-700 rounded-lg;
-            animation: shimmer 1.5s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-
-        .suggest-dropdown {
-            @apply absolute w-full bg-game-card border border-game-blue/30 rounded-lg mt-2 max-h-60 overflow-y-auto z-20 animate-slide-in;
-        }
-
-        .suggest-item {
-            @apply px-4 py-3 hover:bg-game-blue/20 flex items-center space-x-3 transition-colors;
-        }
-
-        .toast-game {
-            @apply fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 animate-slide-in;
-        }
-
-        .error-box {
-            @apply game-card p-8 text-center animate-slide-in;
-        }
-
-        .empty-box {
-            @apply game-card p-8 text-center animate-slide-in;
-        }
-
-        footer {
-            @apply mt-auto text-center py-6 text-gray-400 text-sm font-mono;
-        }
+      @media (max-width: 480px) {
+        h1 { font-size: 1.6rem; }
+        .card { padding: 16px; }
+      }
     </style>
-    <!-- React CDN -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <!-- Babel CDN -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-</head>
-<body>
-    <div class="game-bg">
-        <div class="sparkles">
-            <div class="spark"></div>
-            <div class="spark"></div>
-            <div class="spark"></div>
-            <div class="spark"></div>
-            <div class="spark"></div>
-        </div>
+  </head>
+
+  <body>
+    <h1>🔥 FF Info Hub 🔥</h1>
+
+    <div class="card">
+      <input id="uid" type="text" placeholder="Enter Free Fire UID e.g. 8035061359" />
+      <select id="server">
+        <option value="BD">BD</option>
+        <option value="IND">IND</option>
+        <option value="SG">SG</option>
+        <option value="RU">RU</option>
+        <option value="ID">ID</option>
+        <option value="TW">TW</option>
+        <option value="US">US</option>
+        <option value="VN">VN</option>
+        <option value="TH">TH</option>
+        <option value="ME">ME</option>
+        <option value="PK">PK</option>
+        <option value="CIS">CIS</option>
+        <option value="BR">BR</option>
+      </select>
+      <button id="fetchBtn">Get Player Info</button>
+
+      <p id="error" class="error"></p>
+
+      <div id="result" class="result" style="display: none;">
+        <h2 id="nickname"></h2>
+        <p>🎮 Level: <span id="level"></span></p>
+        <p>🏆 Rank: <span id="rank"></span></p>
+        <p>⚔️ Matches: <span id="matches"></span></p>
+        <p>💀 Kills: <span id="kills"></span></p>
+        <p>🔥 KD Ratio: <span id="kd"></span></p>
+        <p>🥇 Wins: <span id="wins"></span></p>
+      </div>
     </div>
-    <div id="root" class="container mx-auto px-4 py-8 flex-1"></div>
-    <footer>Developed By SAKIB HOSSAIN</footer>
 
-    <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+    <footer>© 2025 FF Info Hub — Powered by GajarBotol API</footer>
 
-        const SERVERS = ['BD', 'IND', 'SG', 'RU', 'ID', 'TW', 'US', 'VN', 'TH', 'ME', 'PK', 'CIS', 'BR'];
+    <script>
+      const btn = document.getElementById("fetchBtn");
+      const resultBox = document.getElementById("result");
+      const errorBox = document.getElementById("error");
 
-        const Header = ({ toggleTheme, isLight }) => (
-            <header className="flex justify-between items-center mb-8 animate-slide-in">
-                <h1 className="text-4xl font-headline font-bold text-transparent bg-clip-text bg-gradient-to-r from-game-blue to-game-orange">
-                    🔥 FF Info Hub
-                </h1>
-                <button onClick={toggleTheme} className="game-card p-2 rounded-full hover:scale-110 transition-transform">
-                    {isLight ? (
-                        <svg className="w-6 h-6 text-gray-800" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
-                        </svg>
-                    ) : (
-                        <svg className="w-6 h-6 text-game-blue" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 11-2 0 1 1 0 012 0zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 11-2 0 1 1 0 012 0z"></path>
-                        </svg>
-                    )}
-                </button>
-            </header>
-        );
+      btn.addEventListener("click", async () => {
+        const uid = document.getElementById("uid").value.trim();
+        const server = document.getElementById("server").value;
+        if (!uid) {
+          errorBox.textContent = "❗ UID দিতে হবে!";
+          resultBox.style.display = "none";
+          return;
+        }
 
-        const SearchBar = ({ uid, setUid, server, setServer, onSearch, isLoading, recentSearches, showSuggestions, setShowSuggestions }) => {
-            const ref = useRef();
+        errorBox.textContent = "";
+        resultBox.style.display = "none";
+        btn.disabled = true;
+        btn.textContent = "Loading...";
 
-            useEffect(() => {
-                const handleClickOutside = (e) => {
-                    if (ref.current && !ref.current.contains(e.target)) setShowSuggestions(false);
-                };
-                document.addEventListener('click', handleClickOutside);
-                return () => document.removeEventListener('click', handleClickOutside);
-            }, []);
+        try {
+          const res = await fetch(
+            `https://ff-info-gajarbotol.vercel.app/get_player_stats?server=${server}&uid=${uid}&matchmode=RANKED&gamemode=br`
+          );
+          const data = await res.json();
 
-            const handleUidChange = (e) => {
-                setUid(e.target.value);
-                setShowSuggestions(e.target.value.length > 0);
-                setServer('BD'); // Auto-select BD on UID input
-            };
+          if (!data.nickname) {
+            throw new Error("ডেটা পাওয়া যায়নি!");
+          }
 
-            return (
-                <div className="game-card mb-8" ref={ref}>
-                    <div className="mb-6">
-                        <label className="block text-sm font-bold mb-2 text-game-blue">🔥 Free Fire UID</label>
-                        <input
-                            type="text"
-                            className="input-game"
-                            placeholder="Enter UID (e.g., 8035061359)"
-                            value={uid}
-                            onChange={handleUidChange}
-                            disabled={isLoading}
-                        />
-                        {showSuggestions && recentSearches.length > 0 && (
-                            <div className="suggest-dropdown">
-                                {recentSearches.map((s, i) => (
-                                    <button
-                                        key={i}
-                                        onClick={() => { setUid(s.uid); setServer(s.server); setShowSuggestions(false); onSearch(); }}
-                                        className="suggest-item"
-                                    >
-                                        <img src={s.avatar} alt="" className="w-8 h-8 rounded-full" />
-                                        <span>{s.nickname} ({s.uid}) - {s.server}</span>
-                                    </button>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                    <div className="mb-6">
-                        <label className="block text-sm font-bold mb-2 text-game-blue">🌐 Server</label>
-                        <div className="relative">
-                            <select className="select-game" value={server} onChange={(e) => setServer(e.target.value)} disabled={isLoading}>
-                                {SERVERS.map(s => <option key={s} value={s}>{s}</option>)}
-                            </select>
-                            <svg className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-game-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </div>
-                    </div>
-                    <button onClick={onSearch} disabled={isLoading || !uid} className="btn-game w-full disabled:opacity-50 flex items-center justify-center gap-2">
-                        {isLoading ? (
-                            <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                        ) : (
-                            <>
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                                Search Player
-                            </>
-                        )}
-                    </button>
-                </div>
-            );
-        };
+          document.getElementById("nickname").textContent = data.nickname;
+          document.getElementById("level").textContent = data.level;
+          document.getElementById("rank").textContent = data.rank || "N/A";
+          document.getElementById("matches").textContent = data.matches;
+          document.getElementById("kills").textContent = data.kills;
+          document.getElementById("kd").textContent = data.kd_ratio;
+          document.getElementById("wins").textContent = data.wins;
 
-        const PlayerCard = ({ player }) => (
-            <div className="game-card p-8 mb-8 text-center animate-slide-in">
-                <div className="avatar-glow mb-4">
-                    <img src={player.avatar} alt={player.nickname} className="w-32 h-32 rounded-full mx-auto" />
-                </div>
-                <h2 className="text-3xl font-headline font-bold text-game-blue mb-2">{player.nickname}</h2>
-                <p className="text-lg text-gray-400 mb-4">Level: {player.level}</p>
-                <div className="flex items-center justify-center gap-4">
-                    <img src={player.rankImg} alt="Rank" className="w-12 h-12 rounded-full" />
-                    <span className="text-xl font-bold text-game-orange">{player.rankName}</span>
-                </div>
-            </div>
-        );
-
-        const StatsGrid = ({ stats }) => (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
-                {[
-                    { label: 'Matches', value: stats.matches, icon: '🎮' },
-                    { label: 'Wins', value: stats.wins, icon: '🏆' },
-                    { label: 'Kills', value: stats.kills, icon: '💀' },
-                    { label: 'K/D', value: stats.kdRatio, icon: '⚔️' },
-                    { label: 'Win Rate', value: stats.winRate, icon: '📊' },
-                    { label: 'Headshots', value: stats.headshots, icon: '🎯' },
-                ].map((s, i) => (
-                    <div key={i} className="stat-card">
-                        <span className="text-3xl mb-2 block">{s.icon}</span>
-                        <p className="text-sm text-gray-400 uppercase">{s.label}</p>
-                        <p className="text-xl font-bold text-game-blue">{s.value}</p>
-                    </div>
-                ))}
-            </div>
-        );
-
-        const LoadingSkeleton = () => (
-            <div className="game-card p-8 mb-8 animate-slide-in">
-                <div className="skeleton-game w-32 h-32 rounded-full mx-auto mb-4"></div>
-                <div className="skeleton-game h-6 w-3/4 mx-auto mb-2"></div>
-                <div className="skeleton-game h-4 w-1/2 mx-auto mb-4"></div>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                    {[...Array(6)].map((_, i) => (
-                        <div key={i} className="skeleton-game p-4 rounded-xl">
-                            <div className="skeleton-game h-8 w-8 mx-auto mb-2 rounded-full"></div>
-                            <div className="skeleton-game h-4 w-2/3 mx-auto"></div>
-                            <div className="skeleton-game h-6 w-1/2 mx-auto mt-2"></div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        );
-
-        const ErrorState = ({ error, retry }) => (
-            <div className="error-box">
-                <svg className="w-16 h-16 mx-auto mb-4 text-game-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <h3 className="text-2xl font-headline font-bold text-game-error mb-4">তথ্য পাওয়া যায়নি!</h3>
-                <p className="text-gray-400 mb-6">{error || 'অনুগ্রহ করে UID এবং সার্ভার চেক করুন।'}</p>
-                <button onClick={retry} className="btn-game">আবার চেষ্টা করুন</button>
-            </div>
-        );
-
-        const EmptyState = ({ recentSearches, onRecentClick }) => (
-            <div className="empty-box">
-                <svg className="w-20 h-20 mx-auto mb-6 text-game-blue animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                <h3 className="text-2xl font-headline font-bold text-game-blue mb-4">শুরু করুন!</h3>
-                <p className="text-gray-400 mb-6">একটি Free Fire UID দিয়ে স্ট্যাটস দেখুন।</p>
-                {recentSearches.length > 0 && (
-                    <div className="mt-6">
-                        <h4 className="text-lg font-bold mb-4 text-game-orange">সাম্প্রতিক সার্চ</h4>
-                        <div className="space-y-3">
-                            {recentSearches.map((s, i) => (
-                                <button
-                                    key={i}
-                                    onClick={() => onRecentClick(s.uid, s.server)}
-                                    className="suggest-item w-full text-left"
-                                >
-                                    <img src={s.avatar} alt="" className="w-8 h-8 rounded-full" />
-                                    <span>{s.nickname} ({s.uid}) - {s.server}</span>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                )}
-            </div>
-        );
-
-        const Toast = ({ message, type, show }) => {
-            if (!show) return null;
-            return (
-                <div className={`toast-game ${type === 'success' ? 'bg-gradient-to-r from-game-success to-game-blue' : 'bg-gradient-to-r from-game-error to-game-orange'}`}>
-                    {message}
-                </div>
-            );
-        };
-
-        const App = () => {
-            const [uid, setUid] = useState('');
-            const [server, setServer] = useState('BD');
-            const [player, setPlayer] = useState(null);
-            const [stats, setStats] = useState(null);
-            const [isLoading, setIsLoading] = useState(false);
-            const [error, setError] = useState(null);
-            const [toast, setToast] = useState({ show: false, message: '', type: '' });
-            const [recentSearches, setRecentSearches] = useState([]);
-            const [showSuggestions, setShowSuggestions] = useState(false);
-            const [isLight, setIsLight] = useState(false);
-
-            useEffect(() => {
-                const savedTheme = localStorage.getItem('theme') === 'light';
-                setIsLight(savedTheme);
-                document.body.classList.toggle('light', savedTheme);
-                const savedSearches = localStorage.getItem('ff_recent_searches');
-                if (savedSearches) setRecentSearches(JSON.parse(savedSearches));
-            }, []);
-
-            const toggleTheme = () => {
-                const newTheme = !isLight;
-                setIsLight(newTheme);
-                document.body.classList.toggle('light', newTheme);
-                localStorage.setItem('theme', newTheme ? 'light' : 'dark');
-            };
-
-            const showToast = (message, type = 'success') => {
-                setToast({ show: true, message, type });
-                setTimeout(() => setToast({ show: false, message: '', type: '' }), 3000);
-            };
-
-            const addRecentSearch = (player) => {
-                const newSearch = { uid: player.uid, nickname: player.nickname, avatar: player.avatar, server };
-                const updated = [newSearch, ...recentSearches.filter(s => s.uid !== player.uid)].slice(0, 5);
-                setRecentSearches(updated);
-                localStorage.setItem('ff_recent_searches', JSON.stringify(updated));
-            };
-
-            const fetchPlayer = async () => {
-                if (!uid) {
-                    showToast('UID দিন!', 'error');
-                    return;
-                }
-                setError(null);
-                setPlayer(null);
-                setStats(null);
-                setIsLoading(true);
-
-                try {
-                    const personalUrl = `https://ff-info-gajarbotol.vercel.app/get_player_personal_show?server=${server}&uid=${uid}`;
-                    const personalRes = await fetch(personalUrl);
-                    const personalData = await personalRes.json();
-                    if (!personalRes.ok || personalData.status === false) {
-                        throw new Error(personalData.msg || 'প্লেয়ার পাওয়া যায়নি');
-                    }
-
-                    const playerInfo = {
-                        uid: personalData.uid,
-                        nickname: personalData.nickname,
-                        level: personalData.level,
-                        avatar: personalData.avatar_url || 'https://via.placeholder.com/128/00b4ff/ffffff?text=AV',
-                        rankImg: personalData.rank_badge_url || 'https://via.placeholder.com/48/ff6b00/fff?text=R',
-                        rankName: personalData.rank_name || 'N/A',
-                    };
-                    setPlayer(playerInfo);
-                    addRecentSearch(playerInfo);
-
-                    const statsUrl = `https://ff-info-gajarbotol.vercel.app/get_player_stats?server=${server}&uid=${uid}&matchmode=RANKED&gamemode=br`;
-                    const statsRes = await fetch(statsUrl);
-                    const statsData = await statsRes.json();
-                    if (!statsRes.ok || statsData.status === false) {
-                        throw new Error(statsData.msg || 'স্ট্যাটস পাওয়া যায়নি');
-                    }
-
-                    const brStats = statsData.br_ranked_stats || {};
-                    setStats({
-                        matches: brStats.matches_played || 0,
-                        wins: brStats.wins || 0,
-                        kills: brStats.kills || 0,
-                        kdRatio: brStats.kd_ratio ? brStats.kd_ratio.toFixed(2) : '0.00',
-                        winRate: brStats.win_rate ? `${brStats.win_rate.toFixed(1)}%` : '0%',
-                        headshots: brStats.headshots || 0,
-                    });
-
-                    showToast(`সফলভাবে লোড হয়েছে: ${playerInfo.nickname}`);
-                } catch (err) {
-                    setError(err.message);
-                    showToast(err.message, 'error');
-                } finally {
-                    setIsLoading(false);
-                }
-            };
-
-            const handleRecentClick = (uid, server) => {
-                setUid(uid);
-                setServer(server);
-                fetchPlayer();
-            };
-
-            return (
-                <div>
-                    <Header toggleTheme={toggleTheme} isLight={isLight} />
-                    <Toast {...toast} />
-                    <SearchBar
-                        uid={uid}
-                        setUid={setUid}
-                        server={server}
-                        setServer={setServer}
-                        onSearch={fetchPlayer}
-                        isLoading={isLoading}
-                        recentSearches={recentSearches}
-                        showSuggestions={showSuggestions}
-                        setShowSuggestions={setShowSuggestions}
-                    />
-                    {isLoading ? (
-                        <LoadingSkeleton />
-                    ) : error ? (
-                        <ErrorState error={error} retry={fetchPlayer} />
-                    ) : player && stats ? (
-                        <>
-                            <PlayerCard player={player} />
-                            <StatsGrid stats={stats} />
-                            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8 animate-slide-in">
-                                <button
-                                    onClick={() => {
-                                        navigator.clipboard.writeText(player.uid);
-                                        showToast('UID কপি হয়েছে!');
-                                    }}
-                                    className="btn-game flex items-center justify-center gap-2"
-                                >
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m-4 3v1h-2M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"></path>
-                                    </svg>
-                                    UID কপি
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        if (navigator.share) {
-                                            navigator.share({
-                                                title: `${player.nickname} এর স্ট্যাটস`,
-                                                text: `${player.nickname} এর Free Fire স্ট্যাটস দেখুন!`,
-                                                url: window.location.href,
-                                            });
-                                        } else {
-                                            showToast('শেয়ার সমর্থিত নয়', 'error');
-                                        }
-                                    }}
-                                    className="btn-game flex items-center justify-center gap-2"
-                                >
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684zm0 0a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
-                                    </svg>
-                                    প্রোফাইল শেয়ার
-                                </button>
-                            </div>
-                        </>
-                    ) : (
-                        <EmptyState recentSearches={recentSearches} onRecentClick={handleRecentClick} />
-                    )}
-                </div>
-            );
-        };
-
-        ReactDOM.render(<App />, document.getElementById('root'));
+          resultBox.style.display = "block";
+        } catch (err) {
+          errorBox.textContent = "⚠️ UID বা সার্ভার সঠিক নয়!";
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Get Player Info";
+        }
+      });
     </script>
-</body>
+  </body>
 </html>
