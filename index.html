@@ -550,7 +550,7 @@
         </div>
 
         <div class="footer">
-            Developed with <span>❤️</span> by <a href="https://github.com/gajarbotol" target="_blank">@DEMO</a>
+            Developed with <span>❤️</span> by <a href="https://github.com/gajarbotol" target="_blank">@GAJARBOTOL</a>
         </div>
     </div>
 
@@ -591,7 +591,7 @@
 
         const tabButtons = document.querySelectorAll('.tab-btn');
 
-        const BASE_URL = "https://ff-info-gajarbotol.vercel.app/";
+        const BASE_URL = "https://free-fire-info-zeta.vercel.app/";
 
         function getNested(obj, keys, defaultValue = 'N/A') {
             return keys.reduce((acc, key) => (acc && typeof acc === 'object' && acc[key] !== undefined) ? acc[key] : undefined, obj) || defaultValue;
@@ -827,60 +827,20 @@
                     console.warn('CS Stats API returned status false or no data:', csStats);
                     profileCSRank.textContent = 'N/A';
                     csRankedTitle.classList.add('no-data');
-                    csRankedTitle.textContent = 'Ranked (No DataHalaman HTML dan JavaScript telah diperbarui untuk menangani API dengan lebih baik dan memberikan penanganan kesalahan yang lebih kuat. Berikut adalah perubahan utama yang dilakukan:
+                    csRankedTitle.textContent = 'Ranked (No Data)';
+                }
 
-### Perubahan Utama
-1. **Validasi Input**:
-   - Menambahkan pemeriksaan untuk memastikan UID adalah numerik (`/^\d+$/.test(playerUid)`).
-   - Memvalidasi bahwa server yang dipilih ada dalam daftar server yang valid.
+                resultsDiv.style.display = 'block';
+                tabButtons[0].click();
 
-2. **Penanganan Kesalahan yang Lebih Baik**:
-   - Menangkap kesalahan parsing JSON untuk menangani respons API yang tidak valid.
-   - Menampilkan pesan kesalahan yang lebih spesifik berdasarkan respons API atau status HTTP.
-   - Mencatat respons API lengkap di konsol untuk debugging.
-
-3. **Peningkatan Penanganan Data**:
-   - Memastikan semua bidang menggunakan nilai default (`N/A`, `0`, dll.) jika data tidak tersedia.
-   - Memeriksa apakah `avatar_url` adalah URL yang valid sebelum menetapkannya.
-   - Menangani `last_login` dengan lebih aman untuk memastikan konversi timestamp valid.
-
-4. **Pemisahan Panggilan API**:
-   - Memisahkan panggilan API untuk statistik BR dan CS sesuai dengan endpoint yang diberikan (`matchmode=RANKED&gamemode=br` dan `matchmode=RANKED&gamemode=cs`).
-   - Memperbarui logika rendering untuk menangani data BR dan CS secara terpisah.
-
-5. **Logging yang Ditingkatkan**:
-   - Menambahkan lebih banyak log konsol untuk melacak URL API dan respons untuk mempermudah debugging.
-
-### Langkah Selanjutnya
-1. **Uji dengan UID dan Server yang Valid**:
-   - Coba masukkan UID yang diketahui valid (misalnya, `8035061359` pada server `BD`) untuk memastikan API mengembalikan data.
-   - Jika masih gagal, uji endpoint API secara langsung di browser atau Postman untuk memeriksa responsnya.
-
-2. **Periksa Dokumentasi API**:
-   - Pastikan struktur respons API (`status`, `data`, `nickname`, `account_id`, dll.) sesuai dengan yang diharapkan oleh kode. Jika struktur berbeda, sesuaikan fungsi `getNested` dan logika rendering.
-
-3. **Debugging**:
-   - Buka konsol browser (F12 > Console) saat menjalankan situs untuk melihat log yang dihasilkan (`console.log`).
-   - Periksa pesan kesalahan spesifik atau respons API untuk mengidentifikasi masalahnya.
-
-4. **Jika API Bermasalah**:
-   - Hubungi penyedia API atau periksa repositori GitHub (`https://github.com/gajarbotol`) untuk pembaruan atau laporan masalah.
-   - Pastikan API tidak memiliki batasan seperti rate-limiting atau memerlukan otentikasi (misalnya, header API key).
-
-5. **Hosting Lokal**:
-   - Jika Anda menguji secara lokal, pastikan Anda menggunakan server lokal (misalnya, dengan `Live Server` di VSCode atau `python -m http.server`) karena beberapa browser membatasi permintaan `fetch` dari file lokal (`file://`).
-
-### Contoh Pengujian
-- **UID**: `8035061359`
-- **Server**: `BD`
-- **URL yang Diuji**:
-  - Personal Info: `https://ff-info-gajarbotol.vercel.app/get_player_personal_show?server=BD&uid=8035061359`
-  - BR Stats: `https://ff-info-gajarbotol.vercel.app/get_player_stats?server=BD&uid=8035061359&matchmode=RANKED&gamemode=br`
-  - CS Stats: `https://ff-info-gajarbotol.vercel.app/get_player_stats?server=BD&uid=8035061359&matchmode=RANKED&gamemode=cs`
-
-Jika Anda masih mendapatkan kesalahan setelah mencoba kode di atas, silakan bagikan:
-- UID dan server yang Anda gunakan.
-- Pesan kesalahan lengkap dari konsol browser.
-- Respons API (jika Anda mengujinya secara manual).
-
-Ini akan membantu saya mendiagnosis masalah lebih lanjut dan memberikan solusi yang lebih spesifik.
+            } catch (error) {
+                console.error('General Error fetching player data:', error);
+                errorMessage.textContent = `Failed to fetch player data: ${error.message}. Please check the UID, server, or try again later.`;
+                errorMessage.style.display = 'block';
+            } finally {
+                loader.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
