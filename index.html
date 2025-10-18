@@ -483,7 +483,7 @@
                 <div class="player-name-section">
                     <span class="rank-icon" id="profileRankIcon"></span>
                     <h2 class="player-nickname" id="profileNickname">Player Nickname</h2>
-                    <span class="feather-icon">🌿</span> <!-- Example icon -->
+                    <span class="feather-icon">🌿</span>
                 </div>
                 <p class="player-uid" id="profileUidDisplay">UID: N/A</p>
                 <p class="player-clan" id="profileClan">Clan: N/A</p>
@@ -741,6 +741,8 @@
                     profileLastLogin.textContent = (data.profileinfo && data.profileinfo.last_login) ? new Date(data.profileinfo.last_login * 1000).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
                     profileSignature.textContent = (data.profileinfo && data.profileinfo.signature) || '"No signature set."';
                     profileRankIcon.textContent = (data.basicinfo && data.basicinfo.current_rank_br) ? data.basicinfo.current_rank_br.rank_name || '' : '';
+                    profileBRRank.textContent = (data.basicinfo && data.basicinfo.current_rank_br) ? data.basicinfo.current_rank_br.rank_name || 'N/A' : 'N/A';
+                    profileCSRank.textContent = (data.basicinfo && data.basicinfo.current_rank_cs) ? data.basicinfo.current_rank_cs.rank_name || 'N/A' : 'N/A';
 
                     // Display detailed personal info
                     let detailedHtml = '';
