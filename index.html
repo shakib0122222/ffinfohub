@@ -9,9 +9,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-bg: #1a1a2e; /* Darker background */
-            --secondary-bg: #2e3b55; /* Card background */
-            --accent-color: #e94560; /* Button/highlight color */
+            --primary-bg: #1a1a2e;
+            --secondary-bg: #2e3b55;
+            --accent-color: #e94560;
             --text-color: #ffffff;
             --input-bg: #3c4c6b;
             --input-border: #4a5d7c;
@@ -23,12 +23,11 @@
             background-color: var(--primary-bg);
             color: var(--text-color);
             margin: 0;
-            padding: 0;
+            padding: 20px;
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* Align to top for better scrolling on mobile */
+            align-items: flex-start;
             min-height: 100vh;
-            padding: 20px;
             box-sizing: border-box;
         }
 
@@ -87,7 +86,7 @@
             color: var(--text-color);
             font-size: 1em;
             box-sizing: border-box;
-            -webkit-appearance: none; /* Remove default arrow for select */
+            -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
         }
@@ -97,7 +96,7 @@
             background-repeat: no-repeat;
             background-position: right 15px center;
             background-size: 12px;
-            padding-right: 40px; /* Make space for the arrow */
+            padding-right: 40px;
         }
 
         .form-group input[type="text"]::placeholder {
@@ -147,10 +146,9 @@
 
         #results {
             margin-top: 30px;
-            display: none; /* Initially hidden */
+            display: none;
         }
 
-        /* Profile Card */
         .profile-card {
             background-color: var(--secondary-bg);
             padding: 20px;
@@ -170,14 +168,14 @@
             justify-content: center;
             align-items: center;
             border: 3px solid var(--accent-color);
-            overflow: hidden; /* To keep image within circle */
+            overflow: hidden;
         }
 
         .profile-card .avatar-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 50%; /* Ensure image is circular */
+            border-radius: 50%;
         }
 
         .profile-card .avatar-container .avatar-char {
@@ -204,7 +202,7 @@
             align-items: center;
             gap: 5px;
             margin-bottom: 5px;
-            flex-wrap: wrap; /* Allow wrapping on small screens */
+            flex-wrap: wrap;
         }
 
         .profile-card .player-name-section .rank-icon {
@@ -217,10 +215,6 @@
             font-weight: 700;
             margin: 0;
             line-height: 1.2;
-        }
-        .profile-card .player-name-section .feather-icon {
-            font-size: 1.2em;
-            color: #bbb;
         }
 
         .profile-card .player-uid {
@@ -268,8 +262,8 @@
 
         .profile-card .grid-item {
             padding: 10px 0;
-            /* border-bottom: 1px solid var(--input-border); */
         }
+
         .profile-card .grid-item:nth-child(even) {
             text-align: right;
         }
@@ -293,7 +287,6 @@
             margin-top: 20px;
         }
 
-        /* Tabs for BR/CS */
         .tabs {
             display: flex;
             background-color: var(--secondary-bg);
@@ -319,6 +312,7 @@
             border-top-left-radius: 8px;
             border-bottom-left-radius: 8px;
         }
+
         .tabs button:last-child {
             border-top-right-radius: 8px;
             border-bottom-right-radius: 8px;
@@ -344,12 +338,12 @@
             margin-top: 0;
             margin-bottom: 15px;
         }
+
         .mode-section h3.no-data {
             color: #99aab5;
             font-size: 1.1em;
             font-style: italic;
         }
-
 
         .stats-list .info-item {
             display: flex;
@@ -363,15 +357,14 @@
         }
 
         .stats-list .info-item span:first-child {
-            font-weight: 400; /* Lighter for label */
+            font-weight: 400;
             color: #cccccc;
         }
 
         .stats-list .info-item span:last-child {
-            font-weight: 600; /* Bolder for value */
+            font-weight: 600;
             text-align: right;
         }
-
 
         .loader {
             border: 4px solid #f3f3f3;
@@ -381,7 +374,7 @@
             height: 25px;
             animation: spin 1s linear infinite;
             margin: 20px auto;
-            display: none; /* Initially hidden */
+            display: none;
         }
 
         @keyframes spin {
@@ -397,7 +390,6 @@
             font-weight: 600;
         }
 
-        /* Responsive adjustments */
         @media (max-width: 480px) {
             .container {
                 padding: 20px;
@@ -483,7 +475,6 @@
         <div class="error-message" id="errorMessage"></div>
 
         <div id="results">
-            <!-- Player Profile Card -->
             <div class="profile-card" id="playerProfileCard">
                 <div class="avatar-container">
                     <img id="profileAvatarImg" src="" alt="Avatar" style="display:none;">
@@ -493,7 +484,6 @@
                 <div class="player-name-section">
                     <span class="rank-icon" id="profileRankIcon"></span>
                     <h2 class="player-nickname" id="profileNickname">Player Nickname</h2>
-                    <!-- <span class="feather-icon">🌿</span>  Example icon -->
                 </div>
                 <p class="player-uid" id="profileUidDisplay">UID: N/A</p>
                 <p class="player-clan" id="profileClan">Clan: N/A</p>
@@ -531,45 +521,30 @@
                 <p class="quote" id="profileSignature">"No signature set."</p>
             </div>
 
-            <!-- Tabs for Battle Royale / Clash Squad -->
             <div class="tabs">
                 <button class="tab-btn active" data-gamemode="br">Battle Royale</button>
                 <button class="tab-btn" data-gamemode="cs">Clash Squad</button>
             </div>
 
             <div id="brTabContent" class="tab-content">
-                <!-- BR Solo -->
                 <div class="mode-section">
                     <h3 id="brSoloTitle">Solo</h3>
-                    <div class="stats-list" id="brSoloStats">
-                        <!-- Solo stats will be loaded here -->
-                    </div>
+                    <div class="stats-list" id="brSoloStats"></div>
                 </div>
-
-                <!-- BR Duo -->
                 <div class="mode-section">
                     <h3 id="brDuoTitle">Duo</h3>
-                    <div class="stats-list" id="brDuoStats">
-                        <!-- Duo stats will be loaded here -->
-                    </div>
+                    <div class="stats-list" id="brDuoStats"></div>
                 </div>
-
-                <!-- BR Squad -->
                 <div class="mode-section">
                     <h3 id="brSquadTitle">Squad</h3>
-                    <div class="stats-list" id="brSquadStats">
-                        <!-- Squad stats will be loaded here -->
-                    </div>
+                    <div class="stats-list" id="brSquadStats"></div>
                 </div>
             </div>
 
             <div id="csTabContent" class="tab-content" style="display: none;">
-                <!-- CS Squad (assuming CS only has Squad mode data for ranked) -->
                 <div class="mode-section">
                     <h3 id="csRankedTitle">Ranked</h3>
-                    <div class="stats-list" id="csRankedStats">
-                        <!-- CS Ranked stats will be loaded here -->
-                    </div>
+                    <div class="stats-list" id="csRankedStats"></div>
                 </div>
             </div>
         </div>
@@ -616,14 +591,12 @@
 
         const tabButtons = document.querySelectorAll('.tab-btn');
 
-        const BASE_URL = "https://ff-info-gajarbotol.vercel.app/"; // আপনার API Base URL
+        const BASE_URL = "https://ff-info-gajarbotol.vercel.app/";
 
-        // Helper function to safely get nested property
         function getNested(obj, keys, defaultValue = 'N/A') {
             return keys.reduce((acc, key) => (acc && typeof acc === 'object' && acc[key] !== undefined) ? acc[key] : undefined, obj) || defaultValue;
         }
 
-        // Helper function to create a stat item
         function createStatItem(label, value) {
             const itemDiv = document.createElement('div');
             itemDiv.classList.add('info-item');
@@ -631,44 +604,38 @@
             return itemDiv;
         }
 
-        // Helper function to render stats for a given mode
         function renderStats(targetDiv, data, titleElement) {
-            targetDiv.innerHTML = ''; // Clear previous stats
-
+            targetDiv.innerHTML = '';
             if (!data || Object.keys(data).length === 0 || (data.total_matches === undefined && data.wins === undefined && data.kills === undefined)) {
                 titleElement.classList.add('no-data');
-                titleElement.textContent = titleElement.textContent.replace(' (No Data)', '') + ' (No Data)'; // Add "(No Data)" to title
+                titleElement.textContent = titleElement.textContent.replace(' (No Data)', '') + ' (No Data)';
                 return;
             } else {
                 titleElement.classList.remove('no-data');
-                titleElement.textContent = titleElement.textContent.replace(' (No Data)', ''); // Remove "(No Data)"
+                titleElement.textContent = titleElement.textContent.replace(' (No Data)', '');
             }
-            
-            // Example of mapping API response to display (adjust as per actual API fields)
+
             targetDiv.appendChild(createStatItem('Matches Played', getNested(data, ['total_matches'], 0)));
             targetDiv.appendChild(createStatItem('Wins', getNested(data, ['wins'], 0)));
             targetDiv.appendChild(createStatItem('Kills', getNested(data, ['kills'], 0)));
             targetDiv.appendChild(createStatItem('Deaths', getNested(data, ['deaths'], 0)));
-            
+
             const kills = getNested(data, ['kills'], 0);
             const deaths = getNested(data, ['deaths'], 0);
             const headshots = getNested(data, ['headshots'], 0);
 
-            // Calculate K/D Ratio
             const kdRatio = (deaths > 0) ? (kills / deaths).toFixed(2) : (kills > 0 ? kills.toFixed(2) : '0.00');
             targetDiv.appendChild(createStatItem('K/D Ratio', kdRatio));
 
             targetDiv.appendChild(createStatItem('Headshot Kills', headshots));
-            
-            // Calculate Headshot Rate
+
             const hsRate = (kills > 0) ? ((headshots / kills) * 100).toFixed(2) + '%' : '0.00%';
             targetDiv.appendChild(createStatItem('Headshot Rate', hsRate));
-            
+
             targetDiv.appendChild(createStatItem('Damage', getNested(data, ['damage'], 0)));
             targetDiv.appendChild(createStatItem('Revives', getNested(data, ['revives'], 0)));
         }
 
-        // Reset all fields to default/N/A
         function resetResults() {
             profileAvatarImg.style.display = 'none';
             profileAvatarImg.src = '';
@@ -685,13 +652,12 @@
             profileCSRank.textContent = 'N/A';
             profileLastLogin.textContent = 'N/A';
             profileSignature.textContent = '"No signature set."';
-            profileRankIcon.textContent = ''; // Clear rank icon
+            profileRankIcon.textContent = '';
 
-            // Clear stats divs and reset titles
-            brSoloStatsDiv.innerHTML = ``;
-            brDuoStatsDiv.innerHTML = ``;
-            brSquadStatsDiv.innerHTML = ``;
-            csRankedStatsDiv.innerHTML = ``;
+            brSoloStatsDiv.innerHTML = '';
+            brDuoStatsDiv.innerHTML = '';
+            brSquadStatsDiv.innerHTML = '';
+            csRankedStatsDiv.innerHTML = '';
 
             brSoloTitle.classList.add('no-data');
             brSoloTitle.textContent = 'Solo (No Data)';
@@ -706,7 +672,6 @@
             errorMessage.style.display = 'none';
         }
 
-        // Tab switching logic
         tabButtons.forEach(button => {
             button.addEventListener('click', () => {
                 tabButtons.forEach(btn => btn.classList.remove('active'));
@@ -727,139 +692,195 @@
             const playerUid = playerUidInput.value.trim();
             const server = serverSelect.value;
 
-            resetResults(); // Reset all fields before a new search
-            
-            if (!playerUid) {
-                errorMessage.textContent = 'Please enter a Player UID.';
+            resetResults();
+
+            if (!playerUid || !/^\d+$/.test(playerUid)) {
+                errorMessage.textContent = 'Please enter a valid numeric Player UID.';
                 errorMessage.style.display = 'block';
                 return;
             }
 
-            loader.style.display = 'block'; // Show loader
+            if (!['BD', 'IND', 'SG', 'RU', 'ID', 'TW', 'US', 'VN', 'TH', 'ME', 'PK', 'CIS', 'BR'].includes(server)) {
+                errorMessage.textContent = 'Please select a valid server.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            loader.style.display = 'block';
             console.log('Fetching data for UID:', playerUid, 'Server:', server);
 
             try {
-                // --- API Call for Player Personal Info ---
+                // Fetch Personal Info
                 const personalInfoURL = `${BASE_URL}get_player_personal_show?server=${server}&uid=${playerUid}`;
                 console.log('Personal Info URL:', personalInfoURL);
                 const personalInfoResponse = await fetch(personalInfoURL);
-                
+                let personalInfo;
+
+                try {
+                    personalInfo = await personalInfoResponse.json();
+                    console.log('Personal Info API Response:', personalInfo);
+                } catch (e) {
+                    throw new Error('Invalid response format from Personal Info API.');
+                }
+
                 if (!personalInfoResponse.ok) {
                     throw new Error(`Personal Info API HTTP error! status: ${personalInfoResponse.status}`);
                 }
-                const personalInfo = await personalInfoResponse.json();
-                console.log('Personal Info API Response:', personalInfo);
 
                 if (personalInfo.status === true && personalInfo.data) {
                     const data = personalInfo.data;
-                    profileNickname.textContent = getNested(data, ['nickname']);
-                    profileUidDisplay.textContent = `UID: ${getNested(data, ['account_id'])}`;
-                    profileClan.textContent = `Clan: ${getNested(data, ['clan_name'])}`;
+                    profileNickname.textContent = getNested(data, ['nickname'], 'Unknown Player');
+                    profileUidDisplay.textContent = `UID: ${getNested(data, ['account_id'], playerUid)}`;
+                    profileClan.textContent = `Clan: ${getNested(data, ['clan_name'], 'None')}`;
                     profileLikes.textContent = getNested(data, ['likes'], 0);
-                    profileBadges.textContent = getNested(data, ['badge_id'], 0); // Assuming badge_id might be relevant, or 0 if no specific badge count
-                    profileRegion.textContent = getNested(data, ['region']);
+                    profileBadges.textContent = getNested(data, ['badge_id'], 0);
+                    profileRegion.textContent = getNested(data, ['region'], server);
                     profileLevel.textContent = `Lv. ${getNested(data, ['level'], '??')}`;
                     profileSignature.textContent = getNested(data, ['signature'], '"No signature set."');
 
-                    // If avatar URL exists, use it, otherwise use char
                     const avatarUrl = getNested(data, ['avatar_url']);
-                    if (avatarUrl && avatarUrl !== 'N/A') {
+                    if (avatarUrl && avatarUrl !== 'N/A' && avatarUrl.startsWith('http')) {
                         profileAvatarImg.src = avatarUrl;
                         profileAvatarImg.style.display = 'block';
                         profileAvatarChar.style.display = 'none';
                     } else {
                         profileAvatarImg.style.display = 'none';
                         profileAvatarChar.style.display = 'flex';
-                        profileAvatarChar.textContent = getNested(data, ['nickname']).charAt(0).toUpperCase() || '?';
+                        profileAvatarChar.textContent = getNested(data, ['nickname'], '?').charAt(0).toUpperCase() || '?';
                     }
-                    
-                    // For Last Login (timestamp to date)
+
                     const lastLoginTimestamp = getNested(data, ['last_login']);
-                    if (lastLoginTimestamp && lastLoginTimestamp !== 'N/A') {
-                        const date = new Date(lastLoginTimestamp * 1000); // API returns seconds, JS Date expects milliseconds
+                    if (lastLoginTimestamp && lastLoginTimestamp !== 'N/A' && !isNaN(lastLoginTimestamp)) {
+                        const date = new Date(lastLoginTimestamp * 1000);
                         profileLastLogin.textContent = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
                     } else {
                         profileLastLogin.textContent = 'N/A';
                     }
-
                 } else {
-                    errorMessage.textContent = personalInfo.message || 'Failed to fetch personal info. Player not found or API error.';
+                    errorMessage.textContent = personalInfo.message || 'Player not found or API error. Please check the UID and server.';
                     errorMessage.style.display = 'block';
                     loader.style.display = 'none';
                     console.error('Personal Info API returned status false or no data:', personalInfo);
-                    return; // Stop execution if personal info fetch fails
+                    return;
                 }
 
-                // --- API Call for BR Ranked Stats ---
+                // Fetch BR Stats
                 const brStatsURL = `${BASE_URL}get_player_stats?server=${server}&uid=${playerUid}&matchmode=RANKED&gamemode=br`;
                 console.log('BR Stats API URL:', brStatsURL);
                 const brStatsResponse = await fetch(brStatsURL);
-                
+                let brStats;
+
+                try {
+                    brStats = await brStatsResponse.json();
+                    console.log('BR Stats API Response:', brStats);
+                } catch (e) {
+                    throw new Error('Invalid response format from BR Stats API.');
+                }
+
                 if (!brStatsResponse.ok) {
                     throw new Error(`BR Stats API HTTP error! status: ${brStatsResponse.status}`);
                 }
-                const brStats = await brStatsResponse.json();
-                console.log('BR Stats API Response:', brStats);
 
-                // --- API Call for CS Ranked Stats ---
+                // Fetch CS Stats
                 const csStatsURL = `${BASE_URL}get_player_stats?server=${server}&uid=${playerUid}&matchmode=RANKED&gamemode=cs`;
                 console.log('CS Stats API URL:', csStatsURL);
                 const csStatsResponse = await fetch(csStatsURL);
-                
+                let csStats;
+
+                try {
+                    csStats = await csStatsResponse.json();
+                    console.log('CS Stats API Response:', csStats);
+                } catch (e) {
+                    throw new Error('Invalid response format from CS Stats API.');
+                }
+
                 if (!csStatsResponse.ok) {
                     throw new Error(`CS Stats API HTTP error! status: ${csStatsResponse.status}`);
                 }
-                const csStats = await csStatsResponse.json();
-                console.log('CS Stats API Response:', csStats);
 
                 // Process BR Stats
                 let brRankedData = {};
                 if (brStats.status === true && brStats.data) {
                     brRankedData = brStats.data;
+                    profileBRRank.textContent = getNested(brRankedData, ['current_rank', 'rank_name'], 'N/A');
+                    renderStats(brSoloStatsDiv, getNested(brRankedData, ['solo'], {}), brSoloTitle);
+                    renderStats(brDuoStatsDiv, getNested(brRankedData, ['duo'], {}), brDuoTitle);
+                    renderStats(brSquadStatsDiv, getNested(brRankedData, ['squad'], {}), brSquadTitle);
                 } else {
-                    console.error('BR Stats API returned status false or no data:', brStats);
+                    console.warn('BR Stats API returned status false or no data:', brStats);
+                    profileBRRank.textContent = 'N/A';
+                    brSoloTitle.classList.add('no-data');
+                    brSoloTitle.textContent = 'Solo (No Data)';
+                    brDuoTitle.classList.add('no-data');
+                    brDuoTitle.textContent = 'Duo (No Data)';
+                    brSquadTitle.classList.add('no-data');
+                    brSquadTitle.textContent = 'Squad (No Data)';
                 }
 
                 // Process CS Stats
                 let csRankedData = {};
                 if (csStats.status === true && csStats.data) {
                     csRankedData = csStats.data;
+                    profileCSRank.textContent = getNested(csRankedData, ['current_rank', 'rank_name'], 'N/A');
+                    renderStats(csRankedStatsDiv, getNested(csRankedData, ['squad'], {}), csRankedTitle);
                 } else {
-                    console.error('CS Stats API returned status false or no data:', csStats);
-                }
+                    console.warn('CS Stats API returned status false or no data:', csStats);
+                    profileCSRank.textContent = 'N/A';
+                    csRankedTitle.classList.add('no-data');
+                    csRankedTitle.textContent = 'Ranked (No DataHalaman HTML dan JavaScript telah diperbarui untuk menangani API dengan lebih baik dan memberikan penanganan kesalahan yang lebih kuat. Berikut adalah perubahan utama yang dilakukan:
 
-                // Update BR/CS Ranks on profile card
-                profileBRRank.textContent = getNested(brRankedData, ['current_rank', 'rank_name'], 'N/A');
-                profileCSRank.textContent = getNested(csRankedData, ['current_rank', 'rank_name'], 'N/A');
-                
-                // BR Solo
-                renderStats(brSoloStatsDiv, getNested(brRankedData, ['solo'], {}), brSoloTitle);
-                
-                // BR Duo
-                renderStats(brDuoStatsDiv, getNested(brRankedData, ['duo'], {}), brDuoTitle);
+### Perubahan Utama
+1. **Validasi Input**:
+   - Menambahkan pemeriksaan untuk memastikan UID adalah numerik (`/^\d+$/.test(playerUid)`).
+   - Memvalidasi bahwa server yang dipilih ada dalam daftar server yang valid.
 
-                // BR Squad
-                renderStats(brSquadStatsDiv, getNested(brRankedData, ['squad'], {}), brSquadTitle);
+2. **Penanganan Kesalahan yang Lebih Baik**:
+   - Menangkap kesalahan parsing JSON untuk menangani respons API yang tidak valid.
+   - Menampilkan pesan kesalahan yang lebih spesifik berdasarkan respons API atau status HTTP.
+   - Mencatat respons API lengkap di konsol untuk debugging.
 
-                // CS Ranked (assuming CS ranked data is under 'squad')
-                renderStats(csRankedStatsDiv, getNested(csRankedData, ['squad'], {}), csRankedTitle);
+3. **Peningkatan Penanganan Data**:
+   - Memastikan semua bidang menggunakan nilai default (`N/A`, `0`, dll.) jika data tidak tersedia.
+   - Memeriksa apakah `avatar_url` adalah URL yang valid sebelum menetapkannya.
+   - Menangani `last_login` dengan lebih aman untuk memastikan konversi timestamp valid.
 
-                if (!brStats.status && !csStats.status) {
-                    errorMessage.textContent = 'Failed to fetch player stats. No stats data found or API error.';
-                    errorMessage.style.display = 'block';
-                }
-                
-                resultsDiv.style.display = 'block'; // Show results section
-                tabButtons[0].click(); // Activate BR tab by default
+4. **Pemisahan Panggilan API**:
+   - Memisahkan panggilan API untuk statistik BR dan CS sesuai dengan endpoint yang diberikan (`matchmode=RANKED&gamemode=br` dan `matchmode=RANKED&gamemode=cs`).
+   - Memperbarui logika rendering untuk menangani data BR dan CS secara terpisah.
 
-            } catch (error) {
-                console.error('General Error fetching player data:', error);
-                errorMessage.textContent = `Failed to fetch player data: ${error.message}. Please check the UID, server, or try again later.`;
-                errorMessage.style.display = 'block';
-            } finally {
-                loader.style.display = 'none'; // Hide loader
-            }
-        });
-    </script>
-</body>
-</html>
+5. **Logging yang Ditingkatkan**:
+   - Menambahkan lebih banyak log konsol untuk melacak URL API dan respons untuk mempermudah debugging.
+
+### Langkah Selanjutnya
+1. **Uji dengan UID dan Server yang Valid**:
+   - Coba masukkan UID yang diketahui valid (misalnya, `8035061359` pada server `BD`) untuk memastikan API mengembalikan data.
+   - Jika masih gagal, uji endpoint API secara langsung di browser atau Postman untuk memeriksa responsnya.
+
+2. **Periksa Dokumentasi API**:
+   - Pastikan struktur respons API (`status`, `data`, `nickname`, `account_id`, dll.) sesuai dengan yang diharapkan oleh kode. Jika struktur berbeda, sesuaikan fungsi `getNested` dan logika rendering.
+
+3. **Debugging**:
+   - Buka konsol browser (F12 > Console) saat menjalankan situs untuk melihat log yang dihasilkan (`console.log`).
+   - Periksa pesan kesalahan spesifik atau respons API untuk mengidentifikasi masalahnya.
+
+4. **Jika API Bermasalah**:
+   - Hubungi penyedia API atau periksa repositori GitHub (`https://github.com/gajarbotol`) untuk pembaruan atau laporan masalah.
+   - Pastikan API tidak memiliki batasan seperti rate-limiting atau memerlukan otentikasi (misalnya, header API key).
+
+5. **Hosting Lokal**:
+   - Jika Anda menguji secara lokal, pastikan Anda menggunakan server lokal (misalnya, dengan `Live Server` di VSCode atau `python -m http.server`) karena beberapa browser membatasi permintaan `fetch` dari file lokal (`file://`).
+
+### Contoh Pengujian
+- **UID**: `8035061359`
+- **Server**: `BD`
+- **URL yang Diuji**:
+  - Personal Info: `https://ff-info-gajarbotol.vercel.app/get_player_personal_show?server=BD&uid=8035061359`
+  - BR Stats: `https://ff-info-gajarbotol.vercel.app/get_player_stats?server=BD&uid=8035061359&matchmode=RANKED&gamemode=br`
+  - CS Stats: `https://ff-info-gajarbotol.vercel.app/get_player_stats?server=BD&uid=8035061359&matchmode=RANKED&gamemode=cs`
+
+Jika Anda masih mendapatkan kesalahan setelah mencoba kode di atas, silakan bagikan:
+- UID dan server yang Anda gunakan.
+- Pesan kesalahan lengkap dari konsol browser.
+- Respons API (jika Anda mengujinya secara manual).
+
+Ini akan membantu saya mendiagnosis masalah lebih lanjut dan memberikan solusi yang lebih spesifik.
