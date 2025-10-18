@@ -3,166 +3,487 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Fire Player Info</title>
-    <!-- Bootstrap CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Free Fire Stats Finder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" integrity="sha512-jnSuA4Ss2PwkSikfiMFOxXERrLkFaVSn7VD5XWlEA8OpHYK2gPKQOCgJVADAmL9MguYzHSdV/2Pxb5DdNFKRjg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         body {
-            background-color: #212529;
-            color: #ffffff;
+            font-family: Arial, sans-serif;
+            background-color: #1a1a2e; /* Dark background similar to the image */
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background-color: #1a1a2e;
+            border-bottom: 1px solid #333;
+        }
+        .container-main {
             padding: 20px;
         }
-        .container {
-            max-width: 800px;
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
         }
-        .card {
-            margin-bottom: 20px;
-            background-color: #343a40;
-            border: none;
+        .header-section h1 {
+            font-size: 2.5rem;
+            color: #ff5722; /* Orange for Free Fire */
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .header-section p {
+            font-size: 1.1rem;
+            color: #ccc;
+        }
+        .card-custom {
+            background-color: #2a2a4a; /* Slightly lighter dark for cards */
+            border-radius: 10px;
+            padding: 30px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+        .form-label {
+            color: #ccc;
+            margin-bottom: 8px;
+            font-size: 1.05rem;
         }
         .form-control, .form-select {
-            background-color: #495057;
-            color: #ffffff;
-            border: 1px solid #6c757d;
+            background-color: #333355;
+            border: 1px solid #555577;
+            color: #e0e0e0;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 1rem;
         }
-        .form-control::placeholder {
-            color: #adb5bd;
+        .form-control::placeholder, .form-select option {
+            color: #aaa;
         }
-        .btn-primary {
-            background-color: #ff4500; /* Free Fire theme color, orange-red */
-            border: none;
+        .form-control:focus, .form-select:focus {
+            background-color: #383860;
+            border-color: #ff5722;
+            box-shadow: 0 0 0 0.25rem rgba(255, 87, 34, 0.25);
+            color: #e0e0e0;
         }
-        .btn-primary:hover {
-            background-color: #e03e00;
+        .btn-orange {
+            background-color: #ff5722;
+            border-color: #ff5722;
+            color: white;
+            font-size: 1.15rem;
+            padding: 12px 0;
+            border-radius: 8px;
+            width: 100%;
+            transition: background-color 0.3s ease;
         }
-        #results {
-            display: none;
+        .btn-orange:hover {
+            background-color: #e64a19;
+            border-color: #e64a19;
+            color: white;
         }
         .loader {
             display: none;
             text-align: center;
-            margin: 20px 0;
+            margin: 30px 0;
         }
-        .list-group-item {
-            background-color: #495057;
-            color: #ffffff;
-            border: 1px solid #6c757d;
+        .loader .spinner-border {
+            color: #ff5722;
         }
-        .nav-link {
-            color: #ffffff;
+        .loader p {
+            margin-top: 15px;
+            font-size: 1.1rem;
+            color: #ccc;
         }
-        .nav-link.active {
-            background-color: #495057;
-            color: #ff4500;
+        .alert-danger-custom {
+            background-color: #ff572220;
+            color: #ff5722;
+            border-color: #ff572250;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            text-align: center;
+            padding: 30px;
+            background-color: #2a2a4a;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .profile-avatar-wrapper {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background-color: #555577; /* Placeholder color for avatar */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid #ff5722; /* Orange ring */
+            overflow: hidden; /* To keep level inside */
+        }
+        .profile-avatar-wrapper .level-tag {
+            position: absolute;
+            bottom: -10px;
+            background-color: #ff5722;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+        .profile-avatar-wrapper img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .profile-name {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #e0e0e0;
+            margin-bottom: 5px;
+        }
+        .profile-uid {
+            color: #aaa;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+        }
+        .profile-clan-sport {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        .profile-clan-sport span {
+            background-color: #333355;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #ff5722;
+            font-weight: bold;
+        }
+        .profile-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        .profile-stat-item {
+            background-color: #333355;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .profile-stat-item h4 {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ff5722;
+            margin-bottom: 5px;
+        }
+        .profile-stat-item p {
+            font-size: 0.9rem;
+            color: #ccc;
+            margin: 0;
+        }
+        .profile-ranks-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        .profile-rank-item {
+            background-color: #333355;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .profile-rank-item h5 {
+            font-size: 1.1rem;
+            color: #e0e0e0;
+            margin-bottom: 5px;
+        }
+        .profile-rank-item p {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ff5722;
+            margin: 0;
+        }
+        .profile-quote {
+            font-style: italic;
+            color: #aaa;
+            font-size: 0.95rem;
+            margin-top: 20px;
+        }
+
+        /* Stats Card */
+        .stats-card {
+            background-color: #2a2a4a;
+            border-radius: 10px;
+            padding: 20px; /* Adjust padding for stats card */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+        .nav-tabs-custom {
+            border-bottom: none;
+            margin-bottom: 20px;
+        }
+        .nav-tabs-custom .nav-item .nav-link {
+            background-color: #333355;
+            color: #ccc;
+            border: none;
+            border-radius: 8px;
+            margin-right: 10px;
+            padding: 10px 20px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .nav-tabs-custom .nav-item .nav-link.active {
+            background-color: #ff5722;
+            color: white;
+            box-shadow: 0 4px 8px rgba(255, 87, 34, 0.3);
+        }
+        .nav-tabs-custom .nav-item .nav-link:hover:not(.active) {
+            background-color: #444466;
+            color: #e0e0e0;
+        }
+        .stats-list .list-group-item {
+            background-color: #333355;
+            border: none;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .stats-list .list-group-item strong {
+            color: #e0e0e0;
+            font-weight: normal;
+            font-size: 1.05rem;
+        }
+        .stats-list .list-group-item span {
+            color: #ff5722;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .stats-list .list-group-item i {
+            margin-right: 10px;
+            color: #ff5722;
+            font-size: 1.2rem;
+        }
+        .stats-category-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #e0e0e0;
+            margin-bottom: 15px;
+            margin-top: 25px;
+        }
+        .footer-section {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        .footer-section .heart-icon {
+            color: #ff5722;
+            margin: 0 5px;
+        }
+        .footer-section a {
+            color: #ff5722;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .footer-section a:hover {
+            text-decoration: underline;
+        }
+
+        /* Adjustments for icons in stats list */
+        .stats-list .list-group-item strong {
+            display: flex;
+            align-items: center;
+        }
+        .stats-list .list-group-item strong i {
+            width: 20px; /* Fixed width for icons */
+            text-align: center;
+            margin-right: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="text-center mb-4">Free Fire Player Info</h1>
+    <div class="container-main">
+        <div class="header-section">
+            <h1 class="text-white"><i class="fas fa-fire me-2"></i>Free Fire Stats Finder</h1>
+            <p>Get real-time player stats and personal info for BR & CS!</p>
+        </div>
         
-        <div class="card shadow-lg">
-            <div class="card-body">
-                <form id="searchForm">
-                    <div class="mb-3">
-                        <label for="uid" class="form-label">UID</label>
-                        <input type="text" class="form-control" id="uid" placeholder="Enter UID" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="server" class="form-label">Server</label>
-                        <select class="form-select" id="server" required>
-                            <option value="IND">IND</option>
-                            <option value="SG">SG</option>
-                            <option value="RU">RU</option>
-                            <option value="ID">ID</option>
-                            <option value="TW">TW</option>
-                            <option value="US">US</option>
-                            <option value="VN">VN</option>
-                            <option value="TH">TH</option>
-                            <option value="ME">ME</option>
-                            <option value="PK">PK</option>
-                            <option value="CIS">CIS</option>
-                            <option value="BR">BR</option>
-                            <option value="BD" selected>BD</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">Search</button>
-                </form>
-            </div>
+        <div class="card-custom">
+            <form id="searchForm">
+                <div class="mb-3">
+                    <label for="uid" class="form-label">Player UID</label>
+                    <input type="text" class="form-control" id="uid" placeholder="Enter player UID e.g., 8035061359" required>
+                </div>
+                <div class="mb-4">
+                    <label for="server" class="form-label">Server</label>
+                    <select class="form-select" id="server" required>
+                        <option value="BD">BD</option>
+                        <option value="IND">IND</option>
+                        <option value="SG">SG</option>
+                        <option value="RU">RU</option>
+                        <option value="ID">ID</option>
+                        <option value="TW">TW</option>
+                        <option value="US">US</option>
+                        <option value="VN">VN</option>
+                        <option value="TH">TH</option>
+                        <option value="ME">ME</option>
+                        <option value="PK">PK</option>
+                        <option value="CIS">CIS</option>
+                        <option value="BR">BR</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-orange">Search Player</button>
+            </form>
         </div>
         
         <div class="loader" id="loader">
-            <div class="spinner-border text-primary" role="status">
+            <div class="spinner-border" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
             <p>Loading player info...</p>
         </div>
         
-        <div id="results">
-            <div class="alert alert-danger" id="error" style="display: none;"></div>
-            
-            <!-- Personal Info -->
-            <div class="card shadow-lg" id="personalCard">
-                <div class="card-header">
-                    <h5>Personal Info</h5>
+        <div class="alert-danger-custom" id="error"></div>
+        
+        <div id="results" style="display: none;">
+            <!-- Player Profile Card -->
+            <div class="profile-card" id="profileCard">
+                <div class="profile-avatar-wrapper">
+                    <img src="" alt="Player Avatar" id="playerAvatar" style="display:none;">
+                    <div class="level-tag" id="playerLevel">Lv. 0</div>
                 </div>
-                <div class="card-body">
-                    <div id="personalInfo"></div>
+                <h2 class="profile-name" id="playerName"></h2>
+                <p class="profile-uid">UID: <span id="playerUID"></span></p>
+                
+                <div class="profile-clan-sport">
+                    <span id="playerClan">Clan: N/A</span>
+                    <span id="playerSport">SPORTS</span> <!-- Assuming 'SPORTS' is static for the example -->
                 </div>
+
+                <div class="profile-stats-grid">
+                    <div class="profile-stat-item">
+                        <h4 id="playerLikes">0</h4>
+                        <p>Likes</p>
+                    </div>
+                    <div class="profile-stat-item">
+                        <h4 id="playerBadges">0</h4>
+                        <p>Badges</p>
+                    </div>
+                </div>
+
+                <div class="profile-ranks-grid">
+                    <div class="profile-rank-item">
+                        <h5>Region</h5>
+                        <p id="playerRegion">N/A</p>
+                    </div>
+                    <div class="profile-rank-item">
+                        <h5>BR Rank</h5>
+                        <p id="playerBRRank">N/A</p>
+                    </div>
+                    <div class="profile-rank-item">
+                        <h5>CS Rank</h5>
+                        <p id="playerCSRank">N/A</p>
+                    </div>
+                    <div class="profile-rank-item">
+                        <h5>Last Login</h5>
+                        <p id="playerLastLogin">N/A</p>
+                    </div>
+                </div>
+                <p class="profile-quote" id="playerQuote">"..."</p>
             </div>
-            
-            <!-- Stats Info -->
-            <div class="card shadow-lg" id="statsCard">
-                <div class="card-header">
-                    <h5>Player Stats (RANKED - BR)</h5>
-                </div>
-                <div class="card-body">
-                    <ul class="nav nav-tabs" id="statsTabs">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#soloStats">Solo</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#duoStats">Duo</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#squadStats">Squad</a>
-                        </li>
-                    </ul>
-                    <div class="tab-content mt-3">
-                        <div id="soloStats" class="tab-pane active"></div>
-                        <div id="duoStats" class="tab-pane"></div>
-                        <div id="squadStats" class="tab-pane"></div>
+
+            <!-- Stats Card -->
+            <div class="stats-card" id="statsDetailCard">
+                <ul class="nav nav-tabs-custom" id="statsTabs">
+                    <li class="nav-item">
+                        <button class="nav-link active" id="battleRoyaleTab" data-bs-toggle="tab" data-bs-target="#battleRoyaleStats" type="button" role="tab" aria-controls="battleRoyaleStats" aria-selected="true">Battle Royale</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" id="clashSquadTab" data-bs-toggle="tab" data-bs-target="#clashSquadStats" type="button" role="tab" aria-controls="clashSquadStats" aria-selected="false">Clash Squad</button>
+                    </li>
+                </ul>
+                <div class="tab-content mt-3">
+                    <div class="tab-pane fade show active" id="battleRoyaleStats" role="tabpanel" aria-labelledby="battleRoyaleTab">
+                        <!-- Solo/Duo/Squad tabs for BR will be here -->
+                        <ul class="nav nav-tabs-custom" id="brStatsModeTabs">
+                            <li class="nav-item">
+                                <button class="nav-link active" id="brSoloTab" data-bs-toggle="tab" data-bs-target="#brSoloContent" type="button" role="tab" aria-controls="brSoloContent" aria-selected="true">Solo</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" id="brDuoTab" data-bs-toggle="tab" data-bs-target="#brDuoContent" type="button" role="tab" aria-controls="brDuoContent" aria-selected="false">Duo</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" id="brSquadTab" data-bs-toggle="tab" data-bs-target="#brSquadContent" type="button" role="tab" aria-controls="brSquadContent" aria-selected="false">Squad</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content mt-3">
+                            <div class="tab-pane fade show active" id="brSoloContent" role="tabpanel" aria-labelledby="brSoloTab">
+                                <div class="stats-list list-group" id="soloStatsList">
+                                    <p class="text-center text-muted">No ranked matches played in this mode.</p>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="brDuoContent" role="tabpanel" aria-labelledby="brDuoTab">
+                                <div class="stats-list list-group" id="duoStatsList"></div>
+                            </div>
+                            <div class="tab-pane fade" id="brSquadContent" role="tabpanel" aria-labelledby="brSquadTab">
+                                <div class="stats-list list-group" id="squadStatsList"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="clashSquadStats" role="tabpanel" aria-labelledby="clashSquadTab">
+                        <!-- Content for Clash Squad Stats -->
+                        <div class="stats-list list-group" id="clashSquadStatsList">
+                             <p class="text-center text-muted">Clash Squad stats coming soon!</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="footer-section">
+        Developed with <i class="fas fa-heart heart-icon"></i> by <a href="https://github.com/Gajarbotol" target="_blank">@GAJARBOTOL</a>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js" integrity="sha512-7Pi/otER0FgBgJxwvkRPovEeF0s7KHT8r2NeFHJAEQxgMiYWAtyCPVVDjcM7TVOzscQEpCDraBP1PL7ALrZTVA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         const form = document.getElementById('searchForm');
         const loader = document.getElementById('loader');
-        const results = document.getElementById('results');
+        const resultsDiv = document.getElementById('results');
         const errorDiv = document.getElementById('error');
-        const personalInfo = document.getElementById('personalInfo');
-        const soloStats = document.getElementById('soloStats');
-        const duoStats = document.getElementById('duoStats');
-        const squadStats = document.getElementById('squadStats');
 
-        // Tab functionality (simple vanilla JS)
-        const tabs = document.querySelectorAll('#statsTabs .nav-link');
-        const panes = document.querySelectorAll('.tab-content .tab-pane');
-        tabs.forEach((tab, index) => {
-            tab.addEventListener('click', (e) => {
-                e.preventDefault();
-                tabs.forEach(t => t.classList.remove('active'));
-                panes.forEach(p => p.classList.remove('active'));
-                tab.classList.add('active');
-                panes[index].classList.add('active');
-            });
-        });
+        // Profile Card Elements
+        const playerAvatar = document.getElementById('playerAvatar');
+        const playerLevel = document.getElementById('playerLevel');
+        const playerName = document.getElementById('playerName');
+        const playerUID = document.getElementById('playerUID');
+        const playerClan = document.getElementById('playerClan');
+        const playerLikes = document.getElementById('playerLikes');
+        const playerBadges = document.getElementById('playerBadges');
+        const playerRegion = document.getElementById('playerRegion');
+        const playerBRRank = document.getElementById('playerBRRank');
+        const playerCSRank = document.getElementById('playerCSRank');
+        const playerLastLogin = document.getElementById('playerLastLogin');
+        const playerQuote = document.getElementById('playerQuote');
+
+        // Stats Lists
+        const soloStatsList = document.getElementById('soloStatsList');
+        const duoStatsList = document.getElementById('duoStatsList');
+        const squadStatsList = document.getElementById('squadStatsList');
+        const clashSquadStatsList = document.getElementById('clashSquadStatsList');
+
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -184,20 +505,43 @@
                 const personalRes = await fetch(personalUrl);
                 if (!personalRes.ok) throw new Error('Failed to fetch personal info');
                 const personalData = await personalRes.json();
-
-                // Fetch Stats
-                const statsUrl = `https://ff-info-gajarbotol.vercel.app/get_player_stats?server=${server}&uid=${uid}&matchmode=RANKED&gamemode=br`;
-                const statsRes = await fetch(statsUrl);
-                if (!statsRes.ok) throw new Error('Failed to fetch stats');
-                const statsData = await statsRes.json();
-
-                if (!personalData.status === 'success' || !statsData.success) {
-                    throw new Error('API response unsuccessful');
+                
+                if (personalData.status !== 'success') {
+                    throw new Error(personalData.message || 'Player not found or API error.');
                 }
 
-                displayPersonalInfo(personalData.data);
-                displayStats(statsData.data);
-                results.style.display = 'block';
+                // Fetch BR Stats
+                const brStatsUrl = `https://ff-info-gajarbotol.vercel.app/get_player_stats?server=${server}&uid=${uid}&matchmode=RANKED&gamemode=br`;
+                const brStatsRes = await fetch(brStatsUrl);
+                if (!brStatsRes.ok) throw new Error('Failed to fetch BR stats');
+                const brStatsData = await brStatsRes.json();
+
+                if (!brStatsData.success) {
+                    throw new Error(brStatsData.message || 'BR Stats not found or API error.');
+                }
+                
+                 // Fetch CS Stats (You will need to implement a similar API call for CS if available)
+                const csStatsUrl = `https://ff-info-gajarbotol.vercel.app/get_player_stats?server=${server}&uid=${uid}&matchmode=RANKED&gamemode=cs`; // Example, adjust if your API endpoint is different
+                const csStatsRes = await fetch(csStatsUrl);
+                if (!csStatsRes.ok) {
+                    console.warn("Failed to fetch CS stats. Displaying placeholder.");
+                    // Set a placeholder message for CS stats
+                    clashSquadStatsList.innerHTML = '<p class="text-center text-muted">Clash Squad stats are currently unavailable or player has no ranked CS matches.</p>';
+                } else {
+                    const csStatsData = await csStatsRes.json();
+                    if (csStatsData.success) {
+                        displayClashSquadStats(csStatsData.data);
+                    } else {
+                        console.warn(csStatsData.message || "CS Stats API returned unsuccessful status.");
+                        clashSquadStatsList.innerHTML = '<p class="text-center text-muted">Clash Squad stats are currently unavailable or player has no ranked CS matches.</p>';
+                    }
+                }
+
+
+                displayProfileInfo(personalData.data);
+                displayBRStats(brStatsData.data);
+                resultsDiv.style.display = 'block';
+
             } catch (err) {
                 showError(err.message);
             } finally {
@@ -207,7 +551,7 @@
 
         function showLoader() {
             loader.style.display = 'block';
-            results.style.display = 'none';
+            resultsDiv.style.display = 'none';
         }
 
         function hideLoader() {
@@ -217,103 +561,137 @@
         function showError(msg) {
             errorDiv.textContent = msg;
             errorDiv.style.display = 'block';
-            results.style.display = 'block';
+            resultsDiv.style.display = 'none'; // Hide results if there's an error
         }
 
         function clearResults() {
-            personalInfo.innerHTML = '';
-            soloStats.innerHTML = '';
-            duoStats.innerHTML = '';
-            squadStats.innerHTML = '';
+            playerName.textContent = '';
+            playerUID.textContent = '';
+            playerLevel.textContent = 'Lv. 0';
+            playerAvatar.style.display = 'none';
+            playerAvatar.src = '';
+            playerClan.textContent = 'Clan: N/A';
+            playerLikes.textContent = '0';
+            playerBadges.textContent = '0';
+            playerRegion.textContent = 'N/A';
+            playerBRRank.textContent = 'N/A';
+            playerCSRank.textContent = 'N/A';
+            playerLastLogin.textContent = 'N/A';
+            playerQuote.textContent = '"..."';
+
+            soloStatsList.innerHTML = '<p class="text-center text-muted">No ranked matches played in this mode.</p>';
+            duoStatsList.innerHTML = '<p class="text-center text-muted">No ranked matches played in this mode.</p>';
+            squadStatsList.innerHTML = '<p class="text-center text-muted">No ranked matches played in this mode.</p>';
+            clashSquadStatsList.innerHTML = '<p class="text-center text-muted">Clash Squad stats coming soon!</p>';
         }
 
-        function displayPersonalInfo(data) {
-            let html = '<h6>Basic Info</h6><ul class="list-group mb-3">';
-            for (let key in data.basicinfo) {
-                html += `<li class="list-group-item"><strong>${key}:</strong> ${JSON.stringify(data.basicinfo[key])}</li>`;
-            }
-            html += '</ul>';
+        function displayProfileInfo(data) {
+            // Basic Info
+            playerName.textContent = data.basicinfo.nickname || 'N/A';
+            playerUID.textContent = data.basicinfo.uid || 'N/A';
+            playerLevel.textContent = `Lv. ${data.basicinfo.level || '0'}`;
 
-            html += '<h6>Profile Info</h6><ul class="list-group mb-3">';
-            for (let key in data.profileinfo) {
-                html += `<li class="list-group-item"><strong>${key}:</strong> ${JSON.stringify(data.profileinfo[key])}</li>`;
+            if (data.basicinfo.avatar && data.basicinfo.avatar !== 'https://cdn.emojicdn.xyz/null') {
+                playerAvatar.src = data.basicinfo.avatar;
+                playerAvatar.style.display = 'block';
+            } else {
+                playerAvatar.style.display = 'none';
             }
-            html += '</ul>';
 
-            html += '<h6>Clan Basic Info</h6><ul class="list-group mb-3">';
-            for (let key in data.clanbasicinfo) {
-                html += `<li class="list-group-item"><strong>${key}:</strong> ${JSON.stringify(data.clanbasicinfo[key])}</li>`;
-            }
-            html += '</ul>';
+            // Clan Info
+            playerClan.textContent = `Clan: ${data.clanbasicinfo.clanname || 'N/A'}`;
 
-            html += '<h6>Captain Basic Info</h6><ul class="list-group mb-3">';
-            for (let key in data.captainbasicinfo) {
-                html += `<li class="list-group-item"><strong>${key}:</strong> ${JSON.stringify(data.captainbasicinfo[key])}</li>`;
-            }
-            html += '</ul>';
-
-            html += '<h6>Pet Info</h6><ul class="list-group mb-3">';
-            for (let key in data.petinfo) {
-                html += `<li class="list-group-item"><strong>${key}:</strong> ${JSON.stringify(data.petinfo[key])}</li>`;
-            }
-            html += '</ul>';
-
-            html += '<h6>Social Info</h6><ul class="list-group mb-3">';
-            for (let key in data.socialinfo) {
-                html += `<li class="list-group-item"><strong>${key}:</strong> ${JSON.stringify(data.socialinfo[key])}</li>`;
-            }
-            html += '</ul>';
-
-            html += '<h6>Diamond Cost</h6><ul class="list-group mb-3">';
-            for (let key in data.diamondcostres) {
-                html += `<li class="list-group-item"><strong>${key}:</strong> ${JSON.stringify(data.diamondcostres[key])}</li>`;
-            }
-            html += '</ul>';
-
-            html += '<h6>Credit Score Info</h6><ul class="list-group">';
-            for (let key in data.creditscoreinfo) {
-                html += `<li class="list-group-item"><strong>${key}:</strong> ${JSON.stringify(data.creditscoreinfo[key])}</li>`;
-            }
-            html += '</ul>';
-
-            personalInfo.innerHTML = html;
+            // Profile Info (Likes, Badges, etc.)
+            playerLikes.textContent = data.profileinfo.likes || '0';
+            playerBadges.textContent = data.profileinfo.badges || '0';
+            playerRegion.textContent = data.profileinfo.region || 'N/A';
+            playerBRRank.textContent = data.profileinfo.br_rank || 'N/A';
+            playerCSRank.textContent = data.profileinfo.cs_rank || 'N/A';
+            playerLastLogin.textContent = data.profileinfo.last_login_date || 'N/A';
+            
+            // Social Info for the quote
+            const quote = data.socialinfo.player_bio || 'Wow, আপনি আমার প্রোফাইল চেক করতাছেন!'; // Default quote from screenshot
+            playerQuote.textContent = `"${quote}"`;
+        }
+        
+        function formatStatItem(iconClass, label, value) {
+            return `<li class="list-group-item"><strong><i class="${iconClass}"></i>${label}:</strong> <span>${value}</span></li>`;
         }
 
-        function displayStats(data) {
-            // Solo
-            let soloHtml = '<ul class="list-group">';
-            soloHtml += `<li class="list-group-item"><strong>Games Played:</strong> ${data.solostats.gamesplayed || 'N/A'}</li>`;
-            soloHtml += `<li class="list-group-item"><strong>Kills:</strong> ${data.solostats.kills || 'N/A'}</li>`;
-            for (let key in data.solostats.detailedstats) {
-                soloHtml += `<li class="list-group-item"><strong>${key}:</strong> ${data.solostats.detailedstats[key]}</li>`;
+        function displayBRStats(data) {
+            // Solo Stats
+            if (data.solostats && data.solostats.gamesplayed > 0) {
+                let html = '';
+                html += formatStatItem('fas fa-gamepad', 'Matches Played', data.solostats.gamesplayed);
+                html += formatStatItem('fas fa-skull', 'Kills', data.solostats.kills);
+                html += formatStatItem('fas fa-crosshairs', 'Headshot Kills', data.solostats.headshotkills || 0);
+                html += formatStatItem('fas fa-percentage', 'Headshot Rate', `${(data.solostats.headshotrate * 100).toFixed(2)}%` || '0.00%');
+                html += formatStatItem('fas fa-fire-alt', 'Damage', data.solostats.damage || 0);
+                html += formatStatItem('fas fa-heartbeat', 'Revives', data.solostats.revives || 0);
+                html += formatStatItem('fas fa-trophy', 'Wins', data.solostats.wins || 0);
+                html += formatStatItem('fas fa-frown', 'Deaths', data.solostats.deaths || 0);
+                html += formatStatItem('fas fa-chart-line', 'K/D Ratio', (data.solostats.kd_ratio || 0).toFixed(2));
+                soloStatsList.innerHTML = html;
+            } else {
+                soloStatsList.innerHTML = '<p class="text-center text-muted">No ranked matches played in this mode.</p>';
             }
-            soloHtml += '</ul>';
-            soloStats.innerHTML = soloHtml;
 
-            // Duo
-            let duoHtml = '<ul class="list-group">';
-            duoHtml += `<li class="list-group-item"><strong>Games Played:</strong> ${data.duostats.gamesplayed}</li>`;
-            duoHtml += `<li class="list-group-item"><strong>Kills:</strong> ${data.duostats.kills}</li>`;
-            if (data.duostats.wins !== undefined) {
-                duoHtml += `<li class="list-group-item"><strong>Wins:</strong> ${data.duostats.wins}</li>`;
+            // Duo Stats
+            if (data.duostats && data.duostats.gamesplayed > 0) {
+                let html = '';
+                html += formatStatItem('fas fa-gamepad', 'Matches Played', data.duostats.gamesplayed);
+                html += formatStatItem('fas fa-trophy', 'Wins', data.duostats.wins || 0);
+                html += formatStatItem('fas fa-skull', 'Kills', data.duostats.kills);
+                html += formatStatItem('fas fa-frown', 'Deaths', data.duostats.deaths || 0);
+                html += formatStatItem('fas fa-chart-line', 'K/D Ratio', (data.duostats.kd_ratio || 0).toFixed(2));
+                html += formatStatItem('fas fa-crosshairs', 'Headshot Kills', data.duostats.headshotkills || 0);
+                html += formatStatItem('fas fa-percentage', 'Headshot Rate', `${(data.duostats.headshotrate * 100).toFixed(2)}%` || '0.00%');
+                html += formatStatItem('fas fa-fire-alt', 'Damage', data.duostats.damage || 0);
+                html += formatStatItem('fas fa-heartbeat', 'Revives', data.duostats.revives || 0);
+                duoStatsList.innerHTML = html;
+            } else {
+                duoStatsList.innerHTML = '<p class="text-center text-muted">No ranked matches played in this mode.</p>';
             }
-            for (let key in data.duostats.detailedstats) {
-                duoHtml += `<li class="list-group-item"><strong>${key}:</strong> ${data.duostats.detailedstats[key]}</li>`;
-            }
-            duoHtml += '</ul>';
-            duoStats.innerHTML = duoHtml;
 
-            // Squad (quad)
-            let squadHtml = '<ul class="list-group">';
-            squadHtml += `<li class="list-group-item"><strong>Games Played:</strong> ${data.quadstats.gamesplayed}</li>`;
-            squadHtml += `<li class="list-group-item"><strong>Kills:</strong> ${data.quadstats.kills}</li>`;
-            squadHtml += `<li class="list-group-item"><strong>Wins:</strong> ${data.quadstats.wins}</li>`;
-            for (let key in data.quadstats.detailedstats) {
-                squadHtml += `<li class="list-group-item"><strong>${key}:</strong> ${data.quadstats.detailedstats[key]}</li>`;
+            // Squad Stats (quadstats in your API)
+            if (data.quadstats && data.quadstats.gamesplayed > 0) {
+                let html = '';
+                html += formatStatItem('fas fa-gamepad', 'Matches Played', data.quadstats.gamesplayed);
+                html += formatStatItem('fas fa-trophy', 'Wins', data.quadstats.wins || 0);
+                html += formatStatItem('fas fa-skull', 'Kills', data.quadstats.kills);
+                html += formatStatItem('fas fa-frown', 'Deaths', data.quadstats.deaths || 0);
+                html += formatStatItem('fas fa-chart-line', 'K/D Ratio', (data.quadstats.kd_ratio || 0).toFixed(2));
+                html += formatStatItem('fas fa-crosshairs', 'Headshot Kills', data.quadstats.headshotkills || 0);
+                html += formatStatItem('fas fa-percentage', 'Headshot Rate', `${(data.quadstats.headshotrate * 100).toFixed(2)}%` || '0.00%');
+                html += formatStatItem('fas fa-fire-alt', 'Damage', data.quadstats.damage || 0);
+                html += formatStatItem('fas fa-heartbeat', 'Revives', data.quadstats.revives || 0);
+                squadStatsList.innerHTML = html;
+            } else {
+                squadStatsList.innerHTML = '<p class="text-center text-muted">No ranked matches played in this mode.</p>';
             }
-            squadHtml += '</ul>';
-            squadStats.innerHTML = squadHtml;
         }
+        
+        function displayClashSquadStats(data) {
+            // Assuming your CS stats API returns a similar structure, or directly provides overall CS stats.
+            // For now, let's use a simplified example based on common CS stats.
+            if (data && data.totalstats && data.totalstats.gamesplayed > 0) {
+                 let html = '';
+                html += `<h4 class="stats-category-title mt-0">Overall CS Stats</h4>`;
+                html += formatStatItem('fas fa-gamepad', 'Matches Played', data.totalstats.gamesplayed || 0);
+                html += formatStatItem('fas fa-trophy', 'Wins', data.totalstats.wins || 0);
+                html += formatStatItem('fas fa-skull', 'Kills', data.totalstats.kills || 0);
+                html += formatStatItem('fas fa-frown', 'Deaths', data.totalstats.deaths || 0);
+                html += formatStatItem('fas fa-chart-line', 'K/D Ratio', (data.totalstats.kd_ratio || 0).toFixed(2));
+                html += formatStatItem('fas fa-crosshairs', 'Headshot Kills', data.totalstats.headshotkills || 0);
+                html += formatStatItem('fas fa-percentage', 'Headshot Rate', `${(data.totalstats.headshotrate * 100).toFixed(2)}%` || '0.00%');
+                html += formatStatItem('fas fa-fire-alt', 'Damage', data.totalstats.damage || 0);
+                html += formatStatItem('fas fa-heartbeat', 'Revives', data.totalstats.revives || 0);
+                clashSquadStatsList.innerHTML = html;
+            } else {
+                clashSquadStatsList.innerHTML = '<p class="text-center text-muted">No ranked CS matches found for this player.</p>';
+            }
+        }
+
     </script>
 </body>
 </html>
