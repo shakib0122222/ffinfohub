@@ -1,4 +1,4 @@
-<DOCUMENT filename="index (5).html">
+<DOCUMENT filename="index.html">
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -94,7 +94,7 @@
         }
 
         .form-group select {
-            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%20197.352L146.2%2056.638L5.4%20197.352H287z%22/%3E%3C/svg%3E');
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%20197.352L146.2%2056.638L5.4%20197.352H287z%22%2F%3E%3C%2Fsvg%3E');
             background-repeat: no-repeat;
             background-position: right 15px center;
             background-size: 12px;
@@ -521,6 +521,9 @@
                 <p class="quote" id="profileSignature">"No signature set."</p>
             </div>
 
+            <!-- Detailed Personal Info -->
+            <div id="detailedPersonal" class="tab-content"></div>
+
             <!-- Tabs for Battle Royale / Clash Squad -->
             <div class="tabs">
                 <button class="tab-btn active" data-gamemode="br">Battle Royale</button>
@@ -591,6 +594,8 @@
         const profileLastLogin = document.getElementById('profileLastLogin');
         const profileSignature = document.getElementById('profileSignature');
 
+        const detailedPersonal = document.getElementById('detailedPersonal');
+
         const brTabContent = document.getElementById('brTabContent');
         const csTabContent = document.getElementById('csTabContent');
         const brSoloStatsDiv = document.getElementById('brSoloStats');
@@ -618,30 +623,26 @@
                 targetDiv.innerHTML = `<h3 class="no-data">No ${gamemode} data found for this mode.</h3>`;
                 return;
             }
-            
-            // Example of mapping API response to display (adjust as per actual API fields)
-            if (data.total_matches) targetDiv.appendChild(createStatItem('Matches Played', data.total_matches));
-            if (data.wins) targetDiv.appendChild(createStatItem('Wins', data.wins));
-            if (data.kills) targetDiv.appendChild(createStatItem('Kills', data.kills));
-            if (data.deaths) targetDiv.appendChild(createStatItem('Deaths', data.deaths));
-            
-            // Calculate K/D Ratio
+
+            for (let key in data) {
+                let value = data[key];
+                if (typeof value === 'object' && value !== null) {
+                    value = JSON.stringify(value);
+                }
+                targetDiv.appendChild(createStatItem(key, value));
+            }
+
+            // Calculate K/D Ratio if possible
             if (data.kills !== undefined && data.deaths !== undefined) {
                 const kdRatio = (data.deaths > 0) ? (data.kills / data.deaths).toFixed(2) : (data.kills > 0 ? data.kills : 0);
                 targetDiv.appendChild(createStatItem('K/D Ratio', kdRatio));
             }
 
-            if (data.headshots) targetDiv.appendChild(createStatItem('Headshot Kills', data.headshots));
-            
-            // Calculate Headshot Rate
+            // Calculate Headshot Rate if possible
             if (data.headshots !== undefined && data.kills !== undefined) {
                 const hsRate = (data.kills > 0) ? ((data.headshots / data.kills) * 100).toFixed(2) + '%' : '0.00%';
                 targetDiv.appendChild(createStatItem('Headshot Rate', hsRate));
             }
-            
-            if (data.damage) targetDiv.appendChild(createStatItem('Damage', data.damage));
-            if (data.revives) targetDiv.appendChild(createStatItem('Revives', data.revives));
-            // Add more stats as needed from your API response
         }
 
         // Tab switching logic
@@ -667,7 +668,7 @@
 
             resultsDiv.style.display = 'none'; // Hide previous results
             errorMessage.style.display = 'none'; // Hide previous error
-            
+
             if (!playerUid) {
                 errorMessage.textContent = 'Please enter a Player UID.';
                 errorMessage.style.display = 'block';
@@ -681,27 +682,45 @@
                 const personalInfoResponse = await fetch(`${BASE_URL}get_player_personal_show?server=${server}&uid=${playerUid}`);
                 const personalInfo = await personalInfoResponse.json();
 
-                if (personalInfo.status === true && personalInfo.data) {
+                if ((personalInfo.status === true || personalInfo.status === 'success') && personalInfo.data) {
                     const data = personalInfo.data;
-                    profileAvatarChar.textContent = data.nickname ? data.nickname.charAt(0).toUpperCase() : '?';
-                    profileLevel.textContent = `Lv. ${data.level || '??'}`;
-                    profileNickname.textContent = data.nickname || 'N/A';
-                    profileUidDisplay.textContent = `UID: ${data.account_id || 'N/A'}`;
-                    profileClan.textContent = `Clan: ${data.clan_name || 'N/A'}`;
-                    profileLikes.textContent = data.likes || '0';
-                    profileBadges.textContent = data.badge || '0'; // Assuming badge count is separate
-                    profileRegion.textContent = data.region || 'N/A';
-                    // BR and CS ranks will be updated from the stats API call
-                    profileLastLogin.textContent = data.last_login ? new Date(data.last_login * 1000).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
-                    profileSignature.textContent = data.signature || '"No signature set."';
 
-                    // For the rank icon, you might need an image or Font Awesome if available.
-                    // For now, it's empty or can be a simple text like 'CR' from your screenshot
-                    profileRankIcon.textContent = data.current_rank_br ? data.current_rank_br.rank_name || '' : ''; // You can parse this to an icon if needed
+                    // Set main profile fields (assuming nested structure; adjust keys as per actual API)
+                    profileAvatarChar.textContent = (data.basicinfo && data.basicinfo.nickname) ? data.basicinfo.nickname.charAt(0).toUpperCase() : '?';
+                    profileLevel.textContent = `Lv. ${(data.basicinfo && data.basicinfo.level) || '??'}`;
+                    profileNickname.textContent = (data.basicinfo && data.basicinfo.nickname) || 'N/A';
+                    profileUidDisplay.textContent = `UID: ${(data.basicinfo && data.basicinfo.account_id) || 'N/A'}`;
+                    profileClan.textContent = `Clan: ${(data.clanbasicinfo && data.clanbasicinfo.clan_name) || 'N/A'}`;
+                    profileLikes.textContent = (data.socialinfo && data.socialinfo.likes) || '0';
+                    profileBadges.textContent = (data.profileinfo && data.profileinfo.badge) || '0';
+                    profileRegion.textContent = (data.basicinfo && data.basicinfo.region) || 'N/A';
+                    profileLastLogin.textContent = (data.profileinfo && data.profileinfo.last_login) ? new Date(data.profileinfo.last_login * 1000).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
+                    profileSignature.textContent = (data.profileinfo && data.profileinfo.signature) || '"No signature set."';
+                    profileRankIcon.textContent = (data.basicinfo && data.basicinfo.current_rank_br) ? data.basicinfo.current_rank_br.rank_name || '' : '';
+
+                    // Display detailed personal info
+                    let detailedHtml = '';
+                    for (const section in data) {
+                        detailedHtml += `<div class="mode-section">
+                            <h3>${section.charAt(0).toUpperCase() + section.slice(1)}</h3>
+                            <div class="stats-list">`;
+                        for (let key in data[section]) {
+                            let value = data[section][key];
+                            if (typeof value === 'object' && value !== null) {
+                                value = JSON.stringify(value);
+                            }
+                            detailedHtml += `<div class="info-item"><span>${key}:</span> <span>${value}</span></div>`;
+                        }
+                        detailedHtml += '</div></div>';
+                    }
+                    detailedPersonal.innerHTML = detailedHtml;
 
                 } else {
                     errorMessage.textContent = personalInfo.message || 'Failed to fetch personal info.';
                     errorMessage.style.display = 'block';
+                    // Reset profile fields
+                    profileAvatarChar.textContent = '?';
+                    profileLevel.textContent = 'Lv. ??';
                     profileNickname.textContent = 'Player Nickname';
                     profileUidDisplay.textContent = 'UID: N/A';
                     profileClan.textContent = 'Clan: N/A';
@@ -712,68 +731,46 @@
                     profileCSRank.textContent = 'N/A';
                     profileLastLogin.textContent = 'N/A';
                     profileSignature.textContent = '"No signature set."';
-                    profileAvatarChar.textContent = '?';
-                    profileLevel.textContent = 'Lv. ??';
                     profileRankIcon.textContent = '';
+                    detailedPersonal.innerHTML = '';
                 }
 
-                // --- API Call for BR Ranked Stats ---
+                // --- API Call for BR Stats ---
                 const brResponse = await fetch(`${BASE_URL}get_player_stats?server=${server}&uid=${playerUid}&matchmode=RANKED&gamemode=br`);
                 const brStats = await brResponse.json();
 
                 let brRankedData = {};
-                if (brStats.status === true && brStats.data) {
+                if ((brStats.success || brStats.status === true) && brStats.data) {
                     brRankedData = brStats.data;
                 } else {
-                    errorMessage.textContent = brStats.message || 'Failed to fetch BR stats.';
+                    errorMessage.textContent = (errorMessage.textContent ? errorMessage.textContent + ' ' : '') + (brStats.message || 'Failed to fetch BR stats.');
                     errorMessage.style.display = 'block';
                 }
 
-                // --- API Call for CS Ranked Stats ---
+                // --- API Call for CS Stats ---
                 const csResponse = await fetch(`${BASE_URL}get_player_stats?server=${server}&uid=${playerUid}&matchmode=RANKED&gamemode=cs`);
                 const csStats = await csResponse.json();
 
                 let csRankedData = {};
-                if (csStats.status === true && csStats.data) {
+                if ((csStats.success || csStats.status === true) && csStats.data) {
                     csRankedData = csStats.data;
                 } else {
                     errorMessage.textContent = (errorMessage.textContent ? errorMessage.textContent + ' ' : '') + (csStats.message || 'Failed to fetch CS stats.');
                     errorMessage.style.display = 'block';
                 }
 
-                // Update BR/CS Ranks on profile card
+                // Update ranks
                 profileBRRank.textContent = brRankedData.current_rank ? brRankedData.current_rank.rank_name || 'N/A' : 'N/A';
                 profileCSRank.textContent = csRankedData.current_rank ? csRankedData.current_rank.rank_name || 'N/A' : 'N/A';
 
-                // BR Solo
-                if (brRankedData.solo) {
-                    renderStats(brSoloStatsDiv, brRankedData.solo, 'BR Solo');
-                } else {
-                    brSoloStatsDiv.innerHTML = `<h3 class="no-data">No BR Solo ranked data found.</h3>`;
-                }
-                
-                // BR Duo
-                if (brRankedData.duo) {
-                    renderStats(brDuoStatsDiv, brRankedData.duo, 'BR Duo');
-                } else {
-                    brDuoStatsDiv.innerHTML = `<h3 class="no-data">No BR Duo ranked data found.</h3>`;
-                }
+                // Render BR stats
+                renderStats(brSoloStatsDiv, brRankedData.solostats || {}, 'BR Solo');
+                renderStats(brDuoStatsDiv, brRankedData.duostats || {}, 'BR Duo');
+                renderStats(brSquadStatsDiv, brRankedData.quadstats || {}, 'BR Squad');
 
-                // BR Squad
-                if (brRankedData.squad) {
-                    renderStats(brSquadStatsDiv, brRankedData.squad, 'BR Squad');
-                } else {
-                    brSquadStatsDiv.innerHTML = `<h3 class="no-data">No BR Squad ranked data found.</h3>`;
-                }
+                // Render CS stats
+                renderStats(csRankedStatsDiv, csRankedData || {}, 'CS Ranked');
 
-                // CS Ranked
-                if (csRankedData) { // For CS, assuming the data is directly the squad stats
-                    renderStats(csRankedStatsDiv, csRankedData, 'CS Ranked');
-                    document.getElementById('csRankedTitle').textContent = 'Ranked'; // Ensure title is correct
-                } else {
-                    csRankedStatsDiv.innerHTML = `<h3 class="no-data">No CS Ranked data found.</h3>`;
-                }
-                
                 resultsDiv.style.display = 'block'; // Show results section
                 tabButtons[0].click(); // Activate BR tab by default
 
