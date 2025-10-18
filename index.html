@@ -727,6 +727,7 @@
                     throw new Error(`Personal Info API HTTP error! status: ${personalInfoResponse.status}`);
                 }
 
+ renoultimate
                 if (personalInfo.status === true && personalInfo.data) {
                     const data = personalInfo.data;
                     profileNickname.textContent = getNested(data, ['nickname'], 'Unknown Player');
