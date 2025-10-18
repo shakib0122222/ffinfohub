@@ -548,7 +548,7 @@
 
                 <!-- BR Duo -->
                 <div class="mode-section">
-                    <h3>Duo</h3>
+                    <h3 id="brDuoTitle">Duo</h3>
                     <div class="stats-list" id="brDuoStats">
                         <!-- Duo stats will be loaded here -->
                     </div>
@@ -556,7 +556,7 @@
 
                 <!-- BR Squad -->
                 <div class="mode-section">
-                    <h3>Squad</h3>
+                    <h3 id="brSquadTitle">Squad</h3>
                     <div class="stats-list" id="brSquadStats">
                         <!-- Squad stats will be loaded here -->
                     </div>
@@ -609,13 +609,18 @@
         const brSquadStatsDiv = document.getElementById('brSquadStats');
         const csRankedStatsDiv = document.getElementById('csRankedStats');
 
+        const brSoloTitle = document.getElementById('brSoloTitle');
+        const brDuoTitle = document.getElementById('brDuoTitle');
+        const brSquadTitle = document.getElementById('brSquadTitle');
+        const csRankedTitle = document.getElementById('csRankedTitle');
+
         const tabButtons = document.querySelectorAll('.tab-btn');
 
         const BASE_URL = "https://ff-info-gajarbotol.vercel.app/"; // আপনার API Base URL
 
         // Helper function to safely get nested property
         function getNested(obj, keys, defaultValue = 'N/A') {
-            return keys.reduce((acc, key) => (acc && acc[key] !== undefined) ? acc[key] : undefined, obj) || defaultValue;
+            return keys.reduce((acc, key) => (acc && typeof acc === 'object' && acc[key] !== undefined) ? acc[key] : undefined, obj) || defaultValue;
         }
 
         // Helper function to create a stat item
@@ -627,15 +632,16 @@
         }
 
         // Helper function to render stats for a given mode
-        function renderStats(targetDiv, data, modeName) {
+        function renderStats(targetDiv, data, titleElement) {
             targetDiv.innerHTML = ''; // Clear previous stats
 
-            if (!data || Object.keys(data).length === 0 || (!data.total_matches && data.total_matches !== 0)) {
-                targetDiv.parentElement.querySelector('h3').classList.add('no-data'); // Add no-data class to title
-                targetDiv.innerHTML = ``; // Clear content
+            if (!data || Object.keys(data).length === 0 || (data.total_matches === undefined && data.wins === undefined && data.kills === undefined)) {
+                titleElement.classList.add('no-data');
+                titleElement.textContent = titleElement.textContent.replace(' (No Data)', '') + ' (No Data)'; // Add "(No Data)" to title
                 return;
             } else {
-                targetDiv.parentElement.querySelector('h3').classList.remove('no-data'); // Remove if data is present
+                titleElement.classList.remove('no-data');
+                titleElement.textContent = titleElement.textContent.replace(' (No Data)', ''); // Remove "(No Data)"
             }
             
             // Example of mapping API response to display (adjust as per actual API fields)
@@ -647,8 +653,6 @@
             const kills = getNested(data, ['kills'], 0);
             const deaths = getNested(data, ['deaths'], 0);
             const headshots = getNested(data, ['headshots'], 0);
-            const totalMatches = getNested(data, ['total_matches'], 0);
-            const wins = getNested(data, ['wins'], 0);
 
             // Calculate K/D Ratio
             const kdRatio = (deaths > 0) ? (kills / deaths).toFixed(2) : (kills > 0 ? kills.toFixed(2) : '0.00');
@@ -662,7 +666,6 @@
             
             targetDiv.appendChild(createStatItem('Damage', getNested(data, ['damage'], 0)));
             targetDiv.appendChild(createStatItem('Revives', getNested(data, ['revives'], 0)));
-            // Add more stats as needed from your API response
         }
 
         // Reset all fields to default/N/A
@@ -684,21 +687,20 @@
             profileSignature.textContent = '"No signature set."';
             profileRankIcon.textContent = ''; // Clear rank icon
 
-            brSoloStatsDiv.innerHTML = `<h3 class="no-data">No Solo ranked data found.</h3>`;
-            brDuoStatsDiv.innerHTML = `<h3 class="no-data">No Duo ranked data found.</h3>`;
-            brSquadStatsDiv.innerHTML = `<h3 class="no-data">No Squad ranked data found.</h3>`;
-            csRankedStatsDiv.innerHTML = `<h3 class="no-data">No CS Ranked data found.</h3>`;
+            // Clear stats divs and reset titles
+            brSoloStatsDiv.innerHTML = ``;
+            brDuoStatsDiv.innerHTML = ``;
+            brSquadStatsDiv.innerHTML = ``;
+            csRankedStatsDiv.innerHTML = ``;
 
-            // Reset titles if they had "no-data" class
-            document.getElementById('brSoloTitle').classList.remove('no-data');
-            document.getElementById('brSoloTitle').textContent = 'Solo';
-            document.getElementById('brDuoTitle').classList.remove('no-data'); // Assuming you add an ID to Duo/Squad titles
-            document.getElementById('brDuoTitle').textContent = 'Duo';
-            document.getElementById('brSquadTitle').classList.remove('no-data'); // Assuming you add an ID to Duo/Squad titles
-            document.getElementById('brSquadTitle').textContent = 'Squad';
-            document.getElementById('csRankedTitle').classList.remove('no-data');
-            document.getElementById('csRankedTitle').textContent = 'Ranked';
-
+            brSoloTitle.classList.add('no-data');
+            brSoloTitle.textContent = 'Solo (No Data)';
+            brDuoTitle.classList.add('no-data');
+            brDuoTitle.textContent = 'Duo (No Data)';
+            brSquadTitle.classList.add('no-data');
+            brSquadTitle.textContent = 'Squad (No Data)';
+            csRankedTitle.classList.add('no-data');
+            csRankedTitle.textContent = 'Ranked (No Data)';
 
             resultsDiv.style.display = 'none';
             errorMessage.style.display = 'none';
@@ -734,14 +736,19 @@
             }
 
             loader.style.display = 'block'; // Show loader
+            console.log('Fetching data for UID:', playerUid, 'Server:', server);
 
             try {
                 // --- API Call for Player Personal Info ---
-                const personalInfoResponse = await fetch(`${BASE_URL}get_player_personal_show?server=${server}&uid=${playerUid}`);
+                const personalInfoURL = `${BASE_URL}get_player_personal_show?server=${server}&uid=${playerUid}`;
+                console.log('Personal Info URL:', personalInfoURL);
+                const personalInfoResponse = await fetch(personalInfoURL);
+                
                 if (!personalInfoResponse.ok) {
-                    throw new Error(`HTTP error! status: ${personalInfoResponse.status}`);
+                    throw new Error(`Personal Info API HTTP error! status: ${personalInfoResponse.status}`);
                 }
                 const personalInfo = await personalInfoResponse.json();
+                console.log('Personal Info API Response:', personalInfo);
 
                 if (personalInfo.status === true && personalInfo.data) {
                     const data = personalInfo.data;
@@ -776,18 +783,23 @@
                     }
 
                 } else {
-                    errorMessage.textContent = personalInfo.message || 'Failed to fetch personal info.';
+                    errorMessage.textContent = personalInfo.message || 'Failed to fetch personal info. Player not found or API error.';
                     errorMessage.style.display = 'block';
                     loader.style.display = 'none';
+                    console.error('Personal Info API returned status false or no data:', personalInfo);
                     return; // Stop execution if personal info fetch fails
                 }
 
                 // --- API Call for All Ranked Stats (BR & CS) ---
-                const statsResponse = await fetch(`${BASE_URL}get_player_stats?server=${server}&uid=${playerUid}`);
+                const statsURL = `${BASE_URL}get_player_stats?server=${server}&uid=${playerUid}`;
+                console.log('Stats API URL:', statsURL);
+                const statsResponse = await fetch(statsURL);
+                
                 if (!statsResponse.ok) {
-                    throw new Error(`HTTP error! status: ${statsResponse.status}`);
+                    throw new Error(`Stats API HTTP error! status: ${statsResponse.status}`);
                 }
                 const stats = await statsResponse.json();
+                console.log('Stats API Response:', stats);
 
                 if (stats.status === true && stats.data) {
                     const brRankedData = getNested(stats.data, ['br_ranked'], {});
@@ -796,43 +808,36 @@
                     // Update BR/CS Ranks on profile card
                     profileBRRank.textContent = getNested(brRankedData, ['current_rank', 'rank_name']);
                     profileCSRank.textContent = getNested(csRankedData, ['current_rank', 'rank_name']);
-                    // You might need to adjust the rank_icon based on the actual rank_name
-
+                    
                     // BR Solo
-                    renderStats(brSoloStatsDiv, getNested(brRankedData, ['solo'], {}), 'Solo');
+                    renderStats(brSoloStatsDiv, getNested(brRankedData, ['solo'], {}), brSoloTitle);
                     
                     // BR Duo
-                    renderStats(brDuoStatsDiv, getNested(brRankedData, ['duo'], {}), 'Duo');
+                    renderStats(brDuoStatsDiv, getNested(brRankedData, ['duo'], {}), brDuoTitle);
 
                     // BR Squad
-                    renderStats(brSquadStatsDiv, getNested(brRankedData, ['squad'], {}), 'Squad');
+                    renderStats(brSquadStatsDiv, getNested(brRankedData, ['squad'], {}), brSquadTitle);
 
-                    // CS Ranked (assuming CS ranked data is under 'squad' or similar)
-                    // Check if 'squad' exists directly under cs_ranked or if it's a different structure.
-                    // For this example, assuming 'squad' within 'cs_ranked'
-                    renderStats(csRankedStatsDiv, getNested(csRankedData, ['squad'], {}), 'CS Ranked');
+                    // CS Ranked (assuming CS ranked data is under 'squad')
+                    renderStats(csRankedStatsDiv, getNested(csRankedData, ['squad'], {}), csRankedTitle);
 
                 } else {
-                    errorMessage.textContent = stats.message || 'Failed to fetch player stats.';
+                    errorMessage.textContent = stats.message || 'Failed to fetch player stats. No stats data found or API error.';
                     errorMessage.style.display = 'block';
+                    console.error('Stats API returned status false or no data:', stats);
                 }
                 
                 resultsDiv.style.display = 'block'; // Show results section
                 tabButtons[0].click(); // Activate BR tab by default
 
             } catch (error) {
-                console.error('Error fetching player data:', error);
+                console.error('General Error fetching player data:', error);
                 errorMessage.textContent = `Failed to fetch player data: ${error.message}. Please check the UID, server, or try again later.`;
                 errorMessage.style.display = 'block';
             } finally {
                 loader.style.display = 'none'; // Hide loader
             }
         });
-        
-        // Add IDs to titles for easier styling/resetting
-        document.querySelector('.mode-section:nth-of-type(1) h3').id = 'brSoloTitle';
-        document.querySelector('.mode-section:nth-of-type(2) h3').id = 'brDuoTitle';
-        document.querySelector('.mode-section:nth-of-type(3) h3').id = 'brSquadTitle';
     </script>
 </body>
 </html>
