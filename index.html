@@ -347,11 +347,25 @@
         </div>
         <div class="form-group">
             <label for="playerUid">Player UID</label>
-            <input type="text" id="playerUid" placeholder="Enter player UID e.g., 754786952">
+            <input type="text" id="playerUid" placeholder="Enter player UID e.g., 8035061359">
         </div>
         <div class="form-group">
             <label for="server">Server</label>
-            <select id="server"></select>
+            <select id="server">
+                <option value="IND">IND</option>
+                <option value="SG">SG</option>
+                <option value="RU">RU</option>
+                <option value="ID">ID</option>
+                <option value="TW">TW</option>
+                <option value="US">US</option>
+                <option value="VN">VN</option>
+                <option value="TH">TH</option>
+                <option value="ME">ME</option>
+                <option value="PK">PK</option>
+                <option value="CIS">CIS</option>
+                <option value="BR">BR</option>
+                <option value="BD" selected>BD</option>
+            </select>
         </div>
         <button id="searchPlayerBtn">Search Player</button>
         <div class="loader" id="loader"></div>
@@ -416,12 +430,7 @@
             const SERVERS = ['IND', 'SG', 'RU', 'ID', 'TW', 'US', 'VN', 'TH', 'ME', 'PK', 'CIS', 'BR', 'BD'];
 
             function initialize() {
-                SERVERS.forEach(server => {
-                    const option = document.createElement('option');
-                    option.value = server;
-                    option.textContent = server;
-                    serverSelect.appendChild(option);
-                });
+                serverSelect.innerHTML = SERVERS.map(server => `<option value="${server}">${server}</option>`).join('');
                 serverSelect.value = 'BD';
                 searchPlayerBtn.addEventListener('click', handleSearch);
                 tabButtons.forEach(button => button.addEventListener('click', handleTabSwitch));
@@ -453,15 +462,13 @@
                 try {
                     console.log(`Fetching: ${endpoint}`);
                     const response = await fetch(endpoint);
-                    if (!response.ok) {
-                        throw new Error(`Server responded with status ${response.status}`);
-                    }
+                    if (!response.ok) throw new Error(`Server error: ${response.status}`);
                     const data = await response.json();
                     console.log(`Response from ${endpoint}:`, JSON.stringify(data, null, 2));
-                    return { success: data.status === true, data: data.data || data, error: data.message || 'Unknown API error' };
+                    return { success: data.status === true, data: data.data || {}, error: data.message || 'Unknown error' };
                 } catch (error) {
                     console.error(`Fetch error for ${endpoint}:`, error);
-                    return { success: false, error: error.message || 'Network error' };
+                    return { success: false, error: error.message };
                 }
             }
             
@@ -470,11 +477,11 @@
                 const server = serverSelect.value;
 
                 if (!uid || !/^\d+$/.test(uid)) {
-                    showError('দয়া করে একটি বৈধ নাম্বার UID ইনপুট করুন।');
+                    showError('দয়া করে একটি বৈধ UID ইনপুট করুন (শুধুমাত্র সংখ্যা)।');
                     return;
                 }
                 if (!SERVERS.includes(server)) {
-                    showError('দয়া করে একটি বৈধ সার্ভার সিলেক্ট করুন।');
+                    showError('দয়া করে একটি বৈধ সার্ভার নির্বাচন করুন।');
                     return;
                 }
 
@@ -495,7 +502,7 @@
                 showLoader(false);
 
                 if (!personalResult.success) {
-                    showError(`প্রোফাইল ডেটা লোড করা যায়নি। UID এবং সার্ভার চেক করুন। <br><small>(${personalResult.error})</small>`);
+                    showError(`প্রোফাইল ডেটা লোড করা যায়নি। UID ও সার্ভার চেক করুন।<br><small>(${personalResult.error})</small>`);
                     return;
                 }
                 
@@ -510,31 +517,24 @@
                 document.getElementById('profileAvatarChar').textContent = data.nickname ? data.nickname.charAt(0).toUpperCase() : '?';
                 document.getElementById('profileLevel').textContent = `Lv. ${data.level || '??'}`;
                 document.getElementById('profileNickname').textContent = data.nickname || 'N/A';
-                document.getElementById('profileUidDisplay').textContent = `UID: ${data.account_id || data.accountid || 'N/A'}`;
-                document.getElementById('profileClan').textContent = data.clan_name || data.clanbasicinfo?.clanname ? `Clan: ${data.clan_name || data.clanbasicinfo.clanname}` : 'No Clan';
-                document.getElementById('profileLikes').textContent = (data.likes || data.liked || 0).toLocaleString();
-                document.getElementById('profileBadges').textContent = (data.badge_id || data.badgecnt || 0).toLocaleString();
+                document.getElementById('profileUidDisplay').textContent = `UID: ${data.account_id || 'N/A'}`;
+                document.getElementById('profileClan').textContent = data.clan_name ? `Clan: ${data.clan_name}` : 'No Clan';
+                document.getElementById('profileLikes').textContent = (data.likes || 0).toLocaleString();
+                document.getElementById('profileBadges').textContent = (data.badges || 0).toLocaleString();
                 document.getElementById('profileRegion').textContent = data.region || 'N/A';
-                document.getElementById('profileBRRank').textContent = data.current_rank?.rank_name || data.rank || 'Unranked';
-                document.getElementById('profileCSRank').textContent = data.cs_rank?.rank_name || data.csrank || 'Unranked';
-                document.getElementById('profileLastLogin').textContent = data.last_login || data.lastloginat ? new Date(parseInt(data.last_login || data.lastloginat) * 1000).toLocaleDateString() : 'N/A';
-                document.getElementById('profileSignature').textContent = data.signature || data.socialinfo?.signature ? `"${(data.signature || data.socialinfo.signature).replace(/\[b\]|\[c\]|\[i\]/g, '')}"` : '"No signature set."';
+                document.getElementById('profileBRRank').textContent = data.current_rank?.rank_name || 'Unranked';
+                document.getElementById('profileCSRank').textContent = data.cs_rank?.rank_name || 'Unranked';
+                document.getElementById('profileLastLogin').textContent = data.last_login ? new Date(data.last_login * 1000).toLocaleDateString() : 'N/A';
+                document.getElementById('profileSignature').textContent = data.signature ? `"${data.signature.replace(/\[b\]|\[c\]|\[i\]/g, '')}"` : '"No signature set."';
             }
             
             function renderStatsTabs(brResult, csResult) {
                 // BR Stats
                 if (brResult.success && brResult.data) {
                     console.log('BR Stats Data:', JSON.stringify(brResult.data, null, 2));
-                    const modes = ['solo', 'duo', 'squad', 'solostats', 'duostats', 'quadstats'];
-                    let brStats = {};
-                    for (let mode of modes) {
-                        if (brResult.data[mode]) {
-                            brStats[mode.replace('stats', '')] = brResult.data[mode];
-                        }
-                    }
-                    renderModeStats(document.getElementById('brSoloStats'), brStats.solo || brStats.solostats, 'Solo');
-                    renderModeStats(document.getElementById('brDuoStats'), brStats.duo || brStats.duostats, 'Duo');
-                    renderModeStats(document.getElementById('brSquadStats'), brStats.squad || brStats.quadstats, 'Squad');
+                    renderModeStats(document.getElementById('brSoloStats'), brResult.data.solo || {}, 'Solo');
+                    renderModeStats(document.getElementById('brDuoStats'), brResult.data.duo || {}, 'Duo');
+                    renderModeStats(document.getElementById('brSquadStats'), brResult.data.squad || {}, 'Squad');
                 } else {
                     console.warn('BR Stats Error:', brResult.error);
                     document.getElementById('brSoloStats').innerHTML = `<p class="no-data">BR Solo ডেটা লোড করা যায়নি।</p>`;
@@ -545,14 +545,7 @@
                 // CS Stats
                 if (csResult.success && csResult.data) {
                     console.log('CS Stats Data:', JSON.stringify(csResult.data, null, 2));
-                    const modes = ['squad', 'quadstats'];
-                    let csStats = {};
-                    for (let mode of modes) {
-                        if (csResult.data[mode]) {
-                            csStats[mode.replace('stats', '')] = csResult.data[mode];
-                        }
-                    }
-                    renderModeStats(document.getElementById('csRankedStats'), csStats.squad || csStats.quadstats, 'Ranked');
+                    renderModeStats(document.getElementById('csRankedStats'), csResult.data.squad || {}, 'Ranked');
                 } else {
                     console.warn('CS Stats Error:', csResult.error);
                     document.getElementById('csRankedStats').innerHTML = `<p class="no-data">CS Ranked ডেটা লোড করা যায়নি।</p>`;
@@ -561,27 +554,27 @@
 
             function renderModeStats(targetDiv, stats, modeName) {
                 targetDiv.innerHTML = '';
-                if (!stats || (!stats.total_matches && !stats.gamesplayed)) {
+                if (!stats || !Object.keys(stats).length) {
                     targetDiv.innerHTML = `<p class="no-data">কোনো ${modeName} ডেটা পাওয়া যায়নি।</p>`;
                     return;
                 }
 
                 const kills = stats.kills || 0;
-                const deaths = stats.deaths || stats.detailedstats?.deaths || 0;
-                const headshotKills = stats.headshots || stats.detailedstats?.headshotkills || 0;
+                const deaths = stats.deaths || 0;
+                const headshotKills = stats.headshots || 0;
                 const kd = deaths > 0 ? (kills / deaths).toFixed(2) : kills.toFixed(2);
                 const hsRate = kills > 0 ? ((headshotKills / kills) * 100).toFixed(2) + '%' : '0.00%';
-                
+
                 const statsMap = {
-                    'Matches Played': stats.total_matches || stats.gamesplayed || 0,
+                    'Matches Played': stats.total_matches || 0,
                     'Wins': stats.wins || 0,
                     'Kills': kills,
                     'Deaths': deaths,
                     'K/D Ratio': kd,
                     'Headshot Kills': headshotKills,
                     'Headshot Rate': hsRate,
-                    'Damage': stats.damage || stats.detailedstats?.damage || 0,
-                    'Revives': stats.revives || stats.detailedstats?.revives || 0,
+                    'Damage': stats.damage || 0,
+                    'Revives': stats.revives || 0,
                 };
                 
                 for (const [label, value] of Object.entries(statsMap)) {
