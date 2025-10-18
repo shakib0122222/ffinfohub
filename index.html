@@ -1,232 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Free Fire Player Stats</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin:0;
-      font-family: 'Poppins', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background: linear-gradient(135deg,#1f1c2c,#928dab);
-      color: #fff;
-      padding: 20px;
-    }
-    header {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin-bottom: 30px;
-      text-shadow: 0 0 10px #ff4f81;
-      text-align:center;
-    }
-    .form-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      max-width: 500px;
-      width: 100%;
-      margin-bottom: 20px;
-      backdrop-filter: blur(10px);
-      background: rgba(255,255,255,0.05);
-      padding: 20px;
-      border-radius: 20px;
-    }
-    input, select {
-      flex:1;
-      padding: 12px;
-      border-radius: 10px;
-      border: none;
-      outline: none;
-      background: rgba(255,255,255,0.1);
-      color: #fff;
-      font-size: 1rem;
-    }
-    button {
-      padding: 12px 20px;
-      border:none;
-      border-radius: 10px;
-      background: linear-gradient(135deg,#ff4f81,#ff9068);
-      color: #fff;
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform 0.3s;
-    }
-    button:hover {
-      transform: scale(1.05);
-    }
-    .loader {
-      display:none;
-      border:5px solid rgba(255,255,255,0.2);
-      border-top:5px solid #ff4f81;
-      border-radius:50%;
-      width:40px;
-      height:40px;
-      animation: spin 1s linear infinite;
-      margin: 20px auto;
-    }
-    @keyframes spin {
-      0%{transform: rotate(0deg);}
-      100%{transform: rotate(360deg);}
-    }
-    .player-card {
-      display:none;
-      flex-direction: column;
-      align-items:center;
-      gap:15px;
-      max-width:500px;
-      width:100%;
-      backdrop-filter: blur(15px);
-      background: rgba(255,255,255,0.05);
-      border-radius:20px;
-      padding: 25px;
-      margin-top:20px;
-    }
-    .player-card img {
-      width:120px;
-      height:120px;
-      border-radius:50%;
-      border:3px solid #ff4f81;
-      object-fit: cover;
-    }
-    .player-card h2 {
-      font-size:1.8rem;
-      font-weight:700;
-      color:#ff4f81;
-    }
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(2,1fr);
-      gap:15px;
-      width:100%;
-    }
-    .stat-box {
-      background: rgba(255,255,255,0.1);
-      padding:15px;
-      border-radius:12px;
-      text-align:center;
-    }
-    .stat-box h3 {
-      font-size:1.2rem;
-      margin-bottom:5px;
-      color:#ff4f81;
-    }
-    .stat-box p {
-      font-size:1rem;
-      font-weight:600;
-    }
-    footer {
-      margin-top:auto;
-      text-align:center;
-      color:#ccc;
-      padding:10px;
-    }
-    @media(max-width:600px){
-      .stats-grid{
-        grid-template-columns:1fr;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Fire Player Profile</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    background:linear-gradient(135deg,#1f1c2c,#928dab);
+    color:#fff;
+    padding:20px;
+  }
+  header{
+    font-size:2.5rem;
+    font-weight:700;
+    margin-bottom:30px;
+    text-shadow:0 0 10px #ff4f81;
+    text-align:center;
+  }
+  .form-container{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    max-width:500px;
+    width:100%;
+    margin-bottom:20px;
+    backdrop-filter:blur(10px);
+    background:rgba(255,255,255,0.05);
+    padding:20px;
+    border-radius:20px;
+  }
+  input, select{
+    flex:1;
+    padding:12px;
+    border-radius:10px;
+    border:none;
+    outline:none;
+    background:rgba(255,255,255,0.1);
+    color:#fff;
+    font-size:1rem;
+  }
+  button{
+    padding:12px 20px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(135deg,#ff4f81,#ff9068);
+    color:#fff;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform 0.3s;
+  }
+  button:hover{transform:scale(1.05);}
+  .loader{
+    display:none;
+    border:5px solid rgba(255,255,255,0.2);
+    border-top:5px solid #ff4f81;
+    border-radius:50%;
+    width:40px;
+    height:40px;
+    animation:spin 1s linear infinite;
+    margin:20px auto;
+  }
+  @keyframes spin{
+    0%{transform:rotate(0deg);}
+    100%{transform:rotate(360deg);}
+  }
+  .player-card{
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    gap:15px;
+    max-width:500px;
+    width:100%;
+    backdrop-filter:blur(15px);
+    background:rgba(255,255,255,0.05);
+    border-radius:20px;
+    padding:25px;
+    margin-top:20px;
+  }
+  .player-card img{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    border:3px solid #ff4f81;
+    object-fit:cover;
+  }
+  .player-card h2{
+    font-size:1.8rem;
+    font-weight:700;
+    color:#ff4f81;
+  }
+  .stats-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+    width:100%;
+  }
+  .stat-box{
+    background:rgba(255,255,255,0.1);
+    padding:15px;
+    border-radius:12px;
+    text-align:center;
+  }
+  .stat-box h3{
+    font-size:1.2rem;
+    margin-bottom:5px;
+    color:#ff4f81;
+  }
+  .stat-box p{
+    font-size:1rem;
+    font-weight:600;
+  }
+  footer{
+    margin-top:auto;
+    text-align:center;
+    color:#ccc;
+    padding:10px;
+  }
+  @media(max-width:600px){
+    .stats-grid{grid-template-columns:1fr;}
+  }
+</style>
 </head>
 <body>
-  <header>🔥 Free Fire Player Stats 🔥</header>
+<header>🔥 Free Fire Player Profile 🔥</header>
 
-  <div class="form-container">
-    <input type="text" id="uid" placeholder="Enter Player UID">
-    <select id="server">
-      <option value="BD">BD</option>
-      <option value="IND">IND</option>
-      <option value="SG">SG</option>
-      <option value="RU">RU</option>
-      <option value="ID">ID</option>
-      <option value="TW">TW</option>
-      <option value="US">US</option>
-      <option value="VN">VN</option>
-      <option value="TH">TH</option>
-      <option value="ME">ME</option>
-      <option value="PK">PK</option>
-      <option value="CIS">CIS</option>
-      <option value="BR">BR</option>
-    </select>
-    <button onclick="fetchPlayer()">Search</button>
-  </div>
+<div class="form-container">
+  <input type="text" id="uid" placeholder="Enter Player UID">
+  <select id="server">
+    <option value="bd">BD</option>
+    <option value="ind">IND</option>
+    <option value="sg">SG</option>
+    <option value="ru">RU</option>
+    <option value="id">ID</option>
+    <option value="tw">TW</option>
+    <option value="us">US</option>
+    <option value="vn">VN</option>
+    <option value="th">TH</option>
+    <option value="me">ME</option>
+    <option value="pk">PK</option>
+    <option value="cis">CIS</option>
+    <option value="br">BR</option>
+  </select>
+  <button onclick="fetchProfile()">Search</button>
+</div>
 
-  <div class="loader" id="loader"></div>
+<div class="loader" id="loader"></div>
 
-  <div class="player-card" id="playerCard">
-    <img id="avatar" src="" alt="Player Avatar">
-    <h2 id="name">Player Name</h2>
-    <div class="stats-grid">
-      <div class="stat-box">
-        <h3>Level</h3>
-        <p id="level">0</p>
-      </div>
-      <div class="stat-box">
-        <h3>Rank</h3>
-        <p id="rank">-</p>
-      </div>
-      <div class="stat-box">
-        <h3>Kills</h3>
-        <p id="kills">0</p>
-      </div>
-      <div class="stat-box">
-        <h3>K/D</h3>
-        <p id="kd">0</p>
-      </div>
-      <div class="stat-box">
-        <h3>Wins</h3>
-        <p id="wins">0</p>
-      </div>
-      <div class="stat-box">
-        <h3>Headshots</h3>
-        <p id="hs">0</p>
-      </div>
+<div class="player-card" id="playerCard">
+  <img id="avatar" src="" alt="Player Avatar">
+  <h2 id="name">Player Name</h2>
+  <div class="stats-grid">
+    <div class="stat-box">
+      <h3>Level</h3>
+      <p id="level">0</p>
+    </div>
+    <div class="stat-box">
+      <h3>Rank</h3>
+      <p id="rank">-</p>
+    </div>
+    <div class="stat-box">
+      <h3>UID</h3>
+      <p id="playerUID">0</p>
+    </div>
+    <div class="stat-box">
+      <h3>Guild</h3>
+      <p id="guild">-</p>
     </div>
   </div>
+</div>
 
-  <footer>Made by Demo</footer>
+<footer>Made by Shakib Hossain | GitHub Pages Demo</footer>
 
-  <script>
-    async function fetchPlayer() {
-      const uid = document.getElementById('uid').value.trim();
-      const server = document.getElementById('server').value;
-      const loader = document.getElementById('loader');
-      const card = document.getElementById('playerCard');
+<script>
+async function fetchProfile(){
+  const uid = document.getElementById('uid').value.trim();
+  const server = document.getElementById('server').value;
+  const loader = document.getElementById('loader');
+  const card = document.getElementById('playerCard');
 
-      if(!uid){
-        alert("Please enter UID");
-        return;
-      }
+  if(!uid){ alert("Please enter UID"); return; }
 
-      loader.style.display = "block";
-      card.style.display = "none";
+  loader.style.display="block";
+  card.style.display="none";
 
-      try {
-        const res = await fetch(`https://ff-info-gajarbotol.vercel.app/get_player_stats?server=${server}&uid=${uid}&matchmode=RANKED&gamemode=br`);
-        const data = await res.json();
+  try{
+    const res = await fetch(`https://ff-info-gajarbotol.vercel.app/get_player_personal_show?server=${server}&uid=${uid}`);
+    const data = await res.json();
 
-        // যদি API success দেয়
-        document.getElementById('avatar').src = data.avatar || 'https://via.placeholder.com/120';
-        document.getElementById('name').textContent = data.name || '-';
-        document.getElementById('level').textContent = data.level || 0;
-        document.getElementById('rank').textContent = data.rank || '-';
-        document.getElementById('kills').textContent = data.kills || 0;
-        document.getElementById('kd').textContent = data.kd || 0;
-        document.getElementById('wins').textContent = data.wins || 0;
-        document.getElementById('hs').textContent = data.headshots || 0;
+    document.getElementById('avatar').src = data.avatar || 'https://via.placeholder.com/120';
+    document.getElementById('name').textContent = data.name || '-';
+    document.getElementById('level').textContent = data.level || 0;
+    document.getElementById('rank').textContent = data.rank || '-';
+    document.getElementById('playerUID').textContent = data.uid || uid;
+    document.getElementById('guild').textContent = data.guild || '-';
 
-        card.style.display = "flex";
-      } catch(e){
-        alert("Failed to fetch player stats");
-        console.error(e);
-      } finally {
-        loader.style.display = "none";
-      }
-    }
-  </script>
+    card.style.display="flex";
+  }catch(e){
+    alert("Failed to fetch profile. Make sure UID & server are correct.");
+    console.error(e);
+  }finally{
+    loader.style.display="none";
+  }
+}
+</script>
 </body>
 </html>
