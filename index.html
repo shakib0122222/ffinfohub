@@ -4,147 +4,138 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Free Fire Stats Finder</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-bg: #1c1c28;
-            --secondary-bg: #2a2a3a;
-            --text-color: #f0f0f0;
-            --orange-color: #ff6f00;
-            --input-bg: #3c3c50;
-            --border-color: #555;
-            --shadow-color: rgba(0, 0, 0, 0.3);
+            --primary-bg: #1a1a2e; /* Darker background */
+            --secondary-bg: #2e3b55; /* Card background */
+            --accent-color: #e94560; /* Button/highlight color */
+            --text-color: #ffffff;
+            --input-bg: #3c4c6b;
+            --input-border: #4a5d7c;
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             background-color: var(--primary-bg);
             color: var(--text-color);
             margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* Changed to flex-start to align content at the top */
+            align-items: flex-start; /* Align to top for better scrolling on mobile */
             min-height: 100vh;
             padding: 20px;
             box-sizing: border-box;
         }
 
         .container {
-            background-color: var(--secondary-bg);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px var(--shadow-color);
-            padding: 30px;
-            max-width: 450px;
+            background-color: var(--primary-bg);
+            padding: 25px;
+            border-radius: 10px;
             width: 100%;
-            text-align: center;
-            margin-top: 50px; /* Added margin-top to push content down from the very top */
+            max-width: 400px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            box-sizing: border-box;
         }
 
         .header {
-            margin-bottom: 40px;
+            text-align: center;
+            margin-bottom: 30px;
         }
 
-        .logo-text {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-size: 2.5em;
+        .header .fire-icon {
+            font-size: 3em;
+            color: var(--accent-color);
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin: 0;
             font-weight: 700;
-            color: var(--text-color);
-            margin-bottom: 10px;
         }
 
-        .logo-icon {
-            color: var(--orange-color);
-            font-size: 1.2em; /* Adjusted icon size */
-            position: relative;
-            top: -5px; /* Fine-tuned alignment */
-        }
-
-        .tagline {
-            font-size: 1em;
+        .header p {
+            font-size: 0.9em;
             color: #ccc;
-            line-height: 1.5;
+            margin-top: 5px;
         }
 
         .form-group {
-            text-align: left;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            font-size: 0.9em;
-            color: #aaa;
+            font-weight: 600;
+            font-size: 0.95em;
         }
 
         .form-group input[type="text"],
         .form-group select {
-            width: calc(100% - 20px);
-            padding: 12px 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
+            width: 100%;
+            padding: 12px 15px;
             background-color: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
             color: var(--text-color);
             font-size: 1em;
             box-sizing: border-box;
-            outline: none;
-            transition: border-color 0.3s ease;
-            -webkit-appearance: none; /* Remove default browser styling for select */
-            -moz-appearance: none; /* Remove default browser styling for select */
-            appearance: none; /* Remove default browser styling for select */
-            background-image: url('data:image/svg+xml;utf8,<svg fill="%23aaa" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>'); /* Custom arrow for select */
+            -webkit-appearance: none; /* Remove default arrow for select */
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        .form-group select {
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%20197.352L146.2%2056.638L5.4%20197.352H287z%22%2F%3E%3C%2Fsvg%3E');
             background-repeat: no-repeat;
-            background-position: right 10px center;
+            background-position: right 15px center;
+            background-size: 12px;
+            padding-right: 40px; /* Make space for the arrow */
         }
 
         .form-group input[type="text"]::placeholder {
-            color: #888;
+            color: #99aab5;
         }
 
-        .form-group input[type="text"]:focus,
-        .form-group select:focus {
-            border-color: var(--orange-color);
-        }
-
-        .search-button {
-            background-color: var(--orange-color);
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--accent-color);
             color: var(--text-color);
             border: none;
             border-radius: 8px;
-            padding: 15px 0;
-            width: 100%;
-            font-size: 1.2em;
-            font-weight: 600;
+            font-size: 1.1em;
+            font-weight: 700;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 5px 15px rgba(255, 111, 0, 0.4);
+            transition: background-color 0.3s ease;
         }
 
-        .search-button:hover {
-            background-color: #e66300;
-            transform: translateY(-2px);
-        }
-
-        .search-button:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 10px rgba(255, 111, 0, 0.4);
+        button:hover {
+            background-color: #c7374e;
         }
 
         .footer {
-            margin-top: 40px;
-            font-size: 0.85em;
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.8em;
             color: #888;
         }
 
         .footer span {
-            color: #ff6f00; /* Orange color for the heart */
+            color: var(--accent-color);
+            font-size: 1.2em;
+            vertical-align: middle;
+            margin: 0 2px;
         }
 
         .footer a {
-            color: #ff6f00;
+            color: #e0e0e0;
             text-decoration: none;
             font-weight: 600;
         }
@@ -153,73 +144,101 @@
             text-decoration: underline;
         }
 
-        /* Result Section Styling */
         #results {
+            background-color: var(--secondary-bg);
             margin-top: 30px;
-            background-color: var(--input-bg);
-            border-radius: 8px;
             padding: 20px;
-            text-align: left;
-            min-height: 100px; /* To show it even when empty */
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
-            font-size: 0.9em;
-            max-height: 400px;
-            overflow-y: auto;
-            word-break: break-all; /* Ensure long strings wrap */
-            white-space: pre-wrap; /* Preserve whitespace and line breaks */
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            display: none; /* Initially hidden */
         }
 
-        #results h3 {
-            color: var(--orange-color);
+        #results h2 {
+            font-size: 1.5em;
+            color: var(--accent-color);
             margin-top: 0;
             margin-bottom: 15px;
-            font-size: 1.3em;
             text-align: center;
         }
 
-        #results p {
-            margin-bottom: 8px;
-            line-height: 1.4;
+        .player-info, .player-stats {
+            margin-bottom: 20px;
         }
 
-        #results strong {
-            color: var(--text-color);
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--input-border);
         }
 
-        #loading-indicator {
-            display: none; /* Hidden by default */
-            margin-top: 20px;
-            color: var(--orange-color);
-            font-size: 1.1em;
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-item span:first-child {
             font-weight: 600;
+            color: #cccccc;
         }
 
-        /* Basic spinner for loading */
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid var(--orange-color);
+        .info-item span:last-child {
+            text-align: right;
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--accent-color);
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
+            width: 25px;
+            height: 25px;
             animation: spin 1s linear infinite;
-            display: inline-block;
-            vertical-align: middle;
-            margin-left: 10px;
+            margin: 20px auto;
+            display: none; /* Initially hidden */
         }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        .error-message {
+            color: var(--accent-color);
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+            font-weight: 600;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+            .header p {
+                font-size: 0.85em;
+            }
+            button {
+                font-size: 1em;
+                padding: 12px;
+            }
+            .form-group input, .form-group select {
+                padding: 10px 12px;
+            }
+            #results h2 {
+                font-size: 1.3em;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div class="logo-text">
-                <span class="logo-icon">🔥</span> Free Fire Stats Finder
-            </div>
-            <p class="tagline">Get real-time player stats and personal info for BR & CS!</p>
+            <div class="fire-icon">🔥</div>
+            <h1>Free Fire Stats Finder</h1>
+            <p>Get real-time player stats and personal info for BR & CS!</p>
         </div>
 
         <div class="form-group">
@@ -228,131 +247,208 @@
         </div>
 
         <div class="form-group">
-            <label for="serverSelect">Server</label>
-            <select id="serverSelect">
-                <!-- সার্ভারের অপশনগুলো এখানে যুক্ত করা হবে JavaScript দিয়ে -->
+            <label for="server">Server</label>
+            <select id="server">
+                <option value="BD">BD</option>
+                <option value="IND">IND</option>
+                <option value="SG">SG</option>
+                <option value="RU">RU</option>
+                <option value="ID">ID</option>
+                <option value="TW">TW</option>
+                <option value="US">US</option>
+                <option value="VN">VN</option>
+                <option value="TH">TH</option>
+                <option value="ME">ME</option>
+                <option value="PK">PK</option>
+                <option value="CIS">CIS</option>
+                <option value="BR">BR</option>
             </select>
         </div>
 
-        <button class="search-button" id="searchPlayerBtn">Search Player</button>
+        <button id="searchPlayerBtn">Search Player</button>
 
-        <div id="loading-indicator">Loading... <span class="spinner"></span></div>
+        <div class="loader" id="loader"></div>
+        <div class="error-message" id="errorMessage"></div>
 
         <div id="results">
-            <h3>Player Information</h3>
-            <p>Enter UID and select server to see results.</p>
+            <h2>Player Profile</h2>
+
+            <div class="player-info" id="playerPersonalInfo">
+                <!-- Personal Info will be loaded here -->
+                <div class="info-item">
+                    <span>Nickname:</span> <span id="infoNickname">N/A</span>
+                </div>
+                <div class="info-item">
+                    <span>Level:</span> <span id="infoLevel">N/A</span>
+                </div>
+                <div class="info-item">
+                    <span>Rank:</span> <span id="infoRank">N/A</span>
+                </div>
+                <div class="info-item">
+                    <span>Badge:</span> <span id="infoBadge">N/A</span>
+                </div>
+                <div class="info-item">
+                    <span>Account ID:</span> <span id="infoAccountID">N/A</span>
+                </div>
+                <div class="info-item">
+                    <span>Region:</span> <span id="infoRegion">N/A</span>
+                </div>
+                <div class="info-item">
+                    <span>Country:</span> <span id="infoCountry">N/A</span>
+                </div>
+                <!-- Add more personal info items as needed based on API response -->
+            </div>
+
+            <hr style="border: 0; height: 1px; background-color: var(--input-border); margin: 25px 0;">
+
+            <h2>Battle Royale (BR) Stats - Ranked</h2>
+            <div class="player-stats" id="playerBRStats">
+                <!-- BR Stats will be loaded here -->
+                <div class="info-item">
+                    <span>Total Matches:</span> <span id="brTotalMatches">N/A</span>
+                </div>
+                <div class="info-item">
+                    <span>Kills:</span> <span id="brKills">N/A</span>
+                </div>
+                <div class="info-item">
+                    <span>Headshots:</span> <span id="brHeadshots">N/A</span>
+                </div>
+                <div class="info-item">
+                    <span>Win Rate:</span> <span id="brWinRate">N/A</span>
+                </div>
+                <!-- Add more BR stats items as needed based on API response -->
+            </div>
+
+            <hr style="border: 0; height: 1px; background-color: var(--input-border); margin: 25px 0;">
+
+            <h2>Clash Squad (CS) Stats - Ranked</h2>
+            <div class="player-stats" id="playerCSStats">
+                <!-- CS Stats will be loaded here -->
+                <div class="info-item">
+                    <span>Total Matches:</span> <span id="csTotalMatches">N/A</span>
+                </div>
+                <div class="info-item">
+                    <span>Kills:</span> <span id="csKills">N/A</span>
+                </div>
+                <div class="info-item">
+                    <span>Headshots:</span> <span id="csHeadshots">N/A</span>
+                </div>
+                <div class="info-item">
+                    <span>Win Rate:</span> <span id="csWinRate">N/A</span>
+                </div>
+                <!-- Add more CS stats items as needed based on API response -->
+            </div>
         </div>
 
         <div class="footer">
-            Developed with <span>❤️</span> by <a href="https://github.com/GAJARBOTOL" target="_blank">@GAJARBOTOL</a>
+            Developed with <span>❤️</span> by <a href="#" target="_blank">@Demo</a>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const serverSelect = document.getElementById('serverSelect');
-            const playerUidInput = document.getElementById('playerUid');
-            const searchPlayerBtn = document.getElementById('searchPlayerBtn');
+        document.getElementById('searchPlayerBtn').addEventListener('click', async () => {
+            const playerUid = document.getElementById('playerUid').value.trim();
+            const server = document.getElementById('server').value;
             const resultsDiv = document.getElementById('results');
-            const loadingIndicator = document.getElementById('loading-indicator');
+            const loader = document.getElementById('loader');
+            const errorMessage = document.getElementById('errorMessage');
 
-            // আপনার API এর বেস URL
-            const BASE_URL = 'https://ff-info-gajarbotol.vercel.app/';
+            resultsDiv.style.display = 'none'; // Hide previous results
+            errorMessage.style.display = 'none'; // Hide previous error
+            
+            if (!playerUid) {
+                errorMessage.textContent = 'Please enter a Player UID.';
+                errorMessage.style.display = 'block';
+                return;
+            }
 
-            // সমস্ত সাপোর্টেড সার্ভার
-            const servers = ['IND', 'SG', 'RU', 'ID', 'TW', 'US', 'VN', 'TH', 'ME', 'PK', 'CIS', 'BR', 'BD'];
+            loader.style.display = 'block'; // Show loader
 
-            // সার্ভার ড্রপডাউনে অপশন যোগ করা
-            servers.forEach(server => {
-                const option = document.createElement('option');
-                option.value = server;
-                option.textContent = server;
-                serverSelect.appendChild(option);
-            });
+            const baseURL = "https://ff-info-gajarbotol.vercel.app/"; // আপনার API Base URL
 
-            // ডিফল্ট হিসেবে 'BD' সার্ভার সিলেক্ট করা
-            serverSelect.value = 'BD';
+            try {
+                // --- API Call for Player Personal Info ---
+                // Endpoint: get_player_personal_show?server={server}&uid={uid}
+                const personalInfoResponse = await fetch(`${baseURL}get_player_personal_show?server=${server}&uid=${playerUid}`);
+                const personalInfo = await personalInfoResponse.json();
 
-            // সার্চ বাটনে ক্লিক হ্যান্ডলার
-            searchPlayerBtn.addEventListener('click', async () => {
-                const uid = playerUidInput.value.trim();
-                const server = serverSelect.value;
-
-                if (!uid) {
-                    resultsDiv.innerHTML = '<h3>Error</h3><p>Please enter a Player UID.</p>';
-                    return;
-                }
-
-                resultsDiv.innerHTML = ''; // Clear previous results
-                loadingIndicator.style.display = 'block'; // Show loading indicator
-
-                try {
-                    // প্লেয়ারের পার্সোনাল ইনফো আনা
-                    // API Endpoint: get_player_personal_show?server={server}&uid={uid}
-                    const personalInfoEndpoint = `${BASE_URL}get_player_personal_show?server=${server}&uid=${uid}`;
-                    console.log('Fetching personal info from:', personalInfoEndpoint); // Debugging
-                    const personalInfoResponse = await fetch(personalInfoEndpoint);
-                    const personalInfoData = await personalInfoResponse.json();
-
-                    // প্লেয়ারের স্ট্যাটস আনা (উদাহরণস্বরূপ RANKED BR মোডের জন্য)
-                    // API Endpoint: get_player_stats?server={server}&uid={uid}&matchmode=RANKED&gamemode=br
-                    const playerStatsEndpoint = `${BASE_URL}get_player_stats?server=${server}&uid=${uid}&matchmode=RANKED&gamemode=br`;
-                    console.log('Fetching player stats from:', playerStatsEndpoint); // Debugging
-                    const playerStatsResponse = await fetch(playerStatsEndpoint);
-                    const playerStatsData = await playerStatsResponse.json();
-
-                    displayResults(personalInfoData, playerStatsData);
-
-                } catch (error) {
-                    console.error('Error fetching data:', error);
-                    resultsDiv.innerHTML = `<h3>Error</h3><p>Could not fetch data. Please check the UID and server, or try again later. Error: ${error.message}</p>`;
-                } finally {
-                    loadingIndicator.style.display = 'none'; // Hide loading indicator
-                }
-            });
-
-            function displayResults(personalInfo, playerStats) {
-                resultsDiv.innerHTML = '<h3>Player Information</h3>';
-
-                // Personal Info Display
-                if (personalInfo && personalInfo.result) {
-                    resultsDiv.innerHTML += `
-                        <p><strong>Nickname:</strong> ${personalInfo.result.nickname || 'N/A'}</p>
-                        <p><strong>Level:</strong> ${personalInfo.result.level || 'N/A'}</p>
-                        <p><strong>Player ID:</strong> ${personalInfo.result.playerid || 'N/A'}</p>
-                        <p><strong>Bio:</strong> ${personalInfo.result.bio || 'N/A'}</p>
-                        <p><strong>Badge:</strong> ${personalInfo.result.badge || 'N/A'}</p>
-                        ${personalInfo.result.avatar_url ? `<p><img src="${personalInfo.result.avatar_url}" alt="Avatar" width="80" height="80" style="border-radius: 50%; margin-top: 10px;"></p>` : ''}
-                        ${personalInfo.result.cover_url ? `<p><img src="${personalInfo.result.cover_url}" alt="Cover" width="100%" style="margin-top: 10px; border-radius: 8px;"></p>` : ''}
-                    `;
+                if (personalInfo.status === true && personalInfo.data) {
+                    document.getElementById('infoNickname').textContent = personalInfo.data.nickname || 'N/A';
+                    document.getElementById('infoLevel').textContent = personalInfo.data.level || 'N/A';
+                    document.getElementById('infoRank').textContent = personalInfo.data.rank || 'N/A';
+                    document.getElementById('infoBadge').textContent = personalInfo.data.badge || 'N/A';
+                    document.getElementById('infoAccountID').textContent = personalInfo.data.account_id || 'N/A';
+                    document.getElementById('infoRegion').textContent = personalInfo.data.region || 'N/A';
+                    document.getElementById('infoCountry').textContent = personalInfo.data.country || 'N/A';
+                    // Update more personal info fields here based on API response structure
                 } else {
-                    resultsDiv.innerHTML += '<p><strong>Personal Info:</strong> Not found or API error.</p>';
+                    document.getElementById('infoNickname').textContent = 'N/A';
+                    document.getElementById('infoLevel').textContent = 'N/A';
+                    document.getElementById('infoRank').textContent = 'N/A';
+                    document.getElementById('infoBadge').textContent = 'N/A';
+                    document.getElementById('infoAccountID').textContent = 'N/A';
+                    document.getElementById('infoRegion').textContent = 'N/A';
+                    document.getElementById('infoCountry').textContent = 'N/A';
+                    console.error('Failed to fetch personal info:', personalInfo.message || 'Unknown error');
                 }
 
-                resultsDiv.innerHTML += '<br><h3>Player Stats (Ranked BR)</h3>';
+                // --- API Call for BR Ranked Stats ---
+                // Endpoint: get_player_stats?server={server}&uid={uid}&matchmode=RANKED&gamemode=br
+                const brStatsResponse = await fetch(`${baseURL}get_player_stats?server=${server}&uid=${playerUid}&matchmode=RANKED&gamemode=br`);
+                const brStats = await brStatsResponse.json();
 
-                // Player Stats Display
-                if (playerStats && playerStats.result && playerStats.result.stats) {
-                    const stats = playerStats.result.stats;
-                    resultsDiv.innerHTML += `
-                        <p><strong>Kills:</strong> ${stats.kills || 'N/A'}</p>
-                        <p><strong>Deaths:</strong> ${stats.deaths || 'N/A'}</p>
-                        <p><strong>Headshots:</strong> ${stats.headshots || 'N/A'}</p>
-                        <p><strong>Headshot Rate:</strong> ${stats.headshot_rate ? (stats.headshot_rate * 100).toFixed(2) + '%' : 'N/A'}</p>
-                        <p><strong>Win Rate:</strong> ${stats.win_rate ? (stats.win_rate * 100).toFixed(2) + '%' : 'N/A'}</p>
-                        <p><strong>Total Matches:</strong> ${stats.total_matches || 'N/A'}</p>
-                        <p><strong>Wins:</strong> ${stats.wins || 'N/A'}</p>
-                        <p><strong>K/D Ratio:</strong> ${stats.kd_ratio || 'N/A'}</p>
-                        <!-- Add more stats as needed -->
-                    `;
+                if (brStats.status === true && brStats.data && brStats.data.br_ranked) {
+                    const brRanked = brStats.data.br_ranked;
+                    document.getElementById('brTotalMatches').textContent = brRanked.total_matches || 'N/A';
+                    document.getElementById('brKills').textContent = brRanked.kills || 'N/A';
+                    document.getElementById('brHeadshots').textContent = brRanked.headshots || 'N/A';
+                    // Calculate win rate if wins and total matches are available
+                    if (brRanked.wins && brRanked.total_matches && brRanked.total_matches > 0) {
+                        document.getElementById('brWinRate').textContent = ((brRanked.wins / brRanked.total_matches) * 100).toFixed(2) + '%';
+                    } else {
+                        document.getElementById('brWinRate').textContent = 'N/A';
+                    }
+                    // Update more BR stats fields here based on API response structure
                 } else {
-                    resultsDiv.innerHTML += '<p><strong>Ranked BR Stats:</strong> Not found or API error.</p>';
+                     document.getElementById('brTotalMatches').textContent = 'N/A';
+                    document.getElementById('brKills').textContent = 'N/A';
+                    document.getElementById('brHeadshots').textContent = 'N/A';
+                    document.getElementById('brWinRate').textContent = 'N/A';
+                    console.error('Failed to fetch BR stats:', brStats.message || 'Unknown error');
                 }
 
-                // If no useful data was found
-                if (!personalInfo.result && !playerStats.result) {
-                    resultsDiv.innerHTML = `<h3>No Data Found</h3><p>Could not retrieve any information for the provided UID on the selected server.</p>`;
+                // --- API Call for CS Ranked Stats ---
+                // Endpoint: get_player_stats?server={server}&uid={uid}&matchmode=RANKED&gamemode=cs
+                const csStatsResponse = await fetch(`${baseURL}get_player_stats?server=${server}&uid=${playerUid}&matchmode=RANKED&gamemode=cs`);
+                const csStats = await csStatsResponse.json();
+
+                if (csStats.status === true && csStats.data && csStats.data.cs_ranked) {
+                    const csRanked = csStats.data.cs_ranked;
+                    document.getElementById('csTotalMatches').textContent = csRanked.total_matches || 'N/A';
+                    document.getElementById('csKills').textContent = csRanked.kills || 'N/A';
+                    document.getElementById('csHeadshots').textContent = csRanked.headshots || 'N/A';
+                    // Calculate win rate if wins and total matches are available
+                    if (csRanked.wins && csRanked.total_matches && csRanked.total_matches > 0) {
+                        document.getElementById('csWinRate').textContent = ((csRanked.wins / csRanked.total_matches) * 100).toFixed(2) + '%';
+                    } else {
+                        document.getElementById('csWinRate').textContent = 'N/A';
+                    }
+                    // Update more CS stats fields here based on API response structure
+                } else {
+                    document.getElementById('csTotalMatches').textContent = 'N/A';
+                    document.getElementById('csKills').textContent = 'N/A';
+                    document.getElementById('csHeadshots').textContent = 'N/A';
+                    document.getElementById('csWinRate').textContent = 'N/A';
+                    console.error('Failed to fetch CS stats:', csStats.message || 'Unknown error');
                 }
+
+                resultsDiv.style.display = 'block'; // Show results section
+            } catch (error) {
+                console.error('Error fetching player data:', error);
+                errorMessage.textContent = 'Failed to fetch player data. Please check the UID or try again later.';
+                errorMessage.style.display = 'block';
+            } finally {
+                loader.style.display = 'none'; // Hide loader
             }
         });
     </script>
