@@ -7,14 +7,104 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #121212;
+            color: #ffffff;
             padding: 20px;
         }
         .container {
             max-width: 800px;
         }
-        .card {
-            margin-top: 20px;
+        .form-control, .form-select {
+            background-color: #1e1e1e;
+            color: #ffffff;
+            border: 1px solid #333;
+        }
+        .btn-primary {
+            background-color: #2196f3;
+            border-color: #2196f3;
+        }
+        .profile-section {
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background-color: #333;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: #2196f3;
+        }
+        .profile-name {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .profile-uid {
+            color: #aaaaaa;
+        }
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 10px 0;
+        }
+        .profile-stat {
+            text-align: center;
+        }
+        .profile-stat-value {
+            font-size: 20px;
+            color: #2196f3;
+        }
+        .profile-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .profile-signature {
+            color: #aaaaaa;
+            font-style: italic;
+        }
+        .nav-tabs .nav-link {
+            color: #ffffff;
+            background-color: #1e1e1e;
+            border: none;
+        }
+        .nav-tabs .nav-link.active {
+            background-color: #2196f3;
+            color: #ffffff;
+        }
+        .tab-content {
+            background-color: #1e1e1e;
+            border-radius: 0 0 10px 10px;
+            padding: 20px;
+        }
+        .mode-section {
+            margin-bottom: 20px;
+        }
+        .mode-title {
+            font-size: 20px;
+            color: #2196f3;
+            margin-bottom: 10px;
+        }
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #333;
+        }
+        .stat-label {
+            display: flex;
+            align-items: center;
+        }
+        .stat-label span {
+            margin-right: 10px;
         }
         .loader {
             display: none;
@@ -57,13 +147,6 @@
                     <option value="CLASSIC">CLASSIC</option>
                 </select>
             </div>
-            <div class="mb-3">
-                <label for="gamemode" class="form-label">Game Mode</label>
-                <select id="gamemode" class="form-select" required>
-                    <option value="br">Battle Royale (br)</option>
-                    <option value="cs">Clash Squad (cs)</option>
-                </select>
-            </div>
             <button type="submit" class="btn btn-primary w-100">Get Player Info</button>
         </form>
 
@@ -72,7 +155,7 @@
             <p>Loading...</p>
         </div>
 
-        <div id="results" class="row"></div>
+        <div id="results"></div>
     </div>
 
     <script>
@@ -83,7 +166,6 @@
             const server = document.getElementById('server').value;
             const uid = document.getElementById('uid').value;
             const matchmode = document.getElementById('matchmode').value;
-            const gamemode = document.getElementById('gamemode').value;
 
             if (!server || !uid) {
                 alert('Please select server and enter UID.');
@@ -100,58 +182,155 @@
                 const personalRes = await fetch(`${baseUrl}get_player_personal_show?server=${server}&uid=${uid}`);
                 const personalData = await personalRes.json();
 
-                // Fetch Stats
-                const statsRes = await fetch(`${baseUrl}get_player_stats?server=${server}&uid=${uid}&matchmode=${matchmode}&gamemode=${gamemode}`);
-                const statsData = await statsRes.json();
+                // Fetch BR Stats
+                const brRes = await fetch(`${baseUrl}get_player_stats?server=${server}&uid=${uid}&matchmode=${matchmode}&gamemode=br`);
+                const brData = await brRes.json();
 
-                // Display Personal Info
-                const personalCard = createInfoCard('Personal Info', personalData);
-                results.appendChild(personalCard);
+                // Fetch CS Stats
+                const csRes = await fetch(`${baseUrl}get_player_stats?server=${server}&uid=${uid}&matchmode=${matchmode}&gamemode=cs`);
+                const csData = await csRes.json();
 
-                // Display Stats
-                const statsCard = createInfoCard('Player Stats', statsData);
-                results.appendChild(statsCard);
+                // Display Profile
+                const profileDiv = createProfileSection(personalData);
+                results.appendChild(profileDiv);
+
+                // Display Tabs
+                const tabsDiv = createTabs(brData, csData);
+                results.appendChild(tabsDiv);
 
             } catch (error) {
-                results.innerHTML = `<div class="col-12"><div class="card text-center"><div class="card-body"><h5 class="card-title">Error</h5><p class="card-text">Failed to fetch data. Please check UID and try again.</p></div></div></div>`;
+                results.innerHTML = '<div class="profile-section text-center"><h5>Error</h5><p>Failed to fetch data. Please check UID and try again.</p></div>';
             } finally {
                 loader.style.display = 'none';
             }
         });
 
-        function createInfoCard(title, data) {
-            const col = document.createElement('div');
-            col.className = 'col-md-6';
-            const card = document.createElement('div');
-            card.className = 'card';
-            const cardBody = document.createElement('div');
-            cardBody.className = 'card-body';
-            const cardTitle = document.createElement('h5');
-            cardTitle.className = 'card-title';
-            cardTitle.textContent = title;
-            cardBody.appendChild(cardTitle);
+        function createProfileSection(data) {
+            const div = document.createElement('div');
+            div.className = 'profile-section';
 
-            if (data.success === false || data.status === 'error') {
-                const errorP = document.createElement('p');
-                errorP.className = 'card-text text-danger';
-                errorP.textContent = data.message || data.error;
-                cardBody.appendChild(errorP);
-            } else {
-                const list = document.createElement('ul');
-                list.className = 'list-group list-group-flush';
-                for (const [key, value] of Object.entries(data)) {
-                    const item = document.createElement('li');
-                    item.className = 'list-group-item';
-                    item.textContent = `${key}: ${typeof value === 'object' ? JSON.stringify(value) : value}`;
-                    list.appendChild(item);
-                }
-                cardBody.appendChild(list);
+            if (!data.success && data.status !== 'success') {
+                div.innerHTML = `<h5>Error</h5><p>${data.message || data.error}</p>`;
+                return div;
             }
 
-            card.appendChild(cardBody);
-            col.appendChild(card);
-            return col;
+            // Assuming data has fields like level, name, uid, clan, likes, badges, region, br_rank, cs_rank, last_login, signature
+            div.innerHTML = `
+                <div class="profile-avatar">Lv. ${data.level || '??'}</div>
+                <div class="profile-name">${data.name || 'Unknown'}</div>
+                <div class="profile-uid">UID: ${data.uid || uid}</div>
+                <div>Clan: ${data.clan || 'None'}</div>
+                <div class="profile-stats">
+                    <div class="profile-stat">
+                        <div class="profile-stat-value">${data.likes || 0}</div>
+                        <div>Likes</div>
+                    </div>
+                    <div class="profile-stat">
+                        <div class="profile-stat-value">${data.badges || 0}</div>
+                        <div>Badges</div>
+                    </div>
+                </div>
+                <div class="profile-info">
+                    <div>Region<br>${data.region || 'BD'}</div>
+                    <div>BR Rank<br>${data.br_rank || 'Unranked'}</div>
+                    <div>CS Rank<br>${data.cs_rank || 'Unranked'}</div>
+                    <div>Last Login<br>${data.last_login || 'Unknown'}</div>
+                </div>
+                <div class="profile-signature">"${data.signature || ''}"</div>
+            `;
+            return div;
+        }
+
+        function createTabs(brData, csData) {
+            const div = document.createElement('div');
+
+            div.innerHTML = `
+                <ul class="nav nav-tabs" id="gameTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="br-tab" data-bs-toggle="tab" data-bs-target="#br" type="button" role="tab">Battle Royale</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="cs-tab" data-bs-toggle="tab" data-bs-target="#cs" type="button" role="tab">Clash Squad</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="gameTabsContent">
+                    <div class="tab-pane fade show active" id="br" role="tabpanel"></div>
+                    <div class="tab-pane fade" id="cs" role="tabpanel"></div>
+                </div>
+            `;
+
+            const brPane = div.querySelector('#br');
+            const csPane = div.querySelector('#cs');
+
+            // Populate BR
+            if (brData.success) {
+                // Assuming brData has solo, duo, squad objects
+                brPane.appendChild(createModeSection('Solo', brData.solo || {}));
+                brPane.appendChild(createModeSection('Duo', brData.duo || {}));
+                brPane.appendChild(createModeSection('Squad', brData.squad || {}));
+            } else {
+                brPane.innerHTML = `<p>${brData.message || 'No data available'}</p>`;
+            }
+
+            // Populate CS
+            if (csData.success) {
+                // Assuming csData has overall and squad
+                csPane.appendChild(createOverallSection(csData.overall || {}));
+                csPane.appendChild(createModeSection('Squad', csData.squad || {}));
+            } else {
+                csPane.innerHTML = `<p>${csData.message || 'No data available'}</p>`;
+            }
+
+            return div;
+        }
+
+        function createOverallSection(data) {
+            const section = document.createElement('div');
+            section.className = 'mode-section';
+
+            if (data.message) {
+                section.innerHTML = `<p>${data.message}</p>`;
+                return section;
+            }
+
+            section.innerHTML = `
+                <div class="stat-item"><span class="stat-label"><span>🎯</span>Headshot Kills</span><span>${data.headshot_kills || 0}</span></div>
+                <div class="stat-item"><span class="stat-label"><span>💥</span>Headshot Rate</span><span>${data.headshot_rate || '0.00%'}</span></div>
+                <div class="stat-item"><span class="stat-label"><span>🔥</span>Damage</span><span>${data.damage || 0}</span></div>
+                <div class="stat-item"><span class="stat-label"><span>❤️</span>Revives</span><span>${data.revives || 0}</span></div>
+            `;
+            return section;
+        }
+
+        function createModeSection(title, data) {
+            const section = document.createElement('div');
+            section.className = 'mode-section';
+            const titleEl = document.createElement('div');
+            titleEl.className = 'mode-title';
+            titleEl.textContent = title;
+            section.appendChild(titleEl);
+
+            if (data.message) {
+                const p = document.createElement('p');
+                p.textContent = data.message;
+                section.appendChild(p);
+                return section;
+            }
+
+            section.innerHTML += `
+                <div class="stat-item"><span class="stat-label"><span>🎮</span>Matches Played</span><span>${data.matches_played || 0}</span></div>
+                <div class="stat-item"><span class="stat-label"><span>🏆</span>Wins</span><span>${data.wins || 0}</span></div>
+                <div class="stat-item"><span class="stat-label"><span>💀</span>Kills</span><span>${data.kills || 0}</span></div>
+                <div class="stat-item"><span class="stat-label"><span>💔</span>Deaths</span><span>${data.deaths || 0}</span></div>
+                <div class="stat-item"><span class="stat-label"><span>📈</span>K/D Ratio</span><span>${data.kd_ratio || 0}</span></div>
+                <div class="stat-item"><span class="stat-label"><span>🎯</span>Headshot Kills</span><span>${data.headshot_kills || 0}</span></div>
+                <div class="stat-item"><span class="stat-label"><span>💥</span>Headshot Rate</span><span>${data.headshot_rate || '0.00%'}</span></div>
+                <div class="stat-item"><span class="stat-label"><span>🔥</span>Damage</span><span>${data.damage || 0}</span></div>
+                <div class="stat-item"><span class="stat-label"><span>❤️</span>Revives</span><span>${data.revives || 0}</span></div>
+            `;
+            return section;
         }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
