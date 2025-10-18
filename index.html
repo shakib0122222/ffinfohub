@@ -3,15 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Fire Stats Finder</title>
+    
+    <!-- SEO Meta Tags -->
+    <title>Free Fire Stats Finder Pro | Gajarbotol Edition</title>
+    <meta name="description" content="An advanced Free Fire player stats checker. Get real-time, detailed statistics for Battle Royale (BR) and Clash Squad (CS) modes for any player on any server.">
+    <meta name="keywords" content="Free Fire, player stats, CS stats, BR stats, Free Fire UID checker, Garena Free Fire, player profile, ff stats, gajarbotol, Bangladesh">
+    <meta name="author" content="GAJARBOTOL">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Free Fire Stats Finder Pro | Gajarbotol Edition">
+    <meta property="og:description" content="The ultimate tool for checking detailed Free Fire player stats for BR & CS modes.">
+    <meta property="og:image" content="https://placehold.co/1200x630/1a1a2e/e94560?text=FF+Stats+Pro">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="Free Fire Stats Finder Pro | Gajarbotol Edition">
+    <meta property="twitter:description" content="The ultimate tool for checking detailed Free Fire player stats for BR & CS modes.">
+    <meta property="twitter:image" content="https://placehold.co/1200x630/1a1a2e/e94560?text=FF+Stats+Pro">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-bg: #1a1a2e; /* Darker background */
-            --secondary-bg: #2e3b55; /* Card background */
-            --accent-color: #e94560; /* Button/highlight color */
+            --primary-bg: #1a1a2e;
+            --secondary-bg: #2e3b55;
+            --accent-color: #e94560;
             --text-color: #ffffff;
             --input-bg: #3c4c6b;
             --input-border: #4a5d7c;
@@ -23,12 +42,11 @@
             background-color: var(--primary-bg);
             color: var(--text-color);
             margin: 0;
-            padding: 0;
+            padding: 20px;
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* Align to top for better scrolling on mobile */
+            align-items: flex-start;
             min-height: 100vh;
-            padding: 20px;
             box-sizing: border-box;
         }
 
@@ -52,6 +70,7 @@
             color: var(--accent-color);
             line-height: 1;
             margin-bottom: 5px;
+            animation: pulse 2s infinite;
         }
 
         .header h1 {
@@ -87,17 +106,26 @@
             color: var(--text-color);
             font-size: 1em;
             box-sizing: border-box;
-            -webkit-appearance: none; /* Remove default arrow for select */
+            -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .form-group input[type="text"]:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.3);
         }
 
+
         .form-group select {
-            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%20197.352L146.2%2056.638L5.4%20197.352H287z%22%2F%3E%3C%2Fsvg%3E');
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns="http://www.w3.org/2000/svg" width="292.4" height="292.4"%3E%3Cpath fill="%23ffffff" d="M287 69.4a17.6 17.6 0 0 0-13-5.4H18.4c-5 0-9.3 1.8-12.9 5.4A17.6 17.6 0 0 0 0 82.2c0 5 1.8 9.3 5.4 12.9l128 127.9c3.6 3.6 7.8 5.4 12.8 5.4s9.2-1.8 12.8-5.4L287 95c3.6-3.6 5.4-7.8 5.4-12.8 0-5-1.9-9.2-5.5-12.8z"/%3E%3C/svg%3E');
             background-repeat: no-repeat;
             background-position: right 15px center;
-            background-size: 12px;
-            padding-right: 40px; /* Make space for the arrow */
+            background-size: 10px;
+            padding-right: 40px;
         }
 
         .form-group input[type="text"]::placeholder {
@@ -114,11 +142,12 @@
             font-size: 1.1em;
             font-weight: 700;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         button#searchPlayerBtn:hover {
             background-color: #c7374e;
+            transform: translateY(-2px);
         }
 
         .footer {
@@ -147,14 +176,17 @@
 
         #results {
             margin-top: 30px;
-            display: none; /* Initially hidden */
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
         }
-
-        /* Profile Card */
-        .profile-card {
+        
+        .profile-card, .tab-content {
             background-color: var(--secondary-bg);
             padding: 20px;
             border-radius: 10px;
+        }
+
+        .profile-card {
             text-align: center;
             margin-bottom: 20px;
         }
@@ -175,7 +207,6 @@
         .profile-card .avatar-container .avatar-char {
             font-size: 3em;
             font-weight: 700;
-            color: var(--text-color);
         }
 
         .profile-card .level-badge {
@@ -189,30 +220,13 @@
             border-radius: 10px;
             font-weight: 600;
         }
-
-        .profile-card .player-name-section {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 5px;
-            margin-bottom: 5px;
-        }
-
-        .profile-card .player-name-section .rank-icon {
-            font-size: 1.2em;
-            color: #bbb;
-        }
-
-        .profile-card .player-name-section .player-nickname {
+        
+        .profile-card .player-nickname {
             font-size: 1.6em;
             font-weight: 700;
-            margin: 0;
+            margin: 0 0 5px 0;
         }
-        .profile-card .player-name-section .feather-icon {
-            font-size: 1.2em;
-            color: #bbb;
-        }
-
+        
         .profile-card .player-uid {
             font-size: 0.9em;
             color: #aaa;
@@ -232,14 +246,9 @@
             margin-bottom: 20px;
         }
 
-        .profile-card .stat-item {
-            text-align: center;
-        }
-
         .profile-card .stat-item .stat-value {
             font-size: 1.4em;
             font-weight: 700;
-            color: var(--text-color);
             margin-bottom: 2px;
         }
 
@@ -256,14 +265,6 @@
             margin-top: 15px;
         }
 
-        .profile-card .grid-item {
-            padding: 10px 0;
-            /* border-bottom: 1px solid var(--input-border); */
-        }
-        .profile-card .grid-item:nth-child(even) {
-            text-align: right;
-        }
-
         .profile-card .grid-item .label {
             font-size: 0.85em;
             color: #aaa;
@@ -273,17 +274,19 @@
         .profile-card .grid-item .value {
             font-size: 1em;
             font-weight: 600;
-            color: var(--text-color);
         }
 
         .profile-card .quote {
             font-style: italic;
             font-size: 0.9em;
-            color: #888;
+            color: #aaa;
             margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--input-border);
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
 
-        /* Tabs for BR/CS */
         .tabs {
             display: flex;
             background-color: var(--secondary-bg);
@@ -305,27 +308,14 @@
             border-radius: 0;
         }
 
-        .tabs button:first-child {
-            border-top-left-radius: 8px;
-            border-bottom-left-radius: 8px;
-        }
-        .tabs button:last-child {
-            border-top-right-radius: 8px;
-            border-bottom-right-radius: 8px;
-        }
-
         .tabs button.active {
             background-color: var(--accent-color);
         }
-
-        .tab-content {
-            background-color: var(--secondary-bg);
-            padding: 20px;
-            border-radius: 10px;
-        }
-
-        .mode-section {
+        
+        .mode-section:not(:last-child) {
             margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--input-border);
         }
 
         .mode-section h3 {
@@ -334,12 +324,14 @@
             margin-top: 0;
             margin-bottom: 15px;
         }
-        .mode-section h3.no-data {
+        
+        .mode-section .no-data {
             color: #99aab5;
-            font-size: 1.1em;
+            font-size: 1em;
             font-style: italic;
+            font-weight: 400;
+            text-align: center;
         }
-
 
         .stats-list .info-item {
             display: flex;
@@ -353,15 +345,12 @@
         }
 
         .stats-list .info-item span:first-child {
-            font-weight: 400; /* Lighter for label */
             color: #cccccc;
         }
 
         .stats-list .info-item span:last-child {
-            font-weight: 600; /* Bolder for value */
-            text-align: right;
+            font-weight: 600;
         }
-
 
         .loader {
             border: 4px solid #f3f3f3;
@@ -371,67 +360,38 @@
             height: 25px;
             animation: spin 1s linear infinite;
             margin: 20px auto;
-            display: none; /* Initially hidden */
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            display: none;
         }
 
         .error-message {
             color: var(--accent-color);
+            background-color: rgba(233, 69, 96, 0.1);
+            border: 1px solid var(--accent-color);
             text-align: center;
             margin-top: 20px;
+            padding: 10px;
+            border-radius: 8px;
             display: none;
             font-weight: 600;
         }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-        /* Responsive adjustments */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
         @media (max-width: 480px) {
-            .container {
-                padding: 20px;
-            }
-            .header h1 {
-                font-size: 1.6em;
-            }
-            .header p {
-                font-size: 0.85em;
-            }
-            button#searchPlayerBtn {
-                font-size: 1em;
-                padding: 12px;
-            }
-            .form-group input, .form-group select {
-                padding: 10px 12px;
-            }
-            .profile-card .player-nickname {
-                font-size: 1.4em;
-            }
-            .profile-card .player-uid {
-                font-size: 0.8em;
-            }
-            .profile-card .player-clan {
-                font-size: 0.9em;
-            }
-            .profile-card .stat-item .stat-value {
-                font-size: 1.2em;
-            }
-            .profile-card .grid-item .label {
-                font-size: 0.8em;
-            }
-            .profile-card .grid-item .value {
-                font-size: 0.9em;
-            }
-            .tabs button {
-                font-size: 0.9em;
-            }
-            .mode-section h3 {
-                font-size: 1.2em;
-            }
-            .stats-list .info-item span:first-child, .stats-list .info-item span:last-child {
-                font-size: 0.9em;
-            }
+            body { padding: 15px; }
+            .container { padding: 20px; }
+            .header h1 { font-size: 1.6em; }
+            .profile-card .player-nickname { font-size: 1.4em; }
+            .tabs button { font-size: 0.9em; }
         }
     </style>
 </head>
@@ -440,7 +400,7 @@
         <div class="header">
             <div class="fire-icon">🔥</div>
             <h1>Free Fire Stats Finder</h1>
-            <p>Get real-time player stats and personal info for BR & CS!</p>
+            <p>Get real-time player stats and personal info!</p>
         </div>
 
         <div class="form-group">
@@ -450,21 +410,7 @@
 
         <div class="form-group">
             <label for="server">Server</label>
-            <select id="server">
-                <option value="BD">BD</option>
-                <option value="IND">IND</option>
-                <option value="SG">SG</option>
-                <option value="RU">RU</option>
-                <option value="ID">ID</option>
-                <option value="TW">TW</option>
-                <option value="US">US</option>
-                <option value="VN">VN</option>
-                <option value="TH">TH</option>
-                <option value="ME">ME</option>
-                <option value="PK">PK</option>
-                <option value="CIS">CIS</option>
-                <option value="BR">BR</option>
-            </select>
+            <select id="server"></select>
         </div>
 
         <button id="searchPlayerBtn">Search Player</button>
@@ -473,17 +419,12 @@
         <div class="error-message" id="errorMessage"></div>
 
         <div id="results">
-            <!-- Player Profile Card -->
             <div class="profile-card" id="playerProfileCard">
                 <div class="avatar-container">
                     <span class="avatar-char" id="profileAvatarChar">?</span>
                     <span class="level-badge" id="profileLevel">Lv. ??</span>
                 </div>
-                <div class="player-name-section">
-                    <span class="rank-icon" id="profileRankIcon"></span>
-                    <h2 class="player-nickname" id="profileNickname">Player Nickname</h2>
-                    <span class="feather-icon">🌿</span> <!-- Example icon -->
-                </div>
+                <h2 class="player-nickname" id="profileNickname">Player Nickname</h2>
                 <p class="player-uid" id="profileUidDisplay">UID: N/A</p>
                 <p class="player-clan" id="profileClan">Clan: N/A</p>
 
@@ -499,284 +440,231 @@
                 </div>
 
                 <div class="grid-info">
-                    <div class="grid-item">
-                        <div class="label">Region</div>
-                        <div class="value" id="profileRegion">N/A</div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="label">BR Rank</div>
-                        <div class="value" id="profileBRRank">N/A</div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="label">CS Rank</div>
-                        <div class="value" id="profileCSRank">N/A</div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="label">Last Login</div>
-                        <div class="value" id="profileLastLogin">N/A</div>
-                    </div>
+                    <div class="grid-item"><div class="label">Region</div><div class="value" id="profileRegion">N/A</div></div>
+                    <div class="grid-item"><div class="label">BR Rank</div><div class="value" id="profileBRRank">N/A</div></div>
+                    <div class="grid-item"><div class="label">CS Rank</div><div class="value" id="profileCSRank">N/A</div></div>
+                    <div class="grid-item"><div class="label">Last Login</div><div class="value" id="profileLastLogin">N/A</div></div>
                 </div>
 
                 <p class="quote" id="profileSignature">"No signature set."</p>
             </div>
 
-            <!-- Tabs for Battle Royale / Clash Squad -->
             <div class="tabs">
-                <button class="tab-btn active" data-gamemode="br">Battle Royale</button>
-                <button class="tab-btn" data-gamemode="cs">Clash Squad</button>
+                <button class="tab-btn active" data-tab="br">Battle Royale</button>
+                <button class="tab-btn" data-tab="cs">Clash Squad</button>
             </div>
 
             <div id="brTabContent" class="tab-content">
-                <!-- BR Solo -->
-                <div class="mode-section">
-                    <h3 id="brSoloTitle">Solo</h3>
-                    <div class="stats-list" id="brSoloStats">
-                        <!-- Solo stats will be loaded here -->
-                    </div>
-                </div>
-
-                <!-- BR Duo -->
-                <div class="mode-section">
-                    <h3>Duo</h3>
-                    <div class="stats-list" id="brDuoStats">
-                        <!-- Duo stats will be loaded here -->
-                    </div>
-                </div>
-
-                <!-- BR Squad -->
-                <div class="mode-section">
-                    <h3>Squad</h3>
-                    <div class="stats-list" id="brSquadStats">
-                        <!-- Squad stats will be loaded here -->
-                    </div>
-                </div>
+                <div class="mode-section"><h3 id="brSoloTitle">Solo</h3><div class="stats-list" id="brSoloStats"></div></div>
+                <div class="mode-section"><h3 id="brDuoTitle">Duo</h3><div class="stats-list" id="brDuoStats"></div></div>
+                <div class="mode-section"><h3 id="brSquadTitle">Squad</h3><div class="stats-list" id="brSquadStats"></div></div>
             </div>
 
             <div id="csTabContent" class="tab-content" style="display: none;">
-                <!-- CS Squad (assuming CS only has Squad mode data for ranked) -->
-                <div class="mode-section">
-                    <h3 id="csRankedTitle">Ranked</h3>
-                    <div class="stats-list" id="csRankedStats">
-                        <!-- CS Ranked stats will be loaded here -->
-                    </div>
-                </div>
+                <div class="mode-section"><h3 id="csRankedTitle">Ranked Stats</h3><div class="stats-list" id="csRankedStats"></div></div>
             </div>
         </div>
 
         <div class="footer">
-            Developed with <span>❤️</span> by <a href="#" target="_blank">@DEMO</a>
+            Developed with <span>❤️</span> by <a href="https://github.com/Gajar-Botol" target="_blank">@GAJARBOTOL</a>
         </div>
     </div>
 
     <script>
-        const playerUidInput = document.getElementById('playerUid');
-        const serverSelect = document.getElementById('server');
-        const searchPlayerBtn = document.getElementById('searchPlayerBtn');
-        const resultsDiv = document.getElementById('results');
-        const loader = document.getElementById('loader');
-        const errorMessage = document.getElementById('errorMessage');
+        document.addEventListener('DOMContentLoaded', () => {
+            const playerUidInput = document.getElementById('playerUid');
+            const serverSelect = document.getElementById('server');
+            const searchPlayerBtn = document.getElementById('searchPlayerBtn');
+            const resultsDiv = document.getElementById('results');
+            const loader = document.getElementById('loader');
+            const errorMessage = document.getElementById('errorMessage');
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const brTabContent = document.getElementById('brTabContent');
+            const csTabContent = document.getElementById('csTabContent');
 
-        const profileAvatarChar = document.getElementById('profileAvatarChar');
-        const profileLevel = document.getElementById('profileLevel');
-        const profileRankIcon = document.getElementById('profileRankIcon');
-        const profileNickname = document.getElementById('profileNickname');
-        const profileUidDisplay = document.getElementById('profileUidDisplay');
-        const profileClan = document.getElementById('profileClan');
-        const profileLikes = document.getElementById('profileLikes');
-        const profileBadges = document.getElementById('profileBadges');
-        const profileRegion = document.getElementById('profileRegion');
-        const profileBRRank = document.getElementById('profileBRRank');
-        const profileCSRank = document.getElementById('profileCSRank');
-        const profileLastLogin = document.getElementById('profileLastLogin');
-        const profileSignature = document.getElementById('profileSignature');
+            const BASE_URL = "https://ff-info-gajarbotol.vercel.app/";
+            const SERVERS = ['IND', 'SG', 'RU', 'ID', 'TW', 'US', 'VN', 'TH', 'ME', 'PK', 'CIS', 'BR', 'BD'];
 
-        const brTabContent = document.getElementById('brTabContent');
-        const csTabContent = document.getElementById('csTabContent');
-        const brSoloStatsDiv = document.getElementById('brSoloStats');
-        const brDuoStatsDiv = document.getElementById('brDuoStats');
-        const brSquadStatsDiv = document.getElementById('brSquadStats');
-        const csRankedStatsDiv = document.getElementById('csRankedStats');
-
-        const tabButtons = document.querySelectorAll('.tab-btn');
-
-        const BASE_URL = "https://ff-info-gajarbotol.vercel.app/"; // আপনার API Base URL
-
-        // Helper function to create a stat item
-        function createStatItem(label, value) {
-            const itemDiv = document.createElement('div');
-            itemDiv.classList.add('info-item');
-            itemDiv.innerHTML = `<span>${label}:</span> <span>${value}</span>`;
-            return itemDiv;
-        }
-
-        // Helper function to render stats for a given mode
-        function renderStats(targetDiv, data, gamemode) {
-            targetDiv.innerHTML = ''; // Clear previous stats
-
-            if (!data || Object.keys(data).length === 0) {
-                targetDiv.innerHTML = `<h3 class="no-data">No ${gamemode} data found for this mode.</h3>`;
-                return;
-            }
-            
-            // Example of mapping API response to display (adjust as per actual API fields)
-            if (data.total_matches) targetDiv.appendChild(createStatItem('Matches Played', data.total_matches));
-            if (data.wins) targetDiv.appendChild(createStatItem('Wins', data.wins));
-            if (data.kills) targetDiv.appendChild(createStatItem('Kills', data.kills));
-            if (data.deaths) targetDiv.appendChild(createStatItem('Deaths', data.deaths));
-            
-            // Calculate K/D Ratio
-            if (data.kills !== undefined && data.deaths !== undefined) {
-                const kdRatio = (data.deaths > 0) ? (data.kills / data.deaths).toFixed(2) : (data.kills > 0 ? data.kills : 0);
-                targetDiv.appendChild(createStatItem('K/D Ratio', kdRatio));
+            // --- INITIALIZATION ---
+            function initialize() {
+                SERVERS.forEach(server => {
+                    const option = document.createElement('option');
+                    option.value = server;
+                    option.textContent = server;
+                    serverSelect.appendChild(option);
+                });
+                serverSelect.value = 'BD'; // Default to BD
+                
+                searchPlayerBtn.addEventListener('click', handleSearch);
+                tabButtons.forEach(button => button.addEventListener('click', handleTabSwitch));
             }
 
-            if (data.headshots) targetDiv.appendChild(createStatItem('Headshot Kills', data.headshots));
-            
-            // Calculate Headshot Rate
-            if (data.headshots !== undefined && data.kills !== undefined) {
-                const hsRate = (data.kills > 0) ? ((data.headshots / data.kills) * 100).toFixed(2) + '%' : '0.00%';
-                targetDiv.appendChild(createStatItem('Headshot Rate', hsRate));
+            // --- UI MANIPULATION ---
+            function showLoader(show) {
+                loader.style.display = show ? 'block' : 'none';
             }
             
-            if (data.damage) targetDiv.appendChild(createStatItem('Damage', data.damage));
-            if (data.revives) targetDiv.appendChild(createStatItem('Revives', data.revives));
-            // Add more stats as needed from your API response
-        }
-
-        // Tab switching logic
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                tabButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-
-                const gamemode = button.dataset.gamemode;
-                if (gamemode === 'br') {
-                    brTabContent.style.display = 'block';
-                    csTabContent.style.display = 'none';
-                } else if (gamemode === 'cs') {
-                    brTabContent.style.display = 'none';
-                    csTabContent.style.display = 'block';
-                }
-            });
-        });
-
-        searchPlayerBtn.addEventListener('click', async () => {
-            const playerUid = playerUidInput.value.trim();
-            const server = serverSelect.value;
-
-            resultsDiv.style.display = 'none'; // Hide previous results
-            errorMessage.style.display = 'none'; // Hide previous error
-            
-            if (!playerUid) {
-                errorMessage.textContent = 'Please enter a Player UID.';
+            function showError(message) {
+                errorMessage.innerHTML = message;
                 errorMessage.style.display = 'block';
-                return;
+                resultsDiv.style.display = 'none';
             }
 
-            loader.style.display = 'block'; // Show loader
+            function hideMessages() {
+                errorMessage.style.display = 'none';
+            }
+            
+            function handleTabSwitch(event) {
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                event.target.classList.add('active');
+                const tab = event.target.dataset.tab;
+                brTabContent.style.display = tab === 'br' ? 'block' : 'none';
+                csTabContent.style.display = tab === 'cs' ? 'block' : 'none';
+            }
+            
+            // --- DATA FETCHING ---
+            async function fetchApiData(endpoint) {
+                try {
+                    const response = await fetch(endpoint);
+                    if (!response.ok) {
+                         return { success: false, error: `Server responded with status ${response.status}` };
+                    }
+                    const data = await response.json();
+                    const isSuccess = data.success === true || data.status === 'success';
+                    return { success: isSuccess, data: data, error: isSuccess ? null : (data.message || 'API reported an unknown failure') };
+                } catch (error) {
+                    console.error(`Fetch error for ${endpoint}:`, error);
+                    return { success: false, error: 'Network error or invalid response from server.' };
+                }
+            }
+            
+            // --- EVENT HANDLER ---
+            async function handleSearch() {
+                const uid = playerUidInput.value.trim();
+                const server = serverSelect.value;
 
-            try {
-                // --- API Call for Player Personal Info ---
-                const personalInfoResponse = await fetch(`${BASE_URL}get_player_personal_show?server=${server}&uid=${playerUid}`);
-                const personalInfo = await personalInfoResponse.json();
-
-                if (personalInfo.status === true && personalInfo.data) {
-                    const data = personalInfo.data;
-                    profileAvatarChar.textContent = data.nickname ? data.nickname.charAt(0).toUpperCase() : '?';
-                    profileLevel.textContent = `Lv. ${data.level || '??'}`;
-                    profileNickname.textContent = data.nickname || 'N/A';
-                    profileUidDisplay.textContent = `UID: ${data.account_id || 'N/A'}`;
-                    profileClan.textContent = `Clan: ${data.clan_name || 'N/A'}`;
-                    profileLikes.textContent = data.likes || '0';
-                    profileBadges.textContent = data.badge || '0'; // Assuming badge count is separate
-                    profileRegion.textContent = data.region || 'N/A';
-                    // BR and CS ranks will be updated from the stats API call
-                    profileLastLogin.textContent = data.last_login ? new Date(data.last_login * 1000).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
-                    profileSignature.textContent = data.signature || '"No signature set."';
-
-                    // For the rank icon, you might need an image or Font Awesome if available.
-                    // For now, it's empty or can be a simple text like 'CR' from your screenshot
-                    profileRankIcon.textContent = data.current_rank_br ? data.current_rank_br.rank_name || '' : ''; // You can parse this to an icon if needed
-
-                } else {
-                    errorMessage.textContent = personalInfo.message || 'Failed to fetch personal info.';
-                    errorMessage.style.display = 'block';
-                    profileNickname.textContent = 'Player Nickname';
-                    profileUidDisplay.textContent = 'UID: N/A';
-                    profileClan.textContent = 'Clan: N/A';
-                    profileLikes.textContent = '0';
-                    profileBadges.textContent = '0';
-                    profileRegion.textContent = 'N/A';
-                    profileBRRank.textContent = 'N/A';
-                    profileCSRank.textContent = 'N/A';
-                    profileLastLogin.textContent = 'N/A';
-                    profileSignature.textContent = '"No signature set."';
-                    profileAvatarChar.textContent = '?';
-                    profileLevel.textContent = 'Lv. ??';
-                    profileRankIcon.textContent = '';
+                if (!uid) {
+                    showError('Please enter a Player UID.');
+                    return;
                 }
 
-                // --- API Call for All Ranked Stats (BR & CS) ---
-                const statsResponse = await fetch(`${BASE_URL}get_player_stats?server=${server}&uid=${playerUid}&matchmode=RANKED&gamemode=br`);
-                const stats = await statsResponse.json();
+                hideMessages();
+                showLoader(true);
+                resultsDiv.style.display = 'none';
 
-                if (stats.status === true && stats.data) {
-                    const brRankedData = stats.data.br_ranked || {};
-                    const csRankedData = stats.data.cs_ranked || {};
+                const personalInfoEndpoint = `${BASE_URL}get_player_personal_show?server=${server}&uid=${uid}`;
+                const brStatsEndpoint = `${BASE_URL}get_player_stats?server=${server}&uid=${uid}&matchmode=RANKED&gamemode=br`;
+                const csStatsEndpoint = `${BASE_URL}get_player_stats?server=${server}&uid=${uid}&matchmode=RANKED&gamemode=cs`;
+                
+                const [personalResult, brStatsResult, csStatsResult] = await Promise.all([
+                    fetchApiData(personalInfoEndpoint),
+                    fetchApiData(csStatsEndpoint),
+                    fetchApiData(brStatsEndpoint)
+                ]);
 
-                    // Update BR/CS Ranks on profile card
-                    profileBRRank.textContent = brRankedData.current_rank ? brRankedData.current_rank.rank_name || 'N/A' : 'N/A';
-                    profileCSRank.textContent = csRankedData.current_rank ? csRankedData.current_rank.rank_name || 'N/A' : 'N/A';
+                showLoader(false);
 
-                    // BR Solo
-                    if (brRankedData.solo) {
-                        renderStats(brSoloStatsDiv, brRankedData.solo, 'BR Solo');
-                    } else {
-                        brSoloStatsDiv.innerHTML = `<h3 class="no-data">No BR Solo ranked data found.</h3>`;
-                    }
-                    
-                    // BR Duo
-                    if (brRankedData.duo) {
-                        renderStats(brDuoStatsDiv, brRankedData.duo, 'BR Duo');
-                    } else {
-                        brDuoStatsDiv.innerHTML = `<h3 class="no-data">No BR Duo ranked data found.</h3>`;
-                    }
-
-                    // BR Squad
-                    if (brRankedData.squad) {
-                        renderStats(brSquadStatsDiv, brRankedData.squad, 'BR Squad');
-                    } else {
-                        brSquadStatsDiv.innerHTML = `<h3 class="no-data">No BR Squad ranked data found.</h3>`;
-                    }
-
-                    // CS Ranked
-                    if (csRankedData.squad) { // Assuming CS ranked data is under 'squad'
-                        renderStats(csRankedStatsDiv, csRankedData.squad, 'CS Ranked');
-                        document.getElementById('csRankedTitle').textContent = 'Ranked'; // Ensure title is correct
-                    } else {
-                        csRankedStatsDiv.innerHTML = `<h3 class="no-data">No CS Ranked data found.</h3>`;
-                    }
-
-                } else {
-                    errorMessage.textContent = stats.message || 'Failed to fetch player stats.';
-                    errorMessage.style.display = 'block';
-                    brSoloStatsDiv.innerHTML = `<h3 class="no-data">No BR Solo ranked data found.</h3>`;
-                    brDuoStatsDiv.innerHTML = `<h3 class="no-data">No BR Duo ranked data found.</h3>`;
-                    brSquadStatsDiv.innerHTML = `<h3 class="no-data">No BR Squad ranked data found.</h3>`;
-                    csRankedStatsDiv.innerHTML = `<h3 class="no-data">No CS Ranked data found.</h3>`;
+                if (!personalResult.success) {
+                    showError(`Failed to fetch player profile. Please check UID and Server. <br><small>(${personalResult.error})</small>`);
+                    return;
                 }
                 
-                resultsDiv.style.display = 'block'; // Show results section
-                tabButtons[0].click(); // Activate BR tab by default
+                renderProfileCard(personalResult.data.data);
+                renderStatsTabs(brStatsResult, csStatsResult);
 
-            } catch (error) {
-                console.error('Error fetching player data:', error);
-                errorMessage.textContent = 'Failed to fetch player data. Please check the UID, server, or try again later.';
-                errorMessage.style.display = 'block';
-            } finally {
-                loader.style.display = 'none'; // Hide loader
+                resultsDiv.style.display = 'block';
+                 // Ensure the first tab is active
+                if(tabButtons.length > 0) tabButtons[0].click();
             }
+
+            // --- RENDERING LOGIC ---
+            function renderProfileCard(data) {
+                const { basicinfo, clanbasicinfo, socialinfo } = data;
+                const getRankName = (rank) => {
+                    if (rank >= 330) return "Grandmaster";
+                    if (rank >= 327) return "Master";
+                    if (rank >= 322) return "Heroic";
+                    if (rank >= 317) return "Diamond";
+                    return "Unranked";
+                };
+
+                document.getElementById('profileAvatarChar').textContent = basicinfo.nickname ? basicinfo.nickname.charAt(0).toUpperCase() : '?';
+                document.getElementById('profileLevel').textContent = `Lv. ${basicinfo.level || '??'}`;
+                document.getElementById('profileNickname').textContent = basicinfo.nickname || 'N/A';
+                document.getElementById('profileUidDisplay').textContent = `UID: ${basicinfo.accountid || 'N/A'}`;
+                document.getElementById('profileClan').textContent = clanbasicinfo?.clanname ? `Clan: ${clanbasicinfo.clanname}` : 'No Clan';
+                document.getElementById('profileLikes').textContent = (basicinfo.liked || 0).toLocaleString();
+                document.getElementById('profileBadges').textContent = (basicinfo.badgecnt || 0).toLocaleString();
+                document.getElementById('profileRegion').textContent = basicinfo.region || 'N/A';
+                document.getElementById('profileBRRank').textContent = getRankName(basicinfo.rank);
+                document.getElementById('profileCSRank').textContent = getRankName(basicinfo.csrank);
+                document.getElementById('profileLastLogin').textContent = basicinfo.lastloginat ? new Date(parseInt(basicinfo.lastloginat) * 1000).toLocaleDateString() : 'N/A';
+                document.getElementById('profileSignature').textContent = socialinfo?.signature ? `"${socialinfo.signature.replace(/\[b\]|\[c\]|\[i\]/g, '')}"` : '"No signature set."';
+            }
+            
+            function renderStatsTabs(brResult, csResult) {
+                // BR Stats
+                if (brResult.success && brResult.data.data) {
+                    const { solostats, duostats, quadstats } = brResult.data.data;
+                    renderModeStats(document.getElementById('brSoloStats'), solostats, 'Solo');
+                    renderModeStats(document.getElementById('brDuoStats'), duostats, 'Duo');
+                    renderModeStats(document.getElementById('brSquadStats'), quadstats, 'Squad');
+                } else {
+                    document.getElementById('brSoloStats').innerHTML = `<p class="no-data">Could not load BR data.</p>`;
+                    document.getElementById('brDuoStats').innerHTML = '';
+                    document.getElementById('brSquadStats').innerHTML = '';
+                }
+
+                // CS Stats
+                if (csResult.success && csResult.data.data) {
+                    // In CS, often only squad/quad stats are relevant for ranked
+                    const { quadstats, solostats, duostats } = csResult.data.data;
+                    const rankedData = quadstats || solostats || duostats; // Find first available data
+                    renderModeStats(document.getElementById('csRankedStats'), rankedData, 'Ranked');
+                } else {
+                     document.getElementById('csRankedStats').innerHTML = `<p class="no-data">Could not load CS data.</p>`;
+                }
+            }
+
+            function renderModeStats(targetDiv, stats, modeName) {
+                targetDiv.innerHTML = '';
+                if (!stats || !stats.gamesplayed) {
+                    targetDiv.innerHTML = `<p class="no-data">No ranked ${modeName} data found.</p>`;
+                    return;
+                }
+
+                const kills = stats.kills || 0;
+                const deaths = stats.detailedstats?.deaths || 0;
+                const headshotKills = stats.detailedstats?.headshotkills || 0;
+                const kd = deaths > 0 ? (kills / deaths).toFixed(2) : kills.toFixed(2);
+                const hsRate = kills > 0 ? ((headshotKills / kills) * 100).toFixed(2) + '%' : '0.00%';
+                
+                const statsMap = {
+                    'Matches Played': stats.gamesplayed,
+                    'Wins': stats.wins,
+                    'Kills': kills,
+                    'Deaths': deaths,
+                    'K/D Ratio': kd,
+                    'Headshot Kills': headshotKills,
+                    'Headshot Rate': hsRate,
+                    'Damage': stats.detailedstats?.damage,
+                    'Revives': stats.detailedstats?.revives,
+                };
+                
+                for(const [label, value] of Object.entries(statsMap)) {
+                     if (value !== undefined && value !== null) {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.classList.add('info-item');
+                        itemDiv.innerHTML = `<span>${label}</span> <span>${value.toLocaleString()}</span>`;
+                        targetDiv.appendChild(itemDiv);
+                     }
+                }
+            }
+            
+            initialize();
         });
     </script>
 </body>
 </html>
+
+
