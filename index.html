@@ -790,41 +790,63 @@
                     return; // Stop execution if personal info fetch fails
                 }
 
-                // --- API Call for All Ranked Stats (BR & CS) ---
-                const statsURL = `${BASE_URL}get_player_stats?server=${server}&uid=${playerUid}`;
-                console.log('Stats API URL:', statsURL);
-                const statsResponse = await fetch(statsURL);
+                // --- API Call for BR Ranked Stats ---
+                const brStatsURL = `${BASE_URL}get_player_stats?server=${server}&uid=${playerUid}&matchmode=RANKED&gamemode=br`;
+                console.log('BR Stats API URL:', brStatsURL);
+                const brStatsResponse = await fetch(brStatsURL);
                 
-                if (!statsResponse.ok) {
-                    throw new Error(`Stats API HTTP error! status: ${statsResponse.status}`);
+                if (!brStatsResponse.ok) {
+                    throw new Error(`BR Stats API HTTP error! status: ${brStatsResponse.status}`);
                 }
-                const stats = await statsResponse.json();
-                console.log('Stats API Response:', stats);
+                const brStats = await brStatsResponse.json();
+                console.log('BR Stats API Response:', brStats);
 
-                if (stats.status === true && stats.data) {
-                    const brRankedData = getNested(stats.data, ['br_ranked'], {});
-                    const csRankedData = getNested(stats.data, ['cs_ranked'], {});
+                // --- API Call for CS Ranked Stats ---
+                const csStatsURL = `${BASE_URL}get_player_stats?server=${server}&uid=${playerUid}&matchmode=RANKED&gamemode=cs`;
+                console.log('CS Stats API URL:', csStatsURL);
+                const csStatsResponse = await fetch(csStatsURL);
+                
+                if (!csStatsResponse.ok) {
+                    throw new Error(`CS Stats API HTTP error! status: ${csStatsResponse.status}`);
+                }
+                const csStats = await csStatsResponse.json();
+                console.log('CS Stats API Response:', csStats);
 
-                    // Update BR/CS Ranks on profile card
-                    profileBRRank.textContent = getNested(brRankedData, ['current_rank', 'rank_name']);
-                    profileCSRank.textContent = getNested(csRankedData, ['current_rank', 'rank_name']);
-                    
-                    // BR Solo
-                    renderStats(brSoloStatsDiv, getNested(brRankedData, ['solo'], {}), brSoloTitle);
-                    
-                    // BR Duo
-                    renderStats(brDuoStatsDiv, getNested(brRankedData, ['duo'], {}), brDuoTitle);
-
-                    // BR Squad
-                    renderStats(brSquadStatsDiv, getNested(brRankedData, ['squad'], {}), brSquadTitle);
-
-                    // CS Ranked (assuming CS ranked data is under 'squad')
-                    renderStats(csRankedStatsDiv, getNested(csRankedData, ['squad'], {}), csRankedTitle);
-
+                // Process BR Stats
+                let brRankedData = {};
+                if (brStats.status === true && brStats.data) {
+                    brRankedData = brStats.data;
                 } else {
-                    errorMessage.textContent = stats.message || 'Failed to fetch player stats. No stats data found or API error.';
+                    console.error('BR Stats API returned status false or no data:', brStats);
+                }
+
+                // Process CS Stats
+                let csRankedData = {};
+                if (csStats.status === true && csStats.data) {
+                    csRankedData = csStats.data;
+                } else {
+                    console.error('CS Stats API returned status false or no data:', csStats);
+                }
+
+                // Update BR/CS Ranks on profile card
+                profileBRRank.textContent = getNested(brRankedData, ['current_rank', 'rank_name'], 'N/A');
+                profileCSRank.textContent = getNested(csRankedData, ['current_rank', 'rank_name'], 'N/A');
+                
+                // BR Solo
+                renderStats(brSoloStatsDiv, getNested(brRankedData, ['solo'], {}), brSoloTitle);
+                
+                // BR Duo
+                renderStats(brDuoStatsDiv, getNested(brRankedData, ['duo'], {}), brDuoTitle);
+
+                // BR Squad
+                renderStats(brSquadStatsDiv, getNested(brRankedData, ['squad'], {}), brSquadTitle);
+
+                // CS Ranked (assuming CS ranked data is under 'squad')
+                renderStats(csRankedStatsDiv, getNested(csRankedData, ['squad'], {}), csRankedTitle);
+
+                if (!brStats.status && !csStats.status) {
+                    errorMessage.textContent = 'Failed to fetch player stats. No stats data found or API error.';
                     errorMessage.style.display = 'block';
-                    console.error('Stats API returned status false or no data:', stats);
                 }
                 
                 resultsDiv.style.display = 'block'; // Show results section
