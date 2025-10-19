@@ -3,234 +3,328 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Fire Stats Finder</title>
+    <title>Free Fire Stats Arena</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-bg: #0f172a;
-            --secondary-bg: #1e293b;
-            --accent-color: #f97316;
-            --text-color: #f1f5f9;
-            --input-bg: #475569;
-            --input-border: #94a3b8;
-            --tab-inactive: #94a3b8;
-            --dynamic-color-1: #fbbf24;
-            --dynamic-color-2: #f97316;
-            --dynamic-color-3: #22c55e;
-            --button-color: #f97316; /* Garo Orange */
-            --button-border-color: #f97316;
+            --primary-bg: #0a0f1a; /* Deep Space Black */
+            --secondary-bg: #1a233a; /* Dark Nebula Blue */
+            --accent-color: #ff4d4d; /* Neon Red */
+            --highlight-color: #ffcc00; /* Neon Yellow */
+            --text-color: #e0e6f8; /* Soft White */
+            --input-bg: #2a3550; /* Metallic Gray */
+            --input-border: #ff4d4d; /* Neon Red Border */
+            --button-bg: #ff4d4d; /* Neon Red Button */
+            --button-hover: #ff1a1a; /* Darker Neon Red */
+            --shadow: 0 6px 20px rgba(0, 0, 0, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
             font-family: 'Montserrat', sans-serif;
-            background-color: var(--primary-bg);
+            background: linear-gradient(135deg, var(--primary-bg), #1a233a);
             color: var(--text-color);
-            margin: 0;
-            padding: 0;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            padding: 20px;
-            box-sizing: border-box;
+            align-items: center;
+            padding: 15px;
+            overflow-x: hidden;
+            animation: bgPulse 10s infinite alternate;
+        }
+
+        @keyframes bgPulse {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
         }
 
         .container {
-            background-color: var(--secondary-bg);
+            background: linear-gradient(135deg, var(--secondary-bg), #2a3550);
             padding: 25px;
             border-radius: 15px;
             width: 100%;
             max-width: 450px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-            box-sizing: border-box;
-            border: 2px solid var(--dynamic-color-2);
+            box-shadow: var(--shadow);
+            border: 2px solid var(--accent-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 77, 77, 0.1) 0%, transparent 70%);
+            animation: glow 8s infinite;
+            z-index: 0;
+        }
+
+        @keyframes glow {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
 
         .header {
             text-align: center;
-            margin-bottom: 30px;
-            background: linear-gradient(135deg, #6b7280, #4b5563);
+            margin-bottom: 25px;
             padding: 15px;
             border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, var(--accent-color), var(--button-hover));
+            box-shadow: 0 4px 15px rgba(255, 77, 77, 0.5);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
         .header .fire-icon {
-            font-size: 3em;
-            color: var(--dynamic-color-3);
-            margin-bottom: 8px;
+            font-size: 3.5em;
+            color: var(--highlight-color);
+            text-shadow: 0 0 10px var(--highlight-color);
+            animation: flame 1s infinite alternate;
+        }
+
+        @keyframes flame {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
         }
 
         .header h1 {
-            font-size: 1.8em;
-            margin: 0;
+            font-size: 2em;
+            margin: 5px 0;
             font-weight: 700;
-            color: var(--button-color); /* Garo Orange */
-            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+            text-shadow: 0 0 5px rgba(255, 77, 77, 0.7);
         }
 
         .header p {
-            font-size: 0.9em;
-            color: #ddd;
-            margin-top: 5px;
+            font-size: 1em;
+            color: #b0c4de;
+            font-weight: 600;
         }
 
         .box-container {
             display: grid;
             gap: 15px;
             margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(42, 53, 80, 0.8);
+            border: 2px solid var(--accent-color);
+            box-shadow: 0 4px 15px rgba(255, 77, 77, 0.3);
+            position: relative;
+            z-index: 1;
         }
 
         .form-group {
-            background-color: var(--input-bg);
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--dynamic-color-3);
+            background: linear-gradient(135deg, var(--input-bg), #3a4060);
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 20px rgba(255, 77, 77, 0.6);
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: 600;
             font-size: 1em;
-            color: var(--dynamic-color-2);
+            color: var(--highlight-color);
+            text-shadow: 0 0 2px var(--accent-color);
         }
 
         .form-group input[type="text"],
         .form-group select {
             width: 100%;
-            padding: 12px;
-            background-color: var(--secondary-bg);
-            border: 1px solid var(--input-border);
-            border-radius: 8px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid var(--input-border);
+            border-radius: 5px;
             color: var(--text-color);
             font-size: 1em;
-            box-sizing: border-box;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            transition: border-color 0.3s ease;
+            transition: border-color 0.3s ease, transform 0.2s ease;
         }
 
         .form-group select {
-            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%20197.352L146.2%2056.638L5.4%20197.352H287z%22%2F%3E%3C%2Fsvg%3E');
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23e0e6f8%22%20d%3D%22M287%20197.352L146.2%2056.638L5.4%20197.352H287z%22%2F%3E%3C%2Fsvg%3E');
             background-repeat: no-repeat;
-            background-position: right 15px center;
-            background-size: 12px;
-            padding-right: 40px;
+            background-position: right 10px center;
+            background-size: 10px;
+            padding-right: 30px;
+            appearance: none;
         }
 
         .form-group input[type="text"]:focus,
         .form-group select:focus {
-            border-color: var(--dynamic-color-3);
+            border-color: var(--highlight-color);
+            transform: scale(1.02);
             outline: none;
-        }
-
-        .form-group input[type="text"]::placeholder {
-            color: #99aab5;
         }
 
         button#searchPlayerBtn {
             width: 100%;
-            padding: 14px;
-            background-color: var(--button-color); /* Garo Orange */
+            padding: 12px;
+            background: linear-gradient(135deg, var(--button-bg), var(--button-hover));
             color: var(--text-color);
-            border: 2px solid var(--button-border-color); /* Matching border color */
+            border: none;
             border-radius: 8px;
             font-size: 1.2em;
             font-weight: 700;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 15px rgba(255, 77, 77, 0.6);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         button#searchPlayerBtn:hover {
-            background-color: #164e63;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(255, 77, 77, 0.8);
+        }
+
+        button#searchPlayerBtn::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: rgba(255, 255, 255, 0.2);
+            animation: shine 2s infinite;
+        }
+
+        @keyframes shine {
+            0% { width: 0; left: 0; }
+            20% { width: 100%; left: 0; }
+            100% { width: 0; left: 100%; }
         }
 
         .footer {
             text-align: center;
-            margin-top: 30px;
+            margin-top: 20px;
             font-size: 0.9em;
-            color: #aaa;
-            background-color: var(--input-bg);
+            color: #b0c4de;
             padding: 10px;
             border-radius: 10px;
-            border: 1px solid var(--dynamic-color-2);
+            background: rgba(42, 53, 80, 0.8);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
         }
 
         .footer span {
-            color: var(--dynamic-color-1);
-            font-size: 1.3em;
-            vertical-align: middle;
-            margin: 0 2px;
+            color: var(--highlight-color);
+            font-size: 1.2em;
+            text-shadow: 0 0 5px var(--highlight-color);
         }
 
         .footer a {
-            color: var(--dynamic-color-1);
+            color: var(--accent-color);
             text-decoration: none;
             font-weight: 600;
         }
 
         .footer a:hover {
             text-decoration: underline;
+            color: var(--highlight-color);
         }
 
         #results {
-            margin-top: 30px;
+            margin-top: 20px;
             display: none;
+            animation: fadeIn 0.5s ease-in;
         }
 
-        /* Profile Card */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
         .profile-card {
-            background: linear-gradient(135deg, var(--secondary-bg), #2a4066);
-            padding: 20px;
-            border-radius: 15px;
+            background: linear-gradient(135deg, var(--secondary-bg), #3a4060);
+            padding: 15px;
+            border-radius: 10px;
             text-align: center;
-            margin-bottom: 20px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-            border: 2px solid var(--dynamic-color-2);
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--accent-color);
+            animation: cardPop 0.5s ease-out;
+        }
+
+        @keyframes cardPop {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
         .profile-card .avatar-container {
-            position: relative;
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--input-bg), #5d7090);
-            margin: 0 auto 15px;
+            background: linear-gradient(135deg, var(--input-bg), #3a4060);
+            margin: 0 auto 10px;
             display: flex;
             justify-content: center;
             align-items: center;
-            border: 4px solid var(--dynamic-color-3);
-            transition: transform 0.3s ease;
+            border: 3px solid var(--accent-color);
+            box-shadow: 0 0 15px rgba(255, 77, 77, 0.5);
+            position: relative;
+            overflow: hidden;
         }
 
-        .profile-card .avatar-container:hover {
-            transform: scale(1.1);
+        .profile-card .avatar-container::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: radial-gradient(circle, rgba(255, 77, 77, 0.2) 0%, transparent 70%);
+            animation: avatarGlow 4s infinite;
         }
 
-        .profile-card .avatar-container .avatar-char {
-            font-size: 3.5em;
+        @keyframes avatarGlow {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        .profile-card .avatar-char {
+            font-size: 2.5em;
             font-weight: 700;
             color: var(--text-color);
+            text-shadow: 0 0 5px var(--highlight-color);
         }
 
         .profile-card .level-badge {
             position: absolute;
-            bottom: 0px;
+            bottom: -5px;
             right: -5px;
-            background-color: var(--dynamic-color-1);
+            background: var(--accent-color);
             color: var(--text-color);
-            font-size: 0.8em;
-            padding: 4px 10px;
-            border-radius: 10px;
-            font-weight: 600;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            font-size: 0.7em;
+            padding: 3px 8px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(255, 77, 77, 0.5);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
         .profile-card .player-name-section {
@@ -241,202 +335,118 @@
             margin-bottom: 5px;
         }
 
-        .profile-card .player-name-section .rank-icon {
-            font-size: 1.3em;
-            color: #bbb;
-        }
-
-        .profile-card .player-name-section .player-nickname {
-            font-size: 1.8em;
+        .profile-card .player-nickname {
+            font-size: 1.6em;
             font-weight: 700;
-            margin: 0;
-            color: var(--dynamic-color-2);
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-        }
-
-        .profile-card .player-name-section .feather-icon {
-            font-size: 1.3em;
-            color: #bbb;
+            color: var(--highlight-color);
+            text-shadow: 0 0 3px var(--accent-color);
         }
 
         .profile-card .player-uid {
-            font-size: 1em;
-            color: #aaa;
+            font-size: 0.9em;
+            color: #b0c4de;
             margin-bottom: 5px;
         }
 
         .profile-card .player-clan {
-            font-size: 1.1em;
-            font-weight: 600;
-            color: var(--dynamic-color-3);
-            margin-bottom: 20px;
-        }
-
-        .profile-card .stats-row {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 20px;
-            background-color: rgba(65, 90, 119, 0.3);
-            padding: 10px;
-            border-radius: 8px;
-        }
-
-        .profile-card .stat-item {
-            text-align: center;
-        }
-
-        .profile-card .stat-item .stat-value {
-            font-size: 1.5em;
-            font-weight: 700;
-            color: var(--text-color);
-            margin-bottom: 2px;
-        }
-
-        .profile-card .stat-item .stat-label {
-            font-size: 0.9em;
-            color: #aaa;
-        }
-
-        .profile-card .grid-info {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px 10px;
-            text-align: left;
-            margin-top: 15px;
-            background-color: rgba(65, 90, 119, 0.3);
-            padding: 10px;
-            border-radius: 8px;
-        }
-
-        .profile-card .grid-item {
-            padding: 10px 0;
-        }
-
-        .profile-card .grid-item:nth-child(even) {
-            text-align: right;
-        }
-
-        .profile-card .grid-item .label {
-            font-size: 0.9em;
-            color: #aaa;
-            margin-bottom: 2px;
-        }
-
-        .profile-card .grid-item .value {
-            font-size: 1.1em;
-            font-weight: 600;
-            color: var(--text-color);
-        }
-
-        .profile-card .quote {
-            font-style: italic;
             font-size: 1em;
-            color: #888;
-            margin-top: 20px;
-            background-color: rgba(65, 90, 119, 0.3);
-            padding: 10px;
-            border-radius: 8px;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-bottom: 10px;
         }
 
-        /* Tabs for BR/CS */
         .tabs {
             display: flex;
-            background: linear-gradient(90deg, var(--secondary-bg), #2a4066);
-            border-radius: 8px;
-            margin-bottom: 20px;
+            background: linear-gradient(90deg, var(--secondary-bg), #3a4060);
+            border-radius: 10px;
+            margin-bottom: 15px;
             overflow: hidden;
-            border: 1px solid var(--dynamic-color-3);
+            box-shadow: var(--shadow);
         }
 
         .tabs button {
             flex: 1;
-            padding: 12px 0;
-            background-color: var(--tab-inactive);
+            padding: 10px;
+            background: rgba(42, 53, 80, 0.8);
             color: var(--text-color);
             border: none;
-            font-size: 1.1em;
+            font-size: 1em;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            border-radius: 0;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .tabs button:first-child {
-            border-top-left-radius: 8px;
-            border-bottom-left-radius: 8px;
-        }
-
-        .tabs button:last-child {
-            border-top-right-radius: 8px;
-            border-bottom-right-radius: 8px;
+        .tabs button:hover {
+            background: rgba(255, 77, 77, 0.2);
+            transform: translateY(-2px);
         }
 
         .tabs button.active {
-            background-color: var(--dynamic-color-3);
-            color: #fff;
+            background: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .tabs button.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--highlight-color);
+            animation: tabGlow 1.5s infinite;
+        }
+
+        @keyframes tabGlow {
+            0% { width: 0; }
+            50% { width: 100%; }
+            100% { width: 0; }
         }
 
         .tab-content {
-            background: linear-gradient(135deg, var(--secondary-bg), #2a4066);
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid var(--dynamic-color-2);
-        }
-
-        .mode-section {
-            margin-bottom: 20px;
-            background-color: rgba(65, 90, 119, 0.3);
+            background: rgba(42, 53, 80, 0.8);
             padding: 15px;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            animation: contentFade 0.5s ease-in;
+        }
+
+        @keyframes contentFade {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .mode-section h3 {
-            font-size: 1.4em;
-            color: var(--dynamic-color-1);
-            margin-top: 0;
-            margin-bottom: 15px;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-        }
-
-        .mode-section h3.no-data {
-            color: #99aab5;
-            font-size: 1.1em;
-            font-style: italic;
+            font-size: 1.2em;
+            color: var(--highlight-color);
+            margin-bottom: 10px;
+            text-shadow: 0 0 5px var(--accent-color);
         }
 
         .stats-list .info-item {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid var(--input-border);
-            background-color: rgba(65, 90, 119, 0.2);
+            padding: 8px;
+            margin-bottom: 5px;
+            background: rgba(255, 77, 77, 0.1);
             border-radius: 5px;
+            transition: transform 0.2s ease;
         }
 
-        .stats-list .info-item:last-child {
-            border-bottom: none;
-        }
-
-        .stats-list .info-item span:first-child {
-            font-weight: 400;
-            color: #cccccc;
-        }
-
-        .stats-list .info-item span:last-child {
-            font-weight: 600;
-            text-align: right;
+        .stats-list .info-item:hover {
+            transform: translateX(5px);
         }
 
         .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--dynamic-color-3);
+            border: 3px solid var(--text-color);
+            border-top: 3px solid var(--accent-color);
             border-radius: 50%;
             width: 30px;
             height: 30px;
             animation: spin 1s linear infinite;
-            margin: 20px auto;
-            display: none;
+            margin: 15px auto;
         }
 
         @keyframes spin {
@@ -445,56 +455,47 @@
         }
 
         .error-message {
-            color: var(--dynamic-color-1);
+            color: var(--accent-color);
             text-align: center;
-            margin-top: 20px;
-            display: none;
-            font-weight: 600;
-            background-color: rgba(65, 90, 119, 0.3);
+            margin-top: 15px;
             padding: 10px;
-            border-radius: 8px;
+            background: rgba(255, 77, 77, 0.1);
+            border-radius: 5px;
+            animation: errorShake 0.5s ease-in-out;
+        }
+
+        @keyframes errorShake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
         }
 
         @media (max-width: 480px) {
             .container {
                 padding: 15px;
+                max-width: 95%;
             }
             .header h1 {
-                font-size: 1.6em;
+                font-size: 1.5em;
             }
             .header p {
                 font-size: 0.9em;
             }
             button#searchPlayerBtn {
-                font-size: 1.1em;
-                padding: 12px;
-            }
-            .form-group input, .form-group select {
+                font-size: 1em;
                 padding: 10px;
             }
-            .profile-card .player-nickname {
-                font-size: 1.5em;
-            }
-            .profile-card .player-uid {
+            .form-group input, .form-group select {
+                padding: 8px;
                 font-size: 0.9em;
             }
-            .profile-card .player-clan {
-                font-size: 1em;
-            }
-            .profile-card .stat-item .stat-value {
-                font-size: 1.3em;
-            }
-            .profile-card .grid-item .label {
-                font-size: 0.8em;
-            }
-            .profile-card .grid-item .value {
-                font-size: 1em;
+            .profile-card .player-nickname {
+                font-size: 1.4em;
             }
             .tabs button {
-                font-size: 1em;
-            }
-            .mode-section h3 {
-                font-size: 1.2em;
+                font-size: 0.9em;
             }
         }
     </style>
@@ -503,14 +504,14 @@
     <div class="container">
         <div class="header">
             <div class="fire-icon">🔥</div>
-            <h1>Free Fire Stats Finder</h1>
-            <p>Get real-time player stats and personal info for BR & CS!</p>
+            <h1>Free Fire Stats Arena</h1>
+            <p>Enter the battlefield for BR & CS stats!</p>
         </div>
 
         <div class="box-container">
             <div class="form-group">
-                <label for="playerUid" style="color: var(--button-color);">Player UID</label>
-                <input type="text" id="playerUid" placeholder="Enter player UID e.g., 8035061359" style="border-color: var(--button-color);">
+                <label for="playerUid">Player UID</label>
+                <input type="text" id="playerUid" placeholder="Enter player UID e.g., 8035061359">
             </div>
             <div class="form-group">
                 <label for="server">Server</label>
@@ -534,8 +535,8 @@
 
         <button id="searchPlayerBtn">Search Player</button>
 
-        <div class="loader" id="loader"></div>
-        <div class="error-message" id="errorMessage"></div>
+        <div class="loader" id="loader" style="display: none;"></div>
+        <div class="error-message" id="errorMessage" style="display: none;"></div>
 
         <div id="results">
             <div class="profile-card" id="playerProfileCard">
@@ -544,44 +545,10 @@
                     <span class="level-badge" id="profileLevel">Lv. ??</span>
                 </div>
                 <div class="player-name-section">
-                    <span class="rank-icon" id="profileRankIcon"></span>
-                    <h2 class="player-nickname" id="profileNickname">Player Nickname</h2>
-                    <span class="feather-icon">🌿</span>
+                    <h2 class="player-nickname" id="playerNickname">Player Nickname</h2>
                 </div>
-                <p class="player-uid" id="profileUidDisplay">UID: N/A</p>
-                <p class="player-clan" id="profileClan">Clan: N/A</p>
-
-                <div class="stats-row">
-                    <div class="stat-item">
-                        <div class="stat-value" id="profileLikes">0</div>
-                        <div class="stat-label">Likes</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="profileBadges">0</div>
-                        <div class="stat-label">Badges</div>
-                    </div>
-                </div>
-
-                <div class="grid-info">
-                    <div class="grid-item">
-                        <div class="label">Region</div>
-                        <div class="value" id="profileRegion">N/A</div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="label">BR Rank</div>
-                        <div class="value" id="profileBRRank">N/A</div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="label">CS Rank</div>
-                        <div class="value" id="profileCSRank">N/A</div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="label">Last Login</div>
-                        <div class="value" id="profileLastLogin">N/A</div>
-                    </div>
-                </div>
-
-                <p class="quote" id="profileSignature">"No signature set."</p>
+                <p class="player-uid" id="playerUidDisplay">UID: N/A</p>
+                <p class="player-clan" id="playerClan">Clan: N/A</p>
             </div>
 
             <div class="tabs">
@@ -591,7 +558,7 @@
 
             <div id="brTabContent" class="tab-content">
                 <div class="mode-section">
-                    <h3 id="brSoloTitle">Solo</h3>
+                    <h3>Solo</h3>
                     <div class="stats-list" id="brSoloStats"></div>
                 </div>
                 <div class="mode-section">
@@ -606,14 +573,14 @@
 
             <div id="csTabContent" class="tab-content" style="display: none;">
                 <div class="mode-section">
-                    <h3 id="csRankedTitle">Ranked</h3>
+                    <h3>Ranked</h3>
                     <div class="stats-list" id="csRankedStats"></div>
                 </div>
             </div>
         </div>
 
         <div class="footer">
-            Developed <span>❤️</span> by <a href="#" target="_blank">SAKIB HOSSAIN</a>
+            Developed <span>❤️</span> by <a href="#" target="_blank">GAJARBOTOL</a>
         </div>
     </div>
 
@@ -627,17 +594,9 @@
 
         const profileAvatarChar = document.getElementById('profileAvatarChar');
         const profileLevel = document.getElementById('profileLevel');
-        const profileRankIcon = document.getElementById('profileRankIcon');
-        const profileNickname = document.getElementById('profileNickname');
-        const profileUidDisplay = document.getElementById('profileUidDisplay');
-        const profileClan = document.getElementById('profileClan');
-        const profileLikes = document.getElementById('profileLikes');
-        const profileBadges = document.getElementById('profileBadges');
-        const profileRegion = document.getElementById('profileRegion');
-        const profileBRRank = document.getElementById('profileBRRank');
-        const profileCSRank = document.getElementById('profileCSRank');
-        const profileLastLogin = document.getElementById('profileLastLogin');
-        const profileSignature = document.getElementById('profileSignature');
+        const profileNickname = document.getElementById('playerNickname');
+        const profileUidDisplay = document.getElementById('playerUidDisplay');
+        const profileClan = document.getElementById('playerClan');
 
         const brSoloStatsDiv = document.getElementById('brSoloStats');
         const brDuoStatsDiv = document.getElementById('brDuoStats');
@@ -693,7 +652,7 @@
         function renderStats(targetDiv, data, gamemode) {
             targetDiv.innerHTML = '';
             if (!data || Object.keys(data).length === 0 || !data.gamesplayed || data.gamesplayed === 0) {
-                targetDiv.innerHTML = `<h3 class="no-data">No ranked matches played in this mode.</h3>`;
+                targetDiv.innerHTML = `<h3 style="color: #b0c4de; font-style: italic;">No matches played in this mode.</h3>`;
                 return;
             }
             let stats = { ...data };
@@ -721,13 +680,8 @@
                 tabButtons.forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
                 const gamemode = button.dataset.gamemode;
-                if (gamemode === 'br') {
-                    document.getElementById('brTabContent').style.display = 'block';
-                    document.getElementById('csTabContent').style.display = 'none';
-                } else if (gamemode === 'cs') {
-                    document.getElementById('brTabContent').style.display = 'none';
-                    document.getElementById('csTabContent').style.display = 'block';
-                }
+                document.getElementById('brTabContent').style.display = gamemode === 'br' ? 'block' : 'none';
+                document.getElementById('csTabContent').style.display = gamemode === 'cs' ? 'block' : 'none';
             });
         });
 
@@ -737,14 +691,14 @@
 
             resultsDiv.style.display = 'none';
             errorMessage.style.display = 'none';
+            loader.style.display = 'block';
 
             if (!playerUid) {
-                errorMessage.textContent = 'Please enter a Player UID.';
+                errorMessage.textContent = 'Enter a Player UID to battle!';
                 errorMessage.style.display = 'block';
+                loader.style.display = 'none';
                 return;
             }
-
-            loader.style.display = 'block';
 
             try {
                 const response = await fetch(`${BASE_URL}get_player_personal_show?server=${server}&uid=${playerUid}`);
@@ -757,17 +711,6 @@
                     profileNickname.textContent = (playerData.basicinfo && playerData.basicinfo.nickname) || 'N/A';
                     profileUidDisplay.textContent = `UID: ${(playerData.basicinfo && playerData.basicinfo.accountid) || 'N/A'}`;
                     profileClan.textContent = `Clan: ${(playerData.clanbasicinfo && playerData.clanbasicinfo.clanname) || 'N/A'}`;
-                    
-                    // Updated fields with correct API keys
-                    profileLikes.textContent = (playerData.basicinfo && playerData.basicinfo.liked !== undefined) ? playerData.basicinfo.liked : '0';
-                    profileBadges.textContent = (playerData.basicinfo && playerData.basicinfo.badgecnt !== undefined) ? playerData.basicinfo.badgecnt : '0';
-                    profileBRRank.textContent = (playerData.basicinfo && playerData.basicinfo.rank !== undefined) ? playerData.basicinfo.rank : 'N/A';
-                    profileCSRank.textContent = (playerData.basicinfo && playerData.basicinfo.csrank !== undefined) ? playerData.basicinfo.csrank : 'N/A';
-                    profileLastLogin.textContent = (playerData.basicinfo && playerData.basicinfo.lastloginat) ? new Date(playerData.basicinfo.lastloginat * 1000).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
-                    profileSignature.textContent = (playerData.socialinfo && playerData.socialinfo.signature) ? `"${playerData.socialinfo.signature}"` : '"No signature set."';
-
-                    profileRegion.textContent = (playerData.basicinfo && playerData.basicinfo.region) || 'N/A';
-                    profileRankIcon.textContent = (playerData.basicinfo && playerData.basicinfo.rank) ? playerData.basicinfo.rank : '';
 
                     const brResponse = await fetch(`${BASE_URL}get_player_stats?server=${server}&uid=${playerUid}&matchmode=RANKED&gamemode=br`);
                     const brStats = await brResponse.json();
@@ -782,28 +725,20 @@
                     resultsDiv.style.display = 'block';
                     tabButtons[0].click();
                 } else {
-                    errorMessage.textContent = data.message || 'Failed to fetch player data.';
+                    errorMessage.textContent = 'Player not found in the arena!';
                     errorMessage.style.display = 'block';
                     profileAvatarChar.textContent = '?';
                     profileLevel.textContent = 'Lv. ??';
                     profileNickname.textContent = 'Player Nickname';
                     profileUidDisplay.textContent = 'UID: N/A';
                     profileClan.textContent = 'Clan: N/A';
-                    profileLikes.textContent = '0';
-                    profileBadges.textContent = '0';
-                    profileRegion.textContent = 'N/A';
-                    profileBRRank.textContent = 'N/A';
-                    profileCSRank.textContent = 'N/A';
-                    profileLastLogin.textContent = 'N/A';
-                    profileSignature.textContent = '"No signature set."';
-                    profileRankIcon.textContent = '';
                     [brSoloStatsDiv, brDuoStatsDiv, brSquadStatsDiv, csRankedStatsDiv].forEach(div => div.innerHTML = '');
                 }
             } catch (error) {
                 console.error('Error fetching player data:', error);
-                errorMessage.textContent = 'Failed to fetch player data. Please check the UID, server, or try again later.';
+                errorMessage.textContent = 'Connection lost in the battlefield!';
                 errorMessage.style.display = 'block';
-                [profileAvatarChar, profileLevel, profileNickname, profileUidDisplay, profileClan, profileLikes, profileBadges, profileRegion, profileBRRank, profileCSRank, profileLastLogin, profileSignature].forEach(el => el.textContent = el.id.includes('value') ? 'N/A' : (el.id === 'profileAvatarChar' ? '?' : 'N/A'));
+                [profileAvatarChar, profileLevel, profileNickname, profileUidDisplay, profileClan].forEach(el => el.textContent = el.id.includes('value') ? 'N/A' : (el.id === 'profileAvatarChar' ? '?' : 'N/A'));
                 [brSoloStatsDiv, brDuoStatsDiv, brSquadStatsDiv, csRankedStatsDiv].forEach(div => div.innerHTML = '');
             } finally {
                 loader.style.display = 'none';
