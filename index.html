@@ -567,7 +567,7 @@
         </div>
 
         <div class="footer">
-            Developed with <span>❤️</span> by <a href="#" target="_blank">@GAJARBOTOL</a>
+            Developed with <span>❤️</span> by <a href="#" target="_blank">@SAKIB HOSSAIN</a>
         </div>
     </div>
 
@@ -714,11 +714,11 @@
                     profileLikes.textContent = (playerData.socialinfo && playerData.socialinfo.likes) || '0';
                     profileBadges.textContent = (playerData.profileinfo && playerData.profileinfo.badge) || '0';
                     profileRegion.textContent = (playerData.basicinfo && playerData.basicinfo.region) || 'N/A';
+                    profileBRRank.textContent = (playerData.basicinfo && playerData.basicinfo.current_rank_br && playerData.basicinfo.current_rank_br.rank_name) || 'N/A';
+                    profileCSRank.textContent = (playerData.basicinfo && playerData.basicinfo.current_rank_cs && playerData.basicinfo.current_rank_cs.rank_name) || 'N/A';
                     profileLastLogin.textContent = (playerData.profileinfo && playerData.profileinfo.last_login) ? new Date(playerData.profileinfo.last_login * 1000).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
                     profileSignature.textContent = (playerData.profileinfo && playerData.profileinfo.signature) || '"No signature set."';
                     profileRankIcon.textContent = (playerData.basicinfo && playerData.basicinfo.current_rank_br) ? playerData.basicinfo.current_rank_br.rank_name || '' : '';
-                    profileBRRank.textContent = (playerData.basicinfo && playerData.basicinfo.current_rank_br) ? playerData.basicinfo.current_rank_br.rank_name || 'N/A' : 'N/A';
-                    profileCSRank.textContent = (playerData.basicinfo && playerData.basicinfo.current_rank_cs) ? playerData.basicinfo.current_rank_cs.rank_name || 'N/A' : 'N/A';
 
                     const brResponse = await fetch(`${BASE_URL}get_player_stats?server=${server}&uid=${playerUid}&matchmode=RANKED&gamemode=br`);
                     const brStats = await brResponse.json();
