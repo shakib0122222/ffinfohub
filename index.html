@@ -709,19 +709,19 @@
                     profileAvatarChar.textContent = (playerData.basicinfo && playerData.basicinfo.nickname) ? playerData.basicinfo.nickname.charAt(0).toUpperCase() : '?';
                     profileLevel.textContent = `Lv. ${(playerData.basicinfo && playerData.basicinfo.level) || '??'}`;
                     profileNickname.textContent = (playerData.basicinfo && playerData.basicinfo.nickname) || 'N/A';
-                    profileUidDisplay.textContent = `UID: ${(playerData.basicinfo && playerData.basicinfo.account_id) || 'N/A'}`;
-                    profileClan.textContent = `Clan: ${(playerData.clanbasicinfo && playerData.clanbasicinfo.clan_name) || 'N/A'}`;
+                    profileUidDisplay.textContent = `UID: ${(playerData.basicinfo && playerData.basicinfo.accountid) || 'N/A'}`;
+                    profileClan.textContent = `Clan: ${(playerData.clanbasicinfo && playerData.clanbasicinfo.clanname) || 'N/A'}`;
                     
-                    // Updated fields
-                    profileLikes.textContent = (playerData.socialinfo && playerData.socialinfo.likes !== undefined) ? playerData.socialinfo.likes : '0';
-                    profileBadges.textContent = (playerData.profileinfo && playerData.profileinfo.badge !== undefined) ? playerData.profileinfo.badge : '0';
-                    profileBRRank.textContent = (playerData.basicinfo && playerData.basicinfo.current_rank_br && playerData.basicinfo.current_rank_br.rank_name) ? playerData.basicinfo.current_rank_br.rank_name : 'N/A';
-                    profileCSRank.textContent = (playerData.basicinfo && playerData.basicinfo.current_rank_cs && playerData.basicinfo.current_rank_cs.rank_name) ? playerData.basicinfo.current_rank_cs.rank_name : 'N/A';
-                    profileLastLogin.textContent = (playerData.profileinfo && playerData.profileinfo.last_login) ? new Date(playerData.profileinfo.last_login * 1000).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
-                    profileSignature.textContent = (playerData.profileinfo && playerData.profileinfo.signature) ? `"${playerData.profileinfo.signature}"` : '"No signature set."';
+                    // Updated fields with correct API keys
+                    profileLikes.textContent = (playerData.basicinfo && playerData.basicinfo.liked !== undefined) ? playerData.basicinfo.liked : '0';
+                    profileBadges.textContent = (playerData.basicinfo && playerData.basicinfo.badgecnt !== undefined) ? playerData.basicinfo.badgecnt : '0';
+                    profileBRRank.textContent = (playerData.basicinfo && playerData.basicinfo.rank !== undefined) ? playerData.basicinfo.rank : 'N/A';
+                    profileCSRank.textContent = (playerData.basicinfo && playerData.basicinfo.csrank !== undefined) ? playerData.basicinfo.csrank : 'N/A';
+                    profileLastLogin.textContent = (playerData.basicinfo && playerData.basicinfo.lastloginat) ? new Date(playerData.basicinfo.lastloginat * 1000).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
+                    profileSignature.textContent = (playerData.socialinfo && playerData.socialinfo.signature) ? `"${playerData.socialinfo.signature}"` : '"No signature set."';
 
                     profileRegion.textContent = (playerData.basicinfo && playerData.basicinfo.region) || 'N/A';
-                    profileRankIcon.textContent = (playerData.basicinfo && playerData.basicinfo.current_rank_br) ? playerData.basicinfo.current_rank_br.rank_name || '' : '';
+                    profileRankIcon.textContent = (playerData.basicinfo && playerData.basicinfo.rank) ? playerData.basicinfo.rank : '';
 
                     const brResponse = await fetch(`${BASE_URL}get_player_stats?server=${server}&uid=${playerUid}&matchmode=RANKED&gamemode=br`);
                     const brStats = await brResponse.json();
