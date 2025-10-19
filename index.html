@@ -12,7 +12,7 @@
             --primary-bg: #1a1a2e;
             --secondary-bg: #2e3b55;
             --accent-color: #e94560;
-            --text-color: #FFFFF;
+            --text-color: #ffffff;
             --input-bg: #3c4c6b;
             --input-border: #4a5d7c;
             --tab-inactive: #4a5d7c;
@@ -62,8 +62,17 @@
         .header h1 {
             font-size: 2em;
             margin: 0;
-            font-weight: 700;
+            font-weight: 700; /* h1 বোল্ড করা হয়েছে */
             color: var(--text-color);
+        }
+        
+        /* Free Fire এবং Stats Finder এর জন্য আলাদা স্টাইল */
+        .header h1 .free-fire {
+            color: white; /* সাদা রঙ */
+        }
+
+        .header h1 .stats-finder {
+            color: yellow; /* হলুদ রঙ */
         }
 
         .header p {
@@ -457,7 +466,7 @@
     <div class="container">
         <div class="header">
             <div class="fire-icon">🔥</div>
-            <h1>Free Fire Stats Finder</h1>
+            <h1><span class="free-fire">Free Fire</span> <span class="stats-finder">Stats Finder</span></h1> <!-- এখানে পরিবর্তন করা হয়েছে -->
             <p>Get real-time player stats and personal info for BR & CS!</p>
         </div>
 
@@ -567,7 +576,7 @@
         </div>
 
         <div class="footer">
-            Developed with <span>❤️</span> by <a href="#" target="_blank">@GAJARBOTOL</a>
+            Developed <span>❤️</span> by <a href="#" target="_blank">SAKIB HOSSAIN</a>
         </div>
     </div>
 
