@@ -50,7 +50,7 @@
             padding: 25px;
             border-radius: 15px;
             width: 100%;
-            max-width: 500px; /* Increased for larger mobile size */
+            max-width: 600px; /* Increased for larger size overall */
             box-shadow: var(--shadow);
             border: 2px solid var(--highlight-color);
             position: relative;
@@ -540,7 +540,7 @@
         @media (max-width: 480px) {
             .container {
                 padding: 15px;
-                max-width: 90%; /* Adjusted for larger mobile size */
+                max-width: 95%; /* Increased for larger mobile size */
             }
             .header h1 {
                 font-size: 1.8em;
@@ -651,7 +651,7 @@
         </div>
 
         <div class="footer">
-            Developed <span>❤️</span> by <a href="#" target="_blank">GAJARBOTOL</a>
+            Developed <span>❤️</span> by <a href="#" target="_blank">SAKIB HOSSAIN</a>
         </div>
     </div>
 
@@ -772,8 +772,18 @@
             }
 
             try {
-                const response = await fetch(`${BASE_URL}get_player_personal_show?server=${server}&uid=${playerUid}`);
-                const data = await response.json();
+                // Fetch all data in parallel to reduce loading time
+                const [personalResponse, brResponse, csResponse] = await Promise.all([
+                    fetch(`${BASE_URL}get_player_personal_show?server=${server}&uid=${playerUid}`),
+                    fetch(`${BASE_URL}get_player_stats?server=${server}&uid=${playerUid}&matchmode=RANKED&gamemode=br`),
+                    fetch(`${BASE_URL}get_player_stats?server=${server}&uid=${playerUid}&matchmode=RANKED&gamemode=cs`)
+                ]);
+
+                const [data, brStats, csStats] = await Promise.all([
+                    personalResponse.json(),
+                    brResponse.json(),
+                    csResponse.json()
+                ]);
 
                 if ((data.status === true || data.status === 'success') && data.data) {
                     const playerData = data.data;
@@ -782,11 +792,6 @@
                     profileNickname.textContent = (playerData.basicinfo && playerData.basicinfo.nickname) || 'N/A';
                     profileUidDisplay.textContent = `UID: ${(playerData.basicinfo && playerData.basicinfo.accountid) || 'N/A'}`;
                     profileClan.textContent = `Clan: ${(playerData.clanbasicinfo && playerData.clanbasicinfo.clanname) || 'N/A'}`;
-
-                    const brResponse = await fetch(`${BASE_URL}get_player_stats?server=${server}&uid=${playerUid}&matchmode=RANKED&gamemode=br`);
-                    const brStats = await brResponse.json();
-                    const csResponse = await fetch(`${BASE_URL}get_player_stats?server=${server}&uid=${playerUid}&matchmode=RANKED&gamemode=cs`);
-                    const csStats = await csResponse.json();
 
                     renderStats(brSoloStatsDiv, (brStats.data && brStats.data.solostats) || {}, 'BR Solo');
                     renderStats(brDuoStatsDiv, (brStats.data && brStats.data.duostats) || {}, 'BR Duo');
